@@ -62,6 +62,7 @@
     <Compile Include="DMProgressBar.cs" />
     <Compile Include="DMDownloadTreeView.cs" />
     <Compile Include="DMCategoryTreeView.cs" />
+    <Compile Include="gtk-gui\DownloadManager.Widget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -7,16 +7,6 @@ using System.Threading;
 
 namespace libDownload
 {
-	public abstract class Download
-	{
-		public abstract void start ();
-		public abstract void stop ();
-		public abstract void resume ();
-		public abstract void incrementParts ();
-		public short getParts ();
-		public long getDownloaded ();
-	}
-	
 	public class DownloadException : Exception
 	{
 		public DownloadException ()
@@ -35,17 +25,42 @@ namespace libDownload
 		DOWNLOADED
 	};
 
-	public class HTTPDownloadPart
+	public abstract class Download
 	{
-		string remotePath, localPath;
-		HttpWebRequest webReq;
-		HttpWebResponse webResp;
-		long start, end;
-		Thread downloadThread;
+		protected string remotePath, localPath;
+		protected short parts;
+
+		public long length;
+		public List<DownloadPart> listParts;
+
+		public abstract void start ();
+		public abstract void stop ();
+		public abstract void resume (long _length);
+		public abstract void incrementParts ();
+		public abstract short getParts ();
+		public abstract long getDownloaded ();
+	}
+
+	public abstract class DownloadPart
+	{
 		public long downloaded;
 		public short partNumber;
-		bool _stop;
 		public DOWNLOAD_PART_STATUS status;
+
+		protected bool _stop;
+		protected string remotePath, localPath;
+		protected long start, end;
+		protected Thread downloadThread;
+
+		public abstract void startDownload ();
+		public abstract void stopDownload ();
+		public abstract void resumeDownload ();
+	}
+
+	public class HTTPDownloadPart : DownloadPart
+	{
+		HttpWebRequest webReq;
+		HttpWebResponse webResp;
 
 		public HTTPDownloadPart (string _remotePath, string _localPath,
 		                         long _start, long _end, short _number)
@@ -60,20 +75,20 @@ namespace libDownload
 			status = DOWNLOAD_PART_STATUS.IDLE;
 		}
 
-		public void startDownload ()
+		public override void startDownload ()
 		{
 			downloadThread = new Thread (_startDownload);
 			downloadThread.Start ();
 		}
 
-		public void stopDownload ()
+		public override void stopDownload ()
 		{
 			_stop = true;
 			status = DOWNLOAD_PART_STATUS.IDLE;
 			downloadThread.Join ();
 		}
 
-		public void resumeDownload ()
+		public override void resumeDownload ()
 		{
 			downloadThread = new Thread (_resumeDownload);
 			downloadThread.Start ();
@@ -144,14 +159,10 @@ namespace libDownload
 		}
 	}
 
-	class HTTPDownload : Download
+	public class HTTPDownload : Download
 	{
-		string remotePath, localPath;
 		HttpWebRequest webReq;
 		HttpWebResponse webResp;
-		public long length;
-		short parts;
-		public List<HTTPDownloadPart> listParts;
 
 		public HTTPDownload (string _remotePath, string _localPath,
 		                     short _parts = 5)
@@ -159,10 +170,10 @@ namespace libDownload
 			remotePath = _remotePath;
 			localPath = _localPath;
 			parts = _parts;
-			listParts = new List<HTTPDownloadPart> ();
+			listParts = new List<DownloadPart> ();
 		}
 
-		public void start ()
+		public override void start ()
 		{
 			webReq = (HttpWebRequest)WebRequest.Create (remotePath);
 			webReq.Method = "HEAD";
@@ -188,13 +199,13 @@ namespace libDownload
 				part.startDownload ();
 		}
 
-		public void stop ()
+		public override void stop ()
 		{
 			foreach (HTTPDownloadPart part in listParts)
 				part.stopDownload ();
 		}
 
-		public void resume (long _length)
+		public override void resume (long _length)
 		{
 			for (int i = 1; i <= parts; i++)
 			{
@@ -228,17 +239,17 @@ namespace libDownload
 				part.resumeDownload ();
 		}
 
-		public void incrementParts ()
+		public override void incrementParts ()
 		{
 
 		}
 
-		public short getParts ()
+		public override short getParts ()
 		{
 			return parts;
 		}
 
-		public long getDownloaded ()
+		public override long getDownloaded ()
 		{
 			long totalDownloaded = 0;
 			foreach (HTTPDownloadPart part in listParts)
