@@ -7,6 +7,16 @@ using System.Threading;
 
 namespace libDownload
 {
+	public abstract class Download
+	{
+		public abstract void start ();
+		public abstract void stop ();
+		public abstract void resume ();
+		public abstract void incrementParts ();
+		public short getParts ();
+		public long getDownloaded ();
+	}
+	
 	public class DownloadException : Exception
 	{
 		public DownloadException ()
@@ -25,10 +35,9 @@ namespace libDownload
 		DOWNLOADED
 	};
 
-	public class DownloadPart
+	public class HTTPDownloadPart
 	{
-		string remotePath;
-		string localPath;
+		string remotePath, localPath;
 		HttpWebRequest webReq;
 		HttpWebResponse webResp;
 		long start, end;
@@ -38,8 +47,8 @@ namespace libDownload
 		bool _stop;
 		public DOWNLOAD_PART_STATUS status;
 
-		public DownloadPart (string _remotePath, string _localPath, 
-		                     long _start, long _end, short _number)
+		public HTTPDownloadPart (string _remotePath, string _localPath,
+		                         long _start, long _end, short _number)
 		{
 			remotePath = _remotePath;
 			localPath = _localPath;
@@ -78,9 +87,11 @@ namespace libDownload
 			FileStream fs = new FileStream (localPath, FileMode.Append);
 			start = fs.Length;
 			webReq.AddRange (start, end);
-			Console.WriteLine ("Sending Get {0} {1} {2}", partNumber, start, end);
+			Console.WriteLine ("Sending Get {0} {1} {2}",
+			                   partNumber, start, end);
 			webResp = (HttpWebResponse)webReq.GetResponse ();
-			Console.WriteLine ("Start Receiving {0} {1} {2}", partNumber, start, end);
+			Console.WriteLine ("Start Receiving {0} {1} {2}", 
+			                   partNumber, start, end);
 			Stream Answer = webResp.GetResponseStream ();
 
 			byte[] read = new byte[1024];
@@ -106,11 +117,14 @@ namespace libDownload
 			webReq = (HttpWebRequest)WebRequest.Create (remotePath);
 			webReq.Method = "GET";
 			webReq.AddRange (start, end);
-			Console.WriteLine ("Sending Get {0} {1} {2}", partNumber, start, end);
+			Console.WriteLine ("Sending Get {0} {1} {2}", 
+			                   partNumber, start, end);
 			webResp = (HttpWebResponse)webReq.GetResponse ();
-			Console.WriteLine ("Start Receiving {0} {1} {2}", partNumber, start, end);
+			Console.WriteLine ("Start Receiving {0} {1} {2}", 
+			                   partNumber, start, end);
 			Stream Answer = webResp.GetResponseStream ();
-			FileStream fs = new FileStream (localPath, FileMode.OpenOrCreate);
+			FileStream fs = new FileStream (localPath, 
+			                                FileMode.OpenOrCreate);
 
 			byte[] read = new byte[1024];
 			int count = Answer.Read (read, 0, 1024);
@@ -130,22 +144,22 @@ namespace libDownload
 		}
 	}
 
-	class Download
+	class HTTPDownload : Download
 	{
-		string remotePath;
-		string localPath;
+		string remotePath, localPath;
 		HttpWebRequest webReq;
 		HttpWebResponse webResp;
 		public long length;
 		short parts;
-		public List<DownloadPart> listParts;
+		public List<HTTPDownloadPart> listParts;
 
-		public Download (string _remotePath, string _localPath, short _parts = 5)
+		public HTTPDownload (string _remotePath, string _localPath,
+		                     short _parts = 5)
 		{
 			remotePath = _remotePath;
 			localPath = _localPath;
 			parts = _parts;
-			listParts = new List<DownloadPart> ();
+			listParts = new List<HTTPDownloadPart> ();
 		}
 
 		public void start ()
@@ -161,22 +175,22 @@ namespace libDownload
 			for (short i = 1; i < parts; i++)
 			{
 				_localPath = localPath + ".part" + i.ToString();
-				listParts.Add (new DownloadPart (remotePath, _localPath, 
-				                                 prev_length, next_length, i));
+				listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
+				                                     prev_length, next_length, i));
 				Console.WriteLine ("Part {0}", i);
 				prev_length += part_length;
 				next_length += part_length;
 			}
 			_localPath = localPath + ".part" + (parts).ToString();
-			listParts.Add (new DownloadPart (remotePath, _localPath, 
-			                                 prev_length, length, parts));
-			foreach (DownloadPart part in listParts)
+			listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
+			                                     prev_length, length, parts));
+			foreach (HTTPDownloadPart part in listParts)
 				part.startDownload ();
 		}
 
 		public void stop ()
 		{
-			foreach (DownloadPart part in listParts)
+			foreach (HTTPDownloadPart part in listParts)
 				part.stopDownload ();
 		}
 
@@ -200,17 +214,17 @@ namespace libDownload
 			for (short i = 1; i < parts; i++)
 			{
 				_localPath = localPath + ".part" + i.ToString();
-				listParts.Add (new DownloadPart (remotePath, _localPath, 
-				                                 prev_length, next_length, i));
+				listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
+				                                     prev_length, next_length, i));
 				Console.WriteLine ("Part {0}", i);
 				prev_length += part_length;
 				next_length += part_length;
 			}
 
 			_localPath = localPath + ".part" + (parts).ToString();
-			listParts.Add (new DownloadPart (remotePath, _localPath, 
-			                                 prev_length, length, parts));
-			foreach (DownloadPart part in listParts)
+			listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
+			                                     prev_length, length, parts));
+			foreach (HTTPDownloadPart part in listParts)
 				part.resumeDownload ();
 		}
 
@@ -227,7 +241,7 @@ namespace libDownload
 		public long getDownloaded ()
 		{
 			long totalDownloaded = 0;
-			foreach (DownloadPart part in listParts)
+			foreach (HTTPDownloadPart part in listParts)
 			{
 				totalDownloaded += part.downloaded;
 			}
