@@ -1,5 +1,6 @@
 using System;
 using Gtk;
+using System.Net;
 
 namespace DownloadManager
 {
@@ -7,6 +8,7 @@ namespace DownloadManager
 	{
 		public static void Main (string[] args)
 		{
+			ServicePointManager.DefaultConnectionLimit = 10;
 			Application.Init ();
 			MainWindow win = new MainWindow ();
 			win.Show ();

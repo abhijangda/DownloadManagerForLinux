@@ -9,6 +9,10 @@ namespace DownloadManager
 		{
 
 		}
+
+		public void showCategory (params string[] cats)
+		{
+		}
 	}
 }
 

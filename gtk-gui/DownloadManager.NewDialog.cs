@@ -26,7 +26,7 @@ namespace DownloadManager
 		private global::Gtk.RadioButton rbNow;
 		private global::Gtk.RadioButton rbLater;
 		private global::Gtk.RadioButton rbSchedule;
-		private global::Gtk.Label GtkLabel4;
+		private global::Gtk.Label GtkLabel5;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
 
@@ -86,8 +86,9 @@ namespace DownloadManager
 			w5.Expand = false;
 			w5.Fill = false;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.btnSaveTo = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select a File"), ((global::Gtk.FileChooserAction)(0)));
+			this.btnSaveTo = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Save To"), ((global::Gtk.FileChooserAction)(0)));
 			this.btnSaveTo.Name = "btnSaveTo";
+			this.btnSaveTo.DoOverwriteConfirmation = true;
 			this.hbox2.Add (this.btnSaveTo);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.btnSaveTo]));
 			w6.Position = 1;
@@ -236,11 +237,11 @@ namespace DownloadManager
 			w20.Fill = false;
 			this.GtkAlignment3.Add (this.vbox4);
 			this.frame2.Add (this.GtkAlignment3);
-			this.GtkLabel4 = new global::Gtk.Label ();
-			this.GtkLabel4.Name = "GtkLabel4";
-			this.GtkLabel4.LabelProp = global::Mono.Unix.Catalog.GetString ("Start");
-			this.GtkLabel4.UseMarkup = true;
-			this.frame2.LabelWidget = this.GtkLabel4;
+			this.GtkLabel5 = new global::Gtk.Label ();
+			this.GtkLabel5.Name = "GtkLabel5";
+			this.GtkLabel5.LabelProp = global::Mono.Unix.Catalog.GetString ("Start");
+			this.GtkLabel5.UseMarkup = true;
+			this.frame2.LabelWidget = this.GtkLabel5;
 			w1.Add (this.frame2);
 			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(w1 [this.frame2]));
 			w23.Position = 1;
@@ -269,9 +270,7 @@ namespace DownloadManager
 			this.buttonOk.CanDefault = true;
 			this.buttonOk.CanFocus = true;
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.UseStock = true;
-			this.buttonOk.UseUnderline = true;
-			this.buttonOk.Label = "gtk-ok";
+			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString ("Add Download");
 			this.AddActionWidget (this.buttonOk, -5);
 			global::Gtk.ButtonBox.ButtonBoxChild w26 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w24 [this.buttonOk]));
 			w26.Position = 1;
@@ -280,10 +279,15 @@ namespace DownloadManager
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 413;
+			this.DefaultWidth = 412;
 			this.DefaultHeight = 346;
 			this.Show ();
+			this.entryAddress.Changed += new global::System.EventHandler (this.OnEntryAddressChanged);
+			this.btnSaveTo.SelectionChanged += new global::System.EventHandler (this.OnbtnSaveToSelectionChanged);
 			this.chkAuthenticate.Toggled += new global::System.EventHandler (this.chkAuthenticateToggled);
+			this.rbNow.Toggled += new global::System.EventHandler (this.OnRbNowToggled);
+			this.rbLater.Toggled += new global::System.EventHandler (this.OnRbLaterToggled);
+			this.rbSchedule.Toggled += new global::System.EventHandler (this.OnRbScheduleToggled);
 		}
 	}
 }

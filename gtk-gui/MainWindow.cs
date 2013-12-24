@@ -11,9 +11,9 @@ public partial class MainWindow
 	private global::Gtk.Toolbar toolbar1;
 	private global::Gtk.HPaned hpaned1;
 	private global::Gtk.ScrolledWindow GtkScrolledWindow;
-	private global::Gtk.TreeView treeview1;
+	private global::DownloadManager.DMCategoryTreeView dmCategoryTreeView;
 	private global::Gtk.ScrolledWindow GtkScrolledWindow1;
-	private global::DownloadManager.DMDownloadTreeView dmdownloadtreeview1;
+	private global::DownloadManager.DMDownloadTreeView dmDownloadTreeView;
 	private global::Gtk.Statusbar statusbar1;
 
 	protected virtual void Build ()
@@ -69,10 +69,10 @@ public partial class MainWindow
 		this.GtkScrolledWindow.Name = "GtkScrolledWindow";
 		this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 		// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
-		this.treeview1 = new global::Gtk.TreeView ();
-		this.treeview1.CanFocus = true;
-		this.treeview1.Name = "treeview1";
-		this.GtkScrolledWindow.Add (this.treeview1);
+		this.dmCategoryTreeView = new global::DownloadManager.DMCategoryTreeView ();
+		this.dmCategoryTreeView.CanFocus = true;
+		this.dmCategoryTreeView.Name = "dmCategoryTreeView";
+		this.GtkScrolledWindow.Add (this.dmCategoryTreeView);
 		this.hpaned1.Add (this.GtkScrolledWindow);
 		global::Gtk.Paned.PanedChild w5 = ((global::Gtk.Paned.PanedChild)(this.hpaned1 [this.GtkScrolledWindow]));
 		w5.Resize = false;
@@ -81,10 +81,10 @@ public partial class MainWindow
 		this.GtkScrolledWindow1.Name = "GtkScrolledWindow1";
 		this.GtkScrolledWindow1.ShadowType = ((global::Gtk.ShadowType)(1));
 		// Container child GtkScrolledWindow1.Gtk.Container+ContainerChild
-		this.dmdownloadtreeview1 = new global::DownloadManager.DMDownloadTreeView ();
-		this.dmdownloadtreeview1.CanFocus = true;
-		this.dmdownloadtreeview1.Name = "dmdownloadtreeview1";
-		this.GtkScrolledWindow1.Add (this.dmdownloadtreeview1);
+		this.dmDownloadTreeView = new global::DownloadManager.DMDownloadTreeView ();
+		this.dmDownloadTreeView.CanFocus = true;
+		this.dmDownloadTreeView.Name = "dmDownloadTreeView";
+		this.GtkScrolledWindow1.Add (this.dmDownloadTreeView);
 		this.hpaned1.Add (this.GtkScrolledWindow1);
 		this.vbox1.Add (this.hpaned1);
 		global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.hpaned1]));
@@ -106,5 +106,8 @@ public partial class MainWindow
 		this.DefaultHeight = 439;
 		this.Show ();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
+		this.NewDownloadAction.Activated += new global::System.EventHandler (this.OnNewDownloadActivated);
+		this.dmCategoryTreeView.RowActivated += new global::Gtk.RowActivatedHandler (this.dmCategoryTreeViewRowActivated);
+		this.dmDownloadTreeView.RowActivated += new global::Gtk.RowActivatedHandler (this.dmDownloadTreeViewRowActivated);
 	}
 }

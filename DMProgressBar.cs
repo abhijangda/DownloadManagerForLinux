@@ -3,12 +3,12 @@ using System;
 namespace DownloadManager
 {
 	[System.ComponentModel.ToolboxItem(true)]
-	public class DMProgressBar : Gtk.DrawingArea
+	public class DMProgressBar : Gtk.ProgressBar
 	{
 		public DMProgressBar ()
 		{
-			// Insert initialization code here.
-		}
+
+		}		
 
 		protected override bool OnButtonPressEvent (Gdk.EventButton ev)
 		{
@@ -32,7 +32,7 @@ namespace DownloadManager
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 			// Calculate desired size here.
-			requisition.Height = 50;
+			requisition.Height = 10;
 			requisition.Width = 50;
 		}
 	}
