@@ -11,6 +11,7 @@ namespace DownloadManager
 			ServicePointManager.DefaultConnectionLimit = 10;
 			Application.Init ();
 			MainWindow win = new MainWindow ();
+			MainWindow.main_instance = win;
 			win.Show ();
 			Application.Run ();
 		}

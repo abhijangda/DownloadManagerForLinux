@@ -45,11 +45,10 @@ namespace DownloadManager
 				listStatusCategories.Add (new DMStatusCategory (info.Name));
 			}
 
-			listTypeCategories.Add (new DMTypeCategory ("All"));
-			listTypeCategories.Add (new DMTypeCategory ("Media"));
-			listTypeCategories.Add (new DMTypeCategory ("Compressed"));
-			listTypeCategories.Add (new DMTypeCategory ("Executable"));
-			listTypeCategories.Add (new DMTypeCategory ("Documents"));
+			foreach (string a in MainWindow.settingsManager.getKeyValueArray ("type-category"))
+			{
+				listTypeCategories.Add (new DMTypeCategory (a));
+			}
 
 			Gtk.TreeViewColumn Column = new Gtk.TreeViewColumn ();
 			Column.Title = "Categories";

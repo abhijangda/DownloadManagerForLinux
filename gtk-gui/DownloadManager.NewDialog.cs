@@ -10,7 +10,11 @@ namespace DownloadManager
 		private global::Gtk.Entry entryAddress;
 		private global::Gtk.HBox hbox2;
 		private global::Gtk.Label label2;
-		private global::Gtk.FileChooserButton btnSaveTo;
+		private global::Gtk.Entry entrySaveTo;
+		private global::Gtk.Button button13;
+		private global::Gtk.HBox hbox3;
+		private global::Gtk.Label label5;
+		private global::Gtk.ComboBox cbCategory;
 		private global::Gtk.CheckButton chkAuthenticate;
 		private global::Gtk.Frame frameAuthenticate;
 		private global::Gtk.Alignment GtkAlignment2;
@@ -86,17 +90,56 @@ namespace DownloadManager
 			w5.Expand = false;
 			w5.Fill = false;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.btnSaveTo = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Save To"), ((global::Gtk.FileChooserAction)(0)));
-			this.btnSaveTo.Name = "btnSaveTo";
-			this.btnSaveTo.DoOverwriteConfirmation = true;
-			this.hbox2.Add (this.btnSaveTo);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.btnSaveTo]));
+			this.entrySaveTo = new global::Gtk.Entry ();
+			this.entrySaveTo.CanFocus = true;
+			this.entrySaveTo.Name = "entrySaveTo";
+			this.entrySaveTo.IsEditable = true;
+			this.entrySaveTo.InvisibleChar = '•';
+			this.hbox2.Add (this.entrySaveTo);
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.entrySaveTo]));
 			w6.Position = 1;
-			this.vbox2.Add (this.hbox2);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox2]));
-			w7.Position = 1;
+			// Container child hbox2.Gtk.Box+BoxChild
+			this.button13 = new global::Gtk.Button ();
+			this.button13.CanFocus = true;
+			this.button13.Name = "button13";
+			this.button13.UseUnderline = true;
+			this.button13.Label = global::Mono.Unix.Catalog.GetString ("...");
+			this.hbox2.Add (this.button13);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.button13]));
+			w7.Position = 2;
 			w7.Expand = false;
 			w7.Fill = false;
+			this.vbox2.Add (this.hbox2);
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox2]));
+			w8.Position = 1;
+			w8.Expand = false;
+			w8.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
+			this.hbox3 = new global::Gtk.HBox ();
+			this.hbox3.Name = "hbox3";
+			this.hbox3.Spacing = 6;
+			// Container child hbox3.Gtk.Box+BoxChild
+			this.label5 = new global::Gtk.Label ();
+			this.label5.Name = "label5";
+			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("Category");
+			this.hbox3.Add (this.label5);
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.label5]));
+			w9.Position = 0;
+			w9.Expand = false;
+			w9.Fill = false;
+			// Container child hbox3.Gtk.Box+BoxChild
+			this.cbCategory = global::Gtk.ComboBox.NewText ();
+			this.cbCategory.Name = "cbCategory";
+			this.hbox3.Add (this.cbCategory);
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.cbCategory]));
+			w10.Position = 1;
+			w10.Expand = false;
+			w10.Fill = false;
+			this.vbox2.Add (this.hbox3);
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox3]));
+			w11.Position = 2;
+			w11.Expand = false;
+			w11.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.chkAuthenticate = new global::Gtk.CheckButton ();
 			this.chkAuthenticate.CanFocus = true;
@@ -105,10 +148,10 @@ namespace DownloadManager
 			this.chkAuthenticate.DrawIndicator = true;
 			this.chkAuthenticate.UseUnderline = true;
 			this.vbox2.Add (this.chkAuthenticate);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.chkAuthenticate]));
-			w8.Position = 2;
-			w8.Expand = false;
-			w8.Fill = false;
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.chkAuthenticate]));
+			w12.Position = 3;
+			w12.Expand = false;
+			w12.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.frameAuthenticate = new global::Gtk.Frame ();
 			this.frameAuthenticate.Name = "frameAuthenticate";
@@ -133,13 +176,13 @@ namespace DownloadManager
 			this.entryPassword.IsEditable = true;
 			this.entryPassword.InvisibleChar = '•';
 			this.table1.Add (this.entryPassword);
-			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1 [this.entryPassword]));
-			w9.TopAttach = ((uint)(1));
-			w9.BottomAttach = ((uint)(2));
-			w9.LeftAttach = ((uint)(1));
-			w9.RightAttach = ((uint)(2));
-			w9.XOptions = ((global::Gtk.AttachOptions)(4));
-			w9.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w13 = ((global::Gtk.Table.TableChild)(this.table1 [this.entryPassword]));
+			w13.TopAttach = ((uint)(1));
+			w13.BottomAttach = ((uint)(2));
+			w13.LeftAttach = ((uint)(1));
+			w13.RightAttach = ((uint)(2));
+			w13.XOptions = ((global::Gtk.AttachOptions)(4));
+			w13.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.entryUserID = new global::Gtk.Entry ();
 			this.entryUserID.CanFocus = true;
@@ -147,46 +190,46 @@ namespace DownloadManager
 			this.entryUserID.IsEditable = true;
 			this.entryUserID.InvisibleChar = '•';
 			this.table1.Add (this.entryUserID);
-			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1 [this.entryUserID]));
-			w10.LeftAttach = ((uint)(1));
-			w10.RightAttach = ((uint)(2));
-			w10.XOptions = ((global::Gtk.AttachOptions)(0));
-			w10.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w14 = ((global::Gtk.Table.TableChild)(this.table1 [this.entryUserID]));
+			w14.LeftAttach = ((uint)(1));
+			w14.RightAttach = ((uint)(2));
+			w14.XOptions = ((global::Gtk.AttachOptions)(0));
+			w14.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("User ID");
 			this.table1.Add (this.label3);
-			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.label3]));
-			w11.XOptions = ((global::Gtk.AttachOptions)(0));
-			w11.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w15 = ((global::Gtk.Table.TableChild)(this.table1 [this.label3]));
+			w15.XOptions = ((global::Gtk.AttachOptions)(0));
+			w15.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Password");
 			this.table1.Add (this.label4);
-			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
-			w12.TopAttach = ((uint)(1));
-			w12.BottomAttach = ((uint)(2));
-			w12.XOptions = ((global::Gtk.AttachOptions)(0));
-			w12.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w16 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
+			w16.TopAttach = ((uint)(1));
+			w16.BottomAttach = ((uint)(2));
+			w16.XOptions = ((global::Gtk.AttachOptions)(0));
+			w16.YOptions = ((global::Gtk.AttachOptions)(4));
 			this.vbox3.Add (this.table1);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.table1]));
-			w13.Position = 0;
-			w13.Expand = false;
-			w13.Fill = false;
-			this.GtkAlignment2.Add (this.vbox3);
-			this.frameAuthenticate.Add (this.GtkAlignment2);
-			this.vbox2.Add (this.frameAuthenticate);
-			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.frameAuthenticate]));
-			w16.Position = 3;
-			w16.Expand = false;
-			w16.Fill = false;
-			w1.Add (this.vbox2);
-			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.table1]));
 			w17.Position = 0;
 			w17.Expand = false;
 			w17.Fill = false;
+			this.GtkAlignment2.Add (this.vbox3);
+			this.frameAuthenticate.Add (this.GtkAlignment2);
+			this.vbox2.Add (this.frameAuthenticate);
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.frameAuthenticate]));
+			w20.Position = 4;
+			w20.Expand = false;
+			w20.Fill = false;
+			w1.Add (this.vbox2);
+			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox2]));
+			w21.Position = 0;
+			w21.Expand = false;
+			w21.Fill = false;
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
 			this.frame2 = new global::Gtk.Frame ();
 			this.frame2.Name = "frame2";
@@ -207,10 +250,10 @@ namespace DownloadManager
 			this.rbNow.UseUnderline = true;
 			this.rbNow.Group = new global::GLib.SList (global::System.IntPtr.Zero);
 			this.vbox4.Add (this.rbNow);
-			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.rbNow]));
-			w18.Position = 0;
-			w18.Expand = false;
-			w18.Fill = false;
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.rbNow]));
+			w22.Position = 0;
+			w22.Expand = false;
+			w22.Fill = false;
 			// Container child vbox4.Gtk.Box+BoxChild
 			this.rbLater = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("Later"));
 			this.rbLater.CanFocus = true;
@@ -219,10 +262,10 @@ namespace DownloadManager
 			this.rbLater.UseUnderline = true;
 			this.rbLater.Group = this.rbNow.Group;
 			this.vbox4.Add (this.rbLater);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.rbLater]));
-			w19.Position = 1;
-			w19.Expand = false;
-			w19.Fill = false;
+			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.rbLater]));
+			w23.Position = 1;
+			w23.Expand = false;
+			w23.Fill = false;
 			// Container child vbox4.Gtk.Box+BoxChild
 			this.rbSchedule = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("Schedule"));
 			this.rbSchedule.CanFocus = true;
@@ -231,10 +274,10 @@ namespace DownloadManager
 			this.rbSchedule.UseUnderline = true;
 			this.rbSchedule.Group = this.rbNow.Group;
 			this.vbox4.Add (this.rbSchedule);
-			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.rbSchedule]));
-			w20.Position = 2;
-			w20.Expand = false;
-			w20.Fill = false;
+			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.rbSchedule]));
+			w24.Position = 2;
+			w24.Expand = false;
+			w24.Fill = false;
 			this.GtkAlignment3.Add (this.vbox4);
 			this.frame2.Add (this.GtkAlignment3);
 			this.GtkLabel5 = new global::Gtk.Label ();
@@ -243,16 +286,16 @@ namespace DownloadManager
 			this.GtkLabel5.UseMarkup = true;
 			this.frame2.LabelWidget = this.GtkLabel5;
 			w1.Add (this.frame2);
-			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(w1 [this.frame2]));
-			w23.Position = 1;
-			w23.Expand = false;
-			w23.Fill = false;
+			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(w1 [this.frame2]));
+			w27.Position = 1;
+			w27.Expand = false;
+			w27.Fill = false;
 			// Internal child DownloadManager.NewDialog.ActionArea
-			global::Gtk.HButtonBox w24 = this.ActionArea;
-			w24.Name = "dialog1_ActionArea";
-			w24.Spacing = 10;
-			w24.BorderWidth = ((uint)(5));
-			w24.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w28 = this.ActionArea;
+			w28.Name = "dialog1_ActionArea";
+			w28.Spacing = 10;
+			w28.BorderWidth = ((uint)(5));
+			w28.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCancel = new global::Gtk.Button ();
 			this.buttonCancel.CanDefault = true;
@@ -262,9 +305,9 @@ namespace DownloadManager
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = "gtk-cancel";
 			this.AddActionWidget (this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w25 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w24 [this.buttonCancel]));
-			w25.Expand = false;
-			w25.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w29 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w28 [this.buttonCancel]));
+			w29.Expand = false;
+			w29.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonOk = new global::Gtk.Button ();
 			this.buttonOk.CanDefault = true;
@@ -272,18 +315,19 @@ namespace DownloadManager
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString ("Add Download");
 			this.AddActionWidget (this.buttonOk, -5);
-			global::Gtk.ButtonBox.ButtonBoxChild w26 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w24 [this.buttonOk]));
-			w26.Position = 1;
-			w26.Expand = false;
-			w26.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w30 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w28 [this.buttonOk]));
+			w30.Position = 1;
+			w30.Expand = false;
+			w30.Fill = false;
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 412;
-			this.DefaultHeight = 346;
+			this.DefaultHeight = 379;
 			this.Show ();
 			this.entryAddress.Changed += new global::System.EventHandler (this.OnEntryAddressChanged);
-			this.btnSaveTo.SelectionChanged += new global::System.EventHandler (this.OnbtnSaveToSelectionChanged);
+			this.entrySaveTo.Changed += new global::System.EventHandler (this.OnEntrySaveToChanged);
+			this.cbCategory.Changed += new global::System.EventHandler (this.OncbCategoryChanged);
 			this.chkAuthenticate.Toggled += new global::System.EventHandler (this.chkAuthenticateToggled);
 			this.rbNow.Toggled += new global::System.EventHandler (this.OnRbNowToggled);
 			this.rbLater.Toggled += new global::System.EventHandler (this.OnRbLaterToggled);

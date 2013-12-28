@@ -6,7 +6,6 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../../../../../usr/lib/monodevelop/AddIns/MonoDevelop.GtkCore/libstetic.dll" />
     <widget-library name="../bin/Debug/DownloadManager.exe" internal="true" />
   </import>
   <widget class="Gtk.Window" id="MainWindow" design-size="867 439">
@@ -26,6 +25,68 @@
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">Add Existing Download</property>
         <property name="ShortLabel" translatable="yes">Add Existing Download</property>
+      </action>
+      <action id="toolbarNewDownload">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-new</property>
+      </action>
+      <action id="toolbarAddDownload">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-open</property>
+      </action>
+      <action id="mediaPlayAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-media-play</property>
+        <signal name="Activated" handler="OnToolbarStartActivated" />
+      </action>
+      <action id="mediaPauseAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-media-pause</property>
+        <signal name="Activated" handler="OnToolbarPauseActivated" />
+      </action>
+      <action id="cancelAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-cancel</property>
+        <signal name="Activated" handler="OnToolbarCancelActivated" />
+      </action>
+      <action id="refreshAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-refresh</property>
+        <signal name="Activated" handler="OnToolbarRestartActivated" />
+      </action>
+      <action id="findAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-find</property>
+      </action>
+      <action id="preferencesAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-preferences</property>
+      </action>
+      <action id="SpeedLowAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Speed Low</property>
+        <property name="ShortLabel" translatable="yes">Speed Low</property>
+        <signal name="Activated" handler="OnSpeedLowActivated" />
+      </action>
+      <action id="SpeedMediumAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">SpeedMedium</property>
+        <property name="ShortLabel" translatable="yes">SpeedMedium</property>
+        <signal name="Activated" handler="OnSpeedMediumActivated" />
+      </action>
+      <action id="SpeedFullAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">SpeedFull</property>
+        <property name="ShortLabel" translatable="yes">SpeedFull</property>
+        <signal name="Activated" handler="OnSpeedHighActivated" />
       </action>
     </action-group>
     <property name="MemberName" />
@@ -57,11 +118,23 @@
           <widget class="Gtk.Toolbar" id="toolbar1">
             <property name="MemberName" />
             <property name="ShowArrow">False</property>
-            <node name="toolbar1" type="Toolbar" />
+            <node name="toolbar1" type="Toolbar">
+              <node type="Toolitem" action="toolbarNewDownload" />
+              <node type="Toolitem" action="toolbarAddDownload" />
+              <node type="Toolitem" action="mediaPlayAction" />
+              <node type="Toolitem" action="mediaPauseAction" />
+              <node type="Toolitem" action="cancelAction" />
+              <node type="Toolitem" action="refreshAction" />
+              <node type="Toolitem" action="findAction" />
+              <node type="Toolitem" action="preferencesAction" />
+              <node type="Toolitem" action="SpeedLowAction" />
+              <node type="Toolitem" action="SpeedMediumAction" />
+              <node type="Toolitem" action="SpeedFullAction" />
+            </node>
           </widget>
           <packing>
             <property name="Position">1</property>
-            <property name="AutoSize">True</property>
+            <property name="AutoSize">False</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
           </packing>
@@ -129,7 +202,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="DownloadManager.NewDialog" design-size="412 346">
+  <widget class="Gtk.Dialog" id="DownloadManager.NewDialog" design-size="412 379">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Create New Download</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -197,20 +270,74 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="Gtk.FileChooserButton" id="btnSaveTo">
-                    <property name="MemberName">btnSaveTo</property>
-                    <property name="Title" translatable="yes">Save To</property>
-                    <property name="DoOverwriteConfirmation">True</property>
-                    <signal name="SelectionChanged" handler="OnbtnSaveToSelectionChanged" />
+                  <widget class="Gtk.Entry" id="entrySaveTo">
+                    <property name="MemberName">entrySaveTo</property>
+                    <property name="CanFocus">True</property>
+                    <property name="IsEditable">True</property>
+                    <property name="InvisibleChar">•</property>
+                    <signal name="Changed" handler="OnEntrySaveToChanged" />
                   </widget>
                   <packing>
                     <property name="Position">1</property>
                     <property name="AutoSize">True</property>
                   </packing>
                 </child>
+                <child>
+                  <widget class="Gtk.Button" id="button13">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="Type">TextOnly</property>
+                    <property name="Label" translatable="yes">...</property>
+                    <property name="UseUnderline">True</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">2</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
               </widget>
               <packing>
                 <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.HBox" id="hbox3">
+                <property name="MemberName" />
+                <property name="Spacing">6</property>
+                <child>
+                  <widget class="Gtk.Label" id="label5">
+                    <property name="MemberName" />
+                    <property name="LabelProp" translatable="yes">Category</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.ComboBox" id="cbCategory">
+                    <property name="MemberName">cbCategory</property>
+                    <property name="IsTextCombo">True</property>
+                    <property name="Items" translatable="yes" />
+                    <signal name="Changed" handler="OncbCategoryChanged" />
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">False</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">2</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -227,7 +354,7 @@
                 <signal name="Toggled" handler="chkAuthenticateToggled" />
               </widget>
               <packing>
-                <property name="Position">2</property>
+                <property name="Position">3</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -348,7 +475,7 @@
                 </child>
               </widget>
               <packing>
-                <property name="Position">3</property>
+                <property name="Position">4</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -495,7 +622,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Window" id="DownloadManager.ProgressWindow" design-size="399 305">
+  <widget class="Gtk.Window" id="DownloadManager.ProgressWindow" design-size="399 306">
     <property name="MemberName" />
     <property name="Title" translatable="yes">ProgressWindow</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -819,13 +946,13 @@
         <child>
           <widget class="Gtk.HBox" id="hbox1">
             <property name="MemberName" />
-            <property name="Spacing">6</property>
+            <property name="Spacing">4</property>
             <child>
-              <widget class="Gtk.Button" id="button78">
-                <property name="MemberName" />
+              <widget class="Gtk.Button" id="btnStartPause">
+                <property name="MemberName">btnStartPause</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextOnly</property>
-                <property name="Label" translatable="yes">GtkButton</property>
+                <property name="Label" translatable="yes">Pause</property>
                 <property name="UseUnderline">True</property>
               </widget>
               <packing>
@@ -837,12 +964,13 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Button" id="button77">
-                <property name="MemberName" />
+              <widget class="Gtk.Button" id="btnCancel">
+                <property name="MemberName">btnCancel</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextOnly</property>
-                <property name="Label" translatable="yes">GtkButton</property>
+                <property name="Label" translatable="yes">Cancel</property>
                 <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnCancelClicked" />
               </widget>
               <packing>
                 <property name="PackType">End</property>
@@ -853,12 +981,13 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Button" id="button76">
-                <property name="MemberName" />
+              <widget class="Gtk.Button" id="btnClose">
+                <property name="MemberName">btnClose</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextOnly</property>
-                <property name="Label" translatable="yes">GtkButton</property>
+                <property name="Label" translatable="yes">Close</property>
                 <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnCloseClicked" />
               </widget>
               <packing>
                 <property name="PackType">End</property>

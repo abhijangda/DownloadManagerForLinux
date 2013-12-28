@@ -23,9 +23,9 @@ namespace DownloadManager
 		private global::DownloadManager.DMProgressBar dmprogressbar;
 		private global::Gtk.HSeparator hseparator1;
 		private global::Gtk.HBox hbox1;
-		private global::Gtk.Button button78;
-		private global::Gtk.Button button77;
-		private global::Gtk.Button button76;
+		private global::Gtk.Button btnStartPause;
+		private global::Gtk.Button btnCancel;
+		private global::Gtk.Button btnClose;
 
 		protected virtual void Build ()
 		{
@@ -227,39 +227,39 @@ namespace DownloadManager
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
 			this.hbox1 = new global::Gtk.HBox ();
 			this.hbox1.Name = "hbox1";
-			this.hbox1.Spacing = 6;
+			this.hbox1.Spacing = 4;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.button78 = new global::Gtk.Button ();
-			this.button78.CanFocus = true;
-			this.button78.Name = "button78";
-			this.button78.UseUnderline = true;
-			this.button78.Label = global::Mono.Unix.Catalog.GetString ("GtkButton");
-			this.hbox1.Add (this.button78);
-			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.button78]));
+			this.btnStartPause = new global::Gtk.Button ();
+			this.btnStartPause.CanFocus = true;
+			this.btnStartPause.Name = "btnStartPause";
+			this.btnStartPause.UseUnderline = true;
+			this.btnStartPause.Label = global::Mono.Unix.Catalog.GetString ("Pause");
+			this.hbox1.Add (this.btnStartPause);
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnStartPause]));
 			w18.PackType = ((global::Gtk.PackType)(1));
 			w18.Position = 0;
 			w18.Expand = false;
 			w18.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.button77 = new global::Gtk.Button ();
-			this.button77.CanFocus = true;
-			this.button77.Name = "button77";
-			this.button77.UseUnderline = true;
-			this.button77.Label = global::Mono.Unix.Catalog.GetString ("GtkButton");
-			this.hbox1.Add (this.button77);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.button77]));
+			this.btnCancel = new global::Gtk.Button ();
+			this.btnCancel.CanFocus = true;
+			this.btnCancel.Name = "btnCancel";
+			this.btnCancel.UseUnderline = true;
+			this.btnCancel.Label = global::Mono.Unix.Catalog.GetString ("Cancel");
+			this.hbox1.Add (this.btnCancel);
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnCancel]));
 			w19.PackType = ((global::Gtk.PackType)(1));
 			w19.Position = 1;
 			w19.Expand = false;
 			w19.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.button76 = new global::Gtk.Button ();
-			this.button76.CanFocus = true;
-			this.button76.Name = "button76";
-			this.button76.UseUnderline = true;
-			this.button76.Label = global::Mono.Unix.Catalog.GetString ("GtkButton");
-			this.hbox1.Add (this.button76);
-			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.button76]));
+			this.btnClose = new global::Gtk.Button ();
+			this.btnClose.CanFocus = true;
+			this.btnClose.Name = "btnClose";
+			this.btnClose.UseUnderline = true;
+			this.btnClose.Label = global::Mono.Unix.Catalog.GetString ("Close");
+			this.hbox1.Add (this.btnClose);
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnClose]));
 			w20.PackType = ((global::Gtk.PackType)(1));
 			w20.Position = 2;
 			w20.Expand = false;
@@ -275,8 +275,10 @@ namespace DownloadManager
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 399;
-			this.DefaultHeight = 305;
+			this.DefaultHeight = 306;
 			this.Show ();
+			this.btnClose.Clicked += new global::System.EventHandler (this.btnCloseClicked);
+			this.btnCancel.Clicked += new global::System.EventHandler (this.btnCancelClicked);
 		}
 	}
 }
