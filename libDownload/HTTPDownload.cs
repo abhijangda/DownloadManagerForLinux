@@ -56,9 +56,17 @@ namespace libDownload
 				_download (Answer, fs);
 				webResp.Close();
 				fs.Close ();
-				_stop = false;
-				status = DOWNLOAD_PART_STATUS.DOWNLOADED;
-				statusString = "Done";
+				if (_stop == true)
+				{
+					status = DOWNLOAD_PART_STATUS.IDLE;
+					statusString = "Paused";
+					_stop=false;
+				}
+				else
+				{
+					status = DOWNLOAD_PART_STATUS.DOWNLOADED;
+					statusString = "Done";
+				}
 			}
 			catch (Exception e)
 			{
@@ -106,9 +114,17 @@ namespace libDownload
 				_download (Answer, fs);
 				webResp.Close();
 				fs.Close ();
-				_stop = false;
-				status = DOWNLOAD_PART_STATUS.DOWNLOADED;
-				statusString = "Done";
+				if (_stop == true)
+				{
+					status = DOWNLOAD_PART_STATUS.IDLE;
+					statusString = "Paused";
+					_stop=false;
+				}
+				else
+				{
+					status = DOWNLOAD_PART_STATUS.DOWNLOADED;
+					statusString = "Done";
+				}
 			}
 			catch (Exception e)
 			{
@@ -165,7 +181,7 @@ namespace libDownload
 
 		public HTTPDownload (string _remotePath, string _localPath, 
 		                     OnStatusChanged _statusChangedHandler,
-		                     short _parts = 5)
+		                     bool _genFile, short _parts = 5)
 		{
 			remotePath = _remotePath;
 			localPath = _localPath;
@@ -177,12 +193,13 @@ namespace libDownload
 			webResp = null;
 			webReq = null;
 			speed_level = DOWNLOAD_SPEED_LEVEL.HIGH;
+			generateFileName = _genFile;
 		}
-
 
 		public override bool isResumeSupported ()
 		{
-			if (webResp != null && webResp.Headers.ToString ().Contains ("Accept-Ranges: bytes"))
+			if (webResp != null && 
+			    webResp.Headers.ToString ().Contains ("Accept-Ranges: bytes"))
 				return true;
 
 			return false;
@@ -196,6 +213,29 @@ namespace libDownload
 			return false;
 		}
 
+		public override string getFilename ()
+		{
+			if (webResp == null)
+				return "";
+
+			string filename = webResp.GetResponseHeader("content-disposition");
+			if (filename != "")
+			{
+				filename = filename.Substring (filename.IndexOf ("filename=") + "filename=".Length);
+				filename = filename.Replace ("\"","");
+				return filename;
+			}
+			else
+			{
+				filename = remotePath.Substring (remotePath.LastIndexOf ("/") +1);
+				if (filename.Contains ("."))
+				{
+					return System.Net.WebUtility.UrlDecode (filename);
+				}
+				return "file";
+			}
+		}
+
 		public override void start ()
 		{
 			if (status == DOWNLOAD_STATUS.DOWNLOADING || 
@@ -206,6 +246,29 @@ namespace libDownload
 			{
 				resume (length);
 				return;
+			}
+
+			if (generateFileName == false)
+			{
+				if (!Directory.Exists (Path.GetPathRoot (localPath)))
+				{
+					status = DOWNLOAD_STATUS.ERROR;
+					exception = new DownloadException (
+						"Cannot find "+Path.GetPathRoot (localPath), 
+						DOWNLOAD_EXCEPTION_TYPE.FILESYSTEM_ERROR);
+
+					return;
+				}
+			}
+			else 
+			{
+				if (!Directory.Exists (localPath))
+				{
+					status = DOWNLOAD_STATUS.ERROR;
+					exception = new DownloadException (
+						"Cannot find "+ localPath, DOWNLOAD_EXCEPTION_TYPE.FILESYSTEM_ERROR);
+					return;
+				}
 			}
 
 			string uri = remotePath;
@@ -224,7 +287,6 @@ namespace libDownload
 
 			catch (Exception e)
 			{
-				Console.WriteLine ("GOT EXCEPTION");
 				exception = new DownloadException (e.Message,
 				                               DOWNLOAD_EXCEPTION_TYPE.CONNECTION_ERROR);
 				status = DOWNLOAD_STATUS.ERROR;
@@ -233,6 +295,12 @@ namespace libDownload
 
 			if (isResumeSupported () == false)
 				parts = 1;
+
+			if (generateFileName == true)
+			{
+			    string filename = getFilename ();
+				localPath = Path.Combine (localPath, filename);
+			}
 
 			length = webResp.ContentLength;
 			long part_length = length/parts;

@@ -204,7 +204,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="DownloadManager.NewDialog" design-size="412 379">
+  <widget class="Gtk.Dialog" id="DownloadManager.NewDialog" design-size="412 474">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Create New Download</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -238,7 +238,7 @@
                   <widget class="Gtk.Entry" id="entryAddress">
                     <property name="MemberName">entryAddress</property>
                     <property name="CanFocus">True</property>
-                    <property name="Text" translatable="yes">http://www.woo55.pk/adata/3661/OneRepublic%20-%20Feel%20Again%20(CDQ)%20(www.SongsLover.pk).mp3</property>
+                    <property name="Text" translatable="yes">http://install.avira-update.com/package/wks_avira13/win32/en/pecl/avira_free_antivirus_en.exe</property>
                     <property name="IsEditable">True</property>
                     <property name="InvisibleChar">•</property>
                     <signal name="Changed" handler="OnEntryAddressChanged" />
@@ -309,6 +309,59 @@
               </packing>
             </child>
             <child>
+              <widget class="Gtk.CheckButton" id="chkGenFilename">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Label" translatable="yes">Generate Filename Automatically</property>
+                <property name="DrawIndicator">True</property>
+                <property name="HasLabel">True</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Toggled" handler="chkGenFilenameToggled" />
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.HBox" id="hbox4">
+                <property name="MemberName" />
+                <property name="Spacing">6</property>
+                <child>
+                  <widget class="Gtk.Label" id="label6">
+                    <property name="MemberName">label6</property>
+                    <property name="LabelProp" translatable="yes">Filename</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Entry" id="entryFilename">
+                    <property name="MemberName">entryFilename</property>
+                    <property name="CanFocus">True</property>
+                    <property name="IsEditable">True</property>
+                    <property name="InvisibleChar">•</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">3</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
               <widget class="Gtk.HBox" id="hbox3">
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
@@ -340,7 +393,7 @@
                 </child>
               </widget>
               <packing>
-                <property name="Position">2</property>
+                <property name="Position">4</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -357,7 +410,7 @@
                 <signal name="Toggled" handler="chkAuthenticateToggled" />
               </widget>
               <packing>
-                <property name="Position">3</property>
+                <property name="Position">5</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -478,7 +531,7 @@
                 </child>
               </widget>
               <packing>
-                <property name="Position">4</property>
+                <property name="Position">6</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -511,7 +564,6 @@
                         <property name="MemberName">rbNow</property>
                         <property name="CanFocus">True</property>
                         <property name="Label" translatable="yes">Now</property>
-                        <property name="Active">True</property>
                         <property name="DrawIndicator">True</property>
                         <property name="HasLabel">True</property>
                         <property name="UseUnderline">True</property>
@@ -616,6 +668,7 @@
             <property name="Type">TextOnly</property>
             <property name="Label" translatable="yes">Add Download</property>
             <property name="ResponseId">-5</property>
+            <signal name="Clicked" handler="OnAddDownloadClicked" />
           </widget>
           <packing>
             <property name="Position">1</property>

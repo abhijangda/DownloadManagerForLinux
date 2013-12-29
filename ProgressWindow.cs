@@ -92,6 +92,7 @@ namespace DownloadManager
 					lblStatus.Text = "0 / " + dwnload.download.length.ToString ();
 					lblResumeSupport.Text = dwnload.download.isResumeSupported ().ToString ();
 					lblAddress.Text = dwnload.download.remotePath;
+					lblDestination.Text = dwnload.download.localPath;
 				});
 			}
 		}

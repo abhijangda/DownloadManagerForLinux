@@ -63,6 +63,7 @@ namespace libDownload
 		public long length;
 		public List<DownloadPart> listParts;
 		public abstract DOWNLOAD_STATUS status {get;set;}
+		public bool generateFileName {get;set;}
 
 		public delegate void OnStatusChanged (Download dwnld);
 		public OnStatusChanged statusChangeHandler;
@@ -103,6 +104,7 @@ namespace libDownload
 		{
 			return listParts [part].statusString;
 		}
+		public abstract string getFilename ();
 	}
 
 	public abstract class DownloadPart

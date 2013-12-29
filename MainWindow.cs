@@ -118,7 +118,8 @@ public partial class MainWindow: Gtk.Window
 
 			Download dl = new HTTPDownload (new_dlg.remotePath,
 			                                new_dlg.localPath,
-			                                OnDownloadStatusChanged);
+			                                OnDownloadStatusChanged,
+			                                new_dlg.genFilename);
 
 			DMDownload dmdl = new DMDownload (dl, null);
 			dmdl.typeCategory = new DMTypeCategory (new_dlg.typeCategory);

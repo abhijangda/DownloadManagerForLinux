@@ -1,13 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="PartsProgressWidget.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ProgressWindow.cs">
     <Files>
-      <File FileName="DMDownloadTreeView.cs" Line="52" Column="19" />
-      <File FileName="MainWindow.cs" Line="217" Column="19" />
-      <File FileName="ProgressWindow.cs" Line="93" Column="5" />
-      <File FileName="PartsProgressWidget.cs" Line="37" Column="19" />
-      <File FileName="DMProgressBar.cs" Line="24" Column="4" />
-      <File FileName="DMProgressCellRenderer.cs" Line="5" Column="2" />
+      <File FileName="DMDownloadTreeView.cs" Line="18" Column="30" />
+      <File FileName="DMCategoryTreeView.cs" Line="76" Column="5" />
+      <File FileName="MainWindow.cs" Line="125" Column="42" />
+      <File FileName="libDownload/libDownload.cs" Line="70" Column="32" />
+      <File FileName="libDownload/HTTPDownload.cs" Line="196" Column="31" />
+      <File FileName="NewDialog.cs" Line="77" Column="4" />
+      <File FileName="ProgressWindow.cs" Line="91" Column="37" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

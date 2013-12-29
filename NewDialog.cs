@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 namespace DownloadManager
 {
@@ -8,6 +9,7 @@ namespace DownloadManager
 		public string remotePath;
 		public string typeCategory;
 		public int start;
+		public bool genFilename;
 
 		public NewDialog ()
 		{
@@ -23,9 +25,9 @@ namespace DownloadManager
 			chkAuthenticateToggled (chkAuthenticate, new EventArgs ());
 			remotePath = entryAddress.Text;
 			localPath = entrySaveTo.Text;
+			chkGenFilename.Active = true;
 		}
 
-		/*TODO: Correct below code*/
 		protected void chkAuthenticateToggled (object sender, EventArgs e)
 		{
 			frameAuthenticate.Sensitive = chkAuthenticate.Active;
@@ -59,6 +61,21 @@ namespace DownloadManager
 		protected void OncbCategoryChanged (object sender, EventArgs e)
 		{
 			typeCategory = cbCategory.ActiveText;
+		}
+
+		protected void chkGenFilenameToggled (object sender, EventArgs e)
+		{
+			label6.Sensitive = !chkGenFilename.Active;
+			entryFilename.Sensitive = !chkGenFilename.Active;
+		}
+
+		protected void OnAddDownloadClicked (object sender, EventArgs e)
+		{
+			genFilename = chkGenFilename.Active;
+			if (chkGenFilename.Active)
+			   localPath = System.IO.Path.Combine (entrySaveTo.Text, entryFilename.Text);
+
+			Respond (Gtk.ResponseType.Ok);
 		}
 	}
 }
