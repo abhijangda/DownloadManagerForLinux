@@ -24,7 +24,9 @@ public partial class MainWindow: Gtk.Window
 		{
 			if (dmld.download == dwnld)
 			{
-				dmld.window.downloadStatusChanged ();
+				if (dmld.window != null)
+					dmld.window.downloadStatusChanged ();
+
 				if (dwnld.status == DOWNLOAD_STATUS.DOWNLOADED)
 				{
 				}
@@ -64,10 +66,15 @@ public partial class MainWindow: Gtk.Window
 	{
 		foreach (DMDownload dwnld in listDownloads)
 		{
-			long downloaded = dwnld.download.getDownloaded ();
-			long speed = dwnld.download.getSpeed ();
-			dwnld.window.updateProgress (downloaded, speed);
-			dmDownloadTreeView.updateDownloadStatus (dwnld, downloaded, speed);
+			if (dwnld.download.status == DOWNLOAD_STATUS.DOWNLOADING)
+			{
+				long downloaded = dwnld.download.getDownloaded ();
+				long speed = dwnld.download.getSpeed ();
+				if (dwnld.window != null)
+				    dwnld.window.updateProgress (downloaded, speed);
+
+				dmDownloadTreeView.updateDownloadStatus (dwnld, downloaded, speed);
+			}
 		}
 		return true;
 	}
@@ -227,12 +234,15 @@ public partial class MainWindow: Gtk.Window
 
 		dmDownloadTreeView.Selection.GetSelected (out model, out iter);
 		DMDownload dmld = (DMDownload) model.GetValue (iter, 7);
-		dmld.download.start ();
-		dmld.window = new ProgressWindow (dmld);
-		dmld.window.ShowAll ();
+		if (dmld != null)
+		    dmld.download.cancel ();
 	}
 
 	protected void OnToolbarRestartActivated (object sender, EventArgs e)
+	{
+
+	}
+	protected void OnToolbarFindActivated (object sender, EventArgs e)
 	{
 
 	}

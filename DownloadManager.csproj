@@ -66,6 +66,9 @@
       <DependentUpon>DMDownloadTreeView.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="FindDialog.cs" />
+    <Compile Include="gtk-gui\DownloadManager.FindDialog.cs" />
+    <Compile Include="PartsProgressWidget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

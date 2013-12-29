@@ -21,8 +21,8 @@ namespace DownloadManager
 			typeCategory = cbCategory.ActiveText;
 			chkAuthenticate.Active = false;
 			chkAuthenticateToggled (chkAuthenticate, new EventArgs ());
-			remotePath = "";
-			localPath = "";
+			remotePath = entryAddress.Text;
+			localPath = entrySaveTo.Text;
 		}
 
 		/*TODO: Correct below code*/

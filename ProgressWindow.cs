@@ -13,13 +13,18 @@ namespace DownloadManager
 		public ProgressWindow (DMDownload _dwnload) : base (Gtk.WindowType.Toplevel)
 		{
 			this.Build ();
-			this.SetDefaultSize (400,300);
+			SetSizeRequest (500,450);
 			dwnload = _dwnload;
 			lblAddress.Text = dwnload.download.remotePath;
 			lblDestination.Text = dwnload.download.localPath;
 			downloadThread = new Thread (startDownloading);
 			downloadThread.Start ();
 			lblStatus.Text = "Sending HEAD";
+			for (int i = 0; i < dwnload.download.parts; i++)
+			{
+			    partsProgress.appendPart ();
+			}
+			Resizable = false;
 		}
 
 		protected override bool OnDeleteEvent (Gdk.Event evnt)
@@ -39,11 +44,11 @@ namespace DownloadManager
 			}
 			else if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADING)
 			{
-				btnStartPause.Label = "Paused";
+				btnStartPause.Label = "Pause";
 			}
 			else if (dwnload.download.status == DOWNLOAD_STATUS.ERROR)
 			{
-				lblStatus.Text = "Error";
+				lblStatus.Text = dwnload.download.exception.Message;
 				btnStartPause.Label = "Retry";
 			}
 			else if (dwnload.download.status == DOWNLOAD_STATUS.NOT_STARTED)
@@ -52,7 +57,7 @@ namespace DownloadManager
 			}
 			else //dwnld.status == DOWNLOAD_STATUS.PAUSED
 			{
-				lblTimeLeft.Text = "Paused";
+				lblTimeLeft.Text = "Pause";
 				btnStartPause.Label = "Start";
 			}
 		}
@@ -60,11 +65,14 @@ namespace DownloadManager
 		public void startDownloading ()
 		{
 			dwnload.download.start ();
-			Gtk.Application.Invoke (delegate {
-				lblStatus.Text = "0 / " + dwnload.download.length.ToString ();
-				lblResumeSupport.Text = dwnload.download.isResumeSupported ().ToString ();
-				lblAddress.Text = dwnload.download.remotePath;
-			});
+			if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADING)
+			{
+				Gtk.Application.Invoke (delegate {
+					lblStatus.Text = "0 / " + dwnload.download.length.ToString ();
+					lblResumeSupport.Text = dwnload.download.isResumeSupported ().ToString ();
+					lblAddress.Text = dwnload.download.remotePath;
+				});
+			}
 		}
 
 		public void updateProgress (long downloaded, long speed)
@@ -74,7 +82,17 @@ namespace DownloadManager
 			lblTimeLeft.Text = MainWindow.getTime (dwnload.download.length - downloaded, speed);
 			if (dwnload.download.length != 0)
 			{
-				dmprogressbar.Fraction = (double)downloaded / dwnload.download.length;
+				dmprogressbar.setProgress ((float)((double)downloaded / dwnload.download.length));
+				Gtk.TreeIter iter;
+				partsProgress._listStore.GetIterFirst (out iter);
+				for (int i = 0; i < dwnload.download.parts; i++)
+				{
+					partsProgress._listStore.SetValue (iter, 1, 
+					                                   dwnload.download.getPartStatusString (i));
+					partsProgress._listStore.SetValue (iter, 2, 
+					                                   dwnload.download.getPartProgress (i));
+					partsProgress._listStore.IterNext (ref iter);
+				}
 			}
 		}
 
@@ -83,6 +101,13 @@ namespace DownloadManager
 			if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADING)
 			{
 				dwnload.download.stop ();
+			}
+			else if (dwnload.download.status == DOWNLOAD_STATUS.ERROR)
+			{
+				downloadThread = new Thread (startDownloading);
+				downloadThread.Start ();
+				lblStatus.Text = "Connecting";
+				btnStartPause.Label = "Pause";
 			}
 			else
 			{
@@ -100,6 +125,8 @@ namespace DownloadManager
 			dwnload.window = null;
 			Destroy ();
 		}
+
+
 	}
 }
 

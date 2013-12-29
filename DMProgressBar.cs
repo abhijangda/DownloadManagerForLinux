@@ -10,6 +10,13 @@ namespace DownloadManager
 
 		}		
 
+		public void setProgress (float _fraction)
+		{
+			Fraction = _fraction;
+			string _str = (_fraction * 100).ToString ();
+			Text =  _str.Substring (0, _str.IndexOf (".") + 2) + "%";
+		}
+
 		protected override bool OnButtonPressEvent (Gdk.EventButton ev)
 		{
 			// Insert button press handling code here.
@@ -32,7 +39,7 @@ namespace DownloadManager
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 			// Calculate desired size here.
-			requisition.Height = 10;
+			requisition.Height = 20;
 			requisition.Width = 50;
 		}
 	}

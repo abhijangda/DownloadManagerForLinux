@@ -21,6 +21,7 @@ namespace DownloadManager
 		private global::Gtk.CheckButton chkLaunchDownload;
 		private global::Gtk.CheckButton chkShutdown;
 		private global::DownloadManager.DMProgressBar dmprogressbar;
+		private global::DownloadManager.PartsProgressWidget partsProgress;
 		private global::Gtk.HSeparator hseparator1;
 		private global::Gtk.HBox hbox1;
 		private global::Gtk.Button btnStartPause;
@@ -217,13 +218,20 @@ namespace DownloadManager
 			w16.Expand = false;
 			w16.Fill = false;
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
+			this.partsProgress = new global::DownloadManager.PartsProgressWidget ();
+			this.partsProgress.Name = "partsProgress";
+			this.partsProgress.HscrollbarPolicy = ((global::Gtk.PolicyType)(2));
+			this.dialog1_VBox.Add (this.partsProgress);
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.dialog1_VBox [this.partsProgress]));
+			w17.Position = 4;
+			// Container child dialog1_VBox.Gtk.Box+BoxChild
 			this.hseparator1 = new global::Gtk.HSeparator ();
 			this.hseparator1.Name = "hseparator1";
 			this.dialog1_VBox.Add (this.hseparator1);
-			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.dialog1_VBox [this.hseparator1]));
-			w17.Position = 4;
-			w17.Expand = false;
-			w17.Fill = false;
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.dialog1_VBox [this.hseparator1]));
+			w18.Position = 5;
+			w18.Expand = false;
+			w18.Fill = false;
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
 			this.hbox1 = new global::Gtk.HBox ();
 			this.hbox1.Name = "hbox1";
@@ -235,11 +243,11 @@ namespace DownloadManager
 			this.btnStartPause.UseUnderline = true;
 			this.btnStartPause.Label = global::Mono.Unix.Catalog.GetString ("Pause");
 			this.hbox1.Add (this.btnStartPause);
-			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnStartPause]));
-			w18.PackType = ((global::Gtk.PackType)(1));
-			w18.Position = 0;
-			w18.Expand = false;
-			w18.Fill = false;
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnStartPause]));
+			w19.PackType = ((global::Gtk.PackType)(1));
+			w19.Position = 0;
+			w19.Expand = false;
+			w19.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.btnCancel = new global::Gtk.Button ();
 			this.btnCancel.CanFocus = true;
@@ -247,11 +255,11 @@ namespace DownloadManager
 			this.btnCancel.UseUnderline = true;
 			this.btnCancel.Label = global::Mono.Unix.Catalog.GetString ("Cancel");
 			this.hbox1.Add (this.btnCancel);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnCancel]));
-			w19.PackType = ((global::Gtk.PackType)(1));
-			w19.Position = 1;
-			w19.Expand = false;
-			w19.Fill = false;
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnCancel]));
+			w20.PackType = ((global::Gtk.PackType)(1));
+			w20.Position = 1;
+			w20.Expand = false;
+			w20.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.btnClose = new global::Gtk.Button ();
 			this.btnClose.CanFocus = true;
@@ -259,26 +267,27 @@ namespace DownloadManager
 			this.btnClose.UseUnderline = true;
 			this.btnClose.Label = global::Mono.Unix.Catalog.GetString ("Close");
 			this.hbox1.Add (this.btnClose);
-			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnClose]));
-			w20.PackType = ((global::Gtk.PackType)(1));
-			w20.Position = 2;
-			w20.Expand = false;
-			w20.Fill = false;
-			this.dialog1_VBox.Add (this.hbox1);
-			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.dialog1_VBox [this.hbox1]));
+			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnClose]));
 			w21.PackType = ((global::Gtk.PackType)(1));
-			w21.Position = 5;
+			w21.Position = 2;
 			w21.Expand = false;
 			w21.Fill = false;
+			this.dialog1_VBox.Add (this.hbox1);
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.dialog1_VBox [this.hbox1]));
+			w22.PackType = ((global::Gtk.PackType)(1));
+			w22.Position = 6;
+			w22.Expand = false;
+			w22.Fill = false;
 			this.Add (this.dialog1_VBox);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 399;
-			this.DefaultHeight = 306;
+			this.DefaultHeight = 389;
 			this.Show ();
 			this.btnClose.Clicked += new global::System.EventHandler (this.btnCloseClicked);
 			this.btnCancel.Clicked += new global::System.EventHandler (this.btnCancelClicked);
+			this.btnStartPause.Clicked += new global::System.EventHandler (this.btnStartPauseClicked);
 		}
 	}
 }

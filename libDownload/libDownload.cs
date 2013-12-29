@@ -7,19 +7,30 @@ using System.Threading;
 
 namespace libDownload
 {
+	public enum DOWNLOAD_EXCEPTION_TYPE
+	{
+		CONNECTION_ERROR,
+		FILESYSTEM_ERROR
+	}
+
 	public class DownloadException : Exception
 	{
+		public DOWNLOAD_EXCEPTION_TYPE type;
 		public DownloadException ()
 		{
 		}
 
-		public DownloadException (string message): base (message)
+		public DownloadException (string message, 
+		                          DOWNLOAD_EXCEPTION_TYPE _type): 
+			base (message)
 		{
+			type = _type;
 		}
 	}
 
 	public enum DOWNLOAD_PART_STATUS
-	{
+    {
+		ERROR,
 		IDLE, 
 		DOWNLOADING,
 		DOWNLOADED
@@ -54,6 +65,7 @@ namespace libDownload
 
 		public delegate void OnStatusChanged (Download dwnld);
 		public OnStatusChanged statusChangeHandler;
+		public DownloadException exception;
 		private DOWNLOAD_SPEED_LEVEL _speed_level;
 		public DOWNLOAD_SPEED_LEVEL speed_level
 		{
@@ -80,6 +92,15 @@ namespace libDownload
 		public abstract long getSpeed ();
 		public abstract string getRedirectUrl (HttpWebResponse webresponse);
 		public abstract void OnPartDownloaded (DownloadPart part);
+		public float getPartProgress (int part)
+		{
+			return (100*listParts [part].downloaded)/listParts [part].length;
+		}
+
+		public string getPartStatusString (int part)
+		{
+			return listParts [part].statusString;
+		}
 	}
 
 	public abstract class DownloadPart
@@ -88,6 +109,8 @@ namespace libDownload
 		public short partNumber;
 		public DOWNLOAD_PART_STATUS status;
 		public DOWNLOAD_SPEED_LEVEL speed_level;
+		public long length;
+		public string statusString;
 
 		protected bool _stop;
 		protected string remotePath, localPath;
@@ -96,6 +119,8 @@ namespace libDownload
 
 		public delegate void OnDownloaded (DownloadPart part);
 		public OnDownloaded downloadedFunction {get; set;}
+		public delegate void OnError (DownloadPart part);
+		public OnError errorFunction {get; set;}
 		public abstract void startDownload ();
 		public abstract void stopDownload ();
 		public abstract void resumeDownload ();

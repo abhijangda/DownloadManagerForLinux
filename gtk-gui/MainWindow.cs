@@ -147,6 +147,7 @@ public partial class MainWindow
 		this.mediaPauseAction.Activated += new global::System.EventHandler (this.OnToolbarPauseActivated);
 		this.cancelAction.Activated += new global::System.EventHandler (this.OnToolbarCancelActivated);
 		this.refreshAction.Activated += new global::System.EventHandler (this.OnToolbarRestartActivated);
+		this.findAction.Activated += new global::System.EventHandler (this.OnToolbarFindActivated);
 		this.SpeedLowAction.Activated += new global::System.EventHandler (this.OnSpeedLowActivated);
 		this.SpeedMediumAction.Activated += new global::System.EventHandler (this.OnSpeedMediumActivated);
 		this.SpeedFullAction.Activated += new global::System.EventHandler (this.OnSpeedHighActivated);

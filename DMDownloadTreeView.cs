@@ -22,7 +22,6 @@ namespace DownloadManager
 			Gtk.TreeViewColumn sectionsColumn = new Gtk.TreeViewColumn ();
 			sectionsColumn.Title = "Sections";
 
-
 			AppendColumn (filenamecolumn);
 			AppendColumn (sizeColumn);
 			AppendColumn (downloadedColumn);
@@ -31,7 +30,7 @@ namespace DownloadManager
 			AppendColumn (sectionsColumn);
 
 			listStore = new Gtk.ListStore (typeof(Gdk.Pixbuf), typeof (string), 
-			                               typeof (string), typeof (string), 
+			                               typeof (string), typeof (float), 
 			                               typeof (string), typeof (string), 
 			                               typeof (string), typeof (DMDownload));
 			Model = listStore;
@@ -48,9 +47,9 @@ namespace DownloadManager
 			sizeColumn.PackStart (stringColumnRender, true);
 			sizeColumn.AddAttribute (stringColumnRender, "text", 2);
 
-			stringColumnRender = new Gtk.CellRendererText ();
-			downloadedColumn.PackStart (stringColumnRender, true);
-			downloadedColumn.AddAttribute (stringColumnRender, "text", 3);
+			Gtk.CellRendererProgress progressColumnRender = new Gtk.CellRendererProgress ();
+			downloadedColumn.PackStart (progressColumnRender, true);
+			downloadedColumn.AddAttribute (progressColumnRender, "value", 3);
 
 			stringColumnRender = new Gtk.CellRendererText ();
 			timeColumn.PackStart (stringColumnRender, true);
@@ -85,20 +84,18 @@ namespace DownloadManager
 				if (dmld.download.localPath == dwnld.download.localPath)
 				{
 					listStore.SetValue (iter, 2, dwnld.download.length.ToString ());
-					listStore.SetValue (iter, 3, downloaded.ToString ());
+					listStore.SetValue (iter, 3, (100*downloaded)/(float)dwnld.download.length);
 					listStore.SetValue (iter, 4, MainWindow.getTime (dwnld.download.length - downloaded, speed));
 					listStore.SetValue (iter, 5, speed.ToString ());
 					listStore.SetValue (iter, 6, dwnld.download.parts.ToString ());
 				}
 			}
 			while (listStore.IterNext (ref iter));
-
 		}
 
 		public void showCategory (params string[] cats)
 		{
+
 		}
 	}
 }
-
-
