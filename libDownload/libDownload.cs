@@ -41,6 +41,7 @@ namespace libDownload
 		NOT_STARTED,
 		DOWNLOADING,
 		PAUSED,
+		MERGING,
 		DOWNLOADED,
 		ERROR
 	};
@@ -80,6 +81,7 @@ namespace libDownload
 				_speed_level = value;
 			}
 		}
+		public int mergedParts;
 
 		public abstract void start ();
 		public abstract void stop ();
@@ -107,13 +109,28 @@ namespace libDownload
 	{
 		public long downloaded;
 		public short partNumber;
-		public DOWNLOAD_PART_STATUS status;
+		private DOWNLOAD_PART_STATUS _status;
+		public DOWNLOAD_PART_STATUS status
+		{
+			get
+			{
+				return _status;
+			}
+
+			set
+			{
+				_status = value;
+				if (_status == DOWNLOAD_PART_STATUS.DOWNLOADED && 
+				    downloadedFunction != null)
+					downloadedFunction (this);
+			}
+		}
 		public DOWNLOAD_SPEED_LEVEL speed_level;
 		public long length;
 		public string statusString;
 
 		protected bool _stop;
-		protected string remotePath, localPath;
+		public string remotePath, localPath;
 		protected long start, end;
 		protected Thread downloadThread;
 

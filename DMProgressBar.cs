@@ -14,7 +14,10 @@ namespace DownloadManager
 		{
 			Fraction = _fraction;
 			string _str = (_fraction * 100).ToString ();
-			Text =  _str.Substring (0, _str.IndexOf (".") + 2) + "%";
+			if (_str.Contains ("."))
+			    Text =  _str.Substring (0, _str.IndexOf (".") + 2) + "%";
+			else
+				Text =  _str + "%";
 		}
 
 		protected override bool OnButtonPressEvent (Gdk.EventButton ev)

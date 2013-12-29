@@ -62,10 +62,13 @@ namespace libDownload
 			}
 			catch (Exception e)
 			{
+				Console.WriteLine (e.Message);
 				status = DOWNLOAD_PART_STATUS.ERROR;
 				errorFunction (this);
 				statusString = "Error...";
 			}
+
+			Console.WriteLine ("DONEDDDDDDDDD {0}", partNumber);
 		}
 
 		public override void stopDownload ()
@@ -144,6 +147,8 @@ namespace libDownload
 	{
 		HttpWebRequest webReq;
 		HttpWebResponse webResp;
+		Thread _mergeThread;
+
 		public override DOWNLOAD_STATUS status
 		{
 			get
@@ -328,13 +333,37 @@ namespace libDownload
 				if (_part.status == DOWNLOAD_PART_STATUS.DOWNLOADING)
 					return;
 			}
-			status = DOWNLOAD_STATUS.DOWNLOADED;
-			_mergeParts ();
+			status = DOWNLOAD_STATUS.MERGING;
+			_mergeThread = new Thread (_mergeParts);
+			_mergeThread.Start ();
 		}
 
 		private void _mergeParts ()
 		{
+			FileStream fs = new FileStream (localPath,
+			                                FileMode.OpenOrCreate,
+			                                FileAccess.Write);
+			mergedParts = 0;
+			foreach (DownloadPart part in listParts)
+			{
+				FileStream _fs = new FileStream (part.localPath, 
+				                                 FileMode.Open,
+				                                 FileAccess.Read);
+				byte[] read = new byte[1024];
+				int count = _fs.Read (read, 0, 1024);
 
+				while (count > 0)
+				{
+					fs.Write (read, 0, count);
+					count = _fs.Read (read, 0, 1024);
+				}
+				_fs.Close ();
+				if (File.Exists (part.localPath))
+					File.Delete (part.localPath);
+				mergedParts+=1;
+			}
+			fs.Close ();
+			status = DOWNLOAD_STATUS.DOWNLOADED;
 		}
 
 		public override string getRedirectUrl (HttpWebResponse webresponse)
@@ -383,6 +412,7 @@ namespace libDownload
 
 		private void OnPartError (DownloadPart part)
 		{
+			part.statusString = "Trying Again...";
 			part.startDownload ();
 		}
 	}

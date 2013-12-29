@@ -29,6 +29,9 @@ namespace DownloadManager
 
 		protected override bool OnDeleteEvent (Gdk.Event evnt)
 		{
+			if (dwnload.download.status == DOWNLOAD_STATUS.MERGING)
+				return true;
+
 			dwnload.window = null;
 			return base.OnDeleteEvent (evnt);
 		}
@@ -41,6 +44,9 @@ namespace DownloadManager
 				btnCancel.Sensitive = false;
 				btnStartPause.Sensitive = false;
 				lblTimeLeft.Text = "";
+				btnClose.Sensitive = true;
+				Console.WriteLine ("Complete");
+				dmprogressbar.setProgress ((float)1.0);
 			}
 			else if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADING)
 			{
@@ -54,6 +60,21 @@ namespace DownloadManager
 			else if (dwnload.download.status == DOWNLOAD_STATUS.NOT_STARTED)
 			{
 				btnStartPause.Label = "Start";
+			}
+			else if (dwnload.download.status == DOWNLOAD_STATUS.MERGING)
+			{
+				lblStatus.Text = "Merging...";
+				btnCancel.Sensitive = false;
+				btnStartPause.Sensitive = false;
+				btnClose.Sensitive = false;
+				Gtk.TreeIter iter;
+				partsProgress._treeView.Model.GetIterFirst (out iter);
+				do
+				{
+					partsProgress._listStore.SetValue (iter, 1, "Downloaded");
+					partsProgress._listStore.SetValue (iter, 2, (float)100.0);
+				}
+				while (partsProgress._treeView.Model.IterNext (ref iter));
 			}
 			else //dwnld.status == DOWNLOAD_STATUS.PAUSED
 			{
@@ -77,22 +98,35 @@ namespace DownloadManager
 
 		public void updateProgress (long downloaded, long speed)
 		{
-			lblSpeed.Text = speed.ToString ();
-			lblStatus.Text = downloaded.ToString () + " / " + dwnload.download.length.ToString ();
-			lblTimeLeft.Text = MainWindow.getTime (dwnload.download.length - downloaded, speed);
-			if (dwnload.download.length != 0)
+			if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADING)
 			{
-				dmprogressbar.setProgress ((float)((double)downloaded / dwnload.download.length));
-				Gtk.TreeIter iter;
-				partsProgress._listStore.GetIterFirst (out iter);
-				for (int i = 0; i < dwnload.download.parts; i++)
+				lblSpeed.Text = speed.ToString ();
+				lblStatus.Text = downloaded.ToString () + " / " + dwnload.download.length.ToString ();
+				lblTimeLeft.Text = MainWindow.getTime (dwnload.download.length - downloaded, speed);
+				if (dwnload.download.length != 0)
 				{
-					partsProgress._listStore.SetValue (iter, 1, 
-					                                   dwnload.download.getPartStatusString (i));
-					partsProgress._listStore.SetValue (iter, 2, 
-					                                   dwnload.download.getPartProgress (i));
-					partsProgress._listStore.IterNext (ref iter);
+					dmprogressbar.setProgress ((float)((double)downloaded / dwnload.download.length));
+					Gtk.TreeIter iter;
+					partsProgress._listStore.GetIterFirst (out iter);
+					for (int i = 0; i < dwnload.download.parts; i++)
+					{
+						partsProgress._listStore.SetValue (iter, 1, 
+						                                   dwnload.download.getPartStatusString (i));
+						partsProgress._listStore.SetValue (iter, 2, 
+						                                   dwnload.download.getPartProgress (i));
+						partsProgress._listStore.IterNext (ref iter);
+					}
 				}
+			}
+			else if (dwnload.download.status == DOWNLOAD_STATUS.MERGING)
+			{
+				lblStatus.Text = "Merging...";
+				lblSpeed.Text = "";
+				lblTimeLeft.Text = "";
+				btnClose.Sensitive = false;
+				btnStartPause.Sensitive = false;
+				btnCancel.Sensitive = false;
+				dmprogressbar.setProgress ((float)dwnload.download.mergedParts / dwnload.download.parts);
 			}
 		}
 
@@ -125,8 +159,6 @@ namespace DownloadManager
 			dwnload.window = null;
 			Destroy ();
 		}
-
-
 	}
 }
 

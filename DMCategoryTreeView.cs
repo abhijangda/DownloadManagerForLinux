@@ -61,10 +61,10 @@ namespace DownloadManager
 			HeadersVisible = false;
 
 			Gtk.CellRendererPixbuf iconColumnRender = new Gtk.CellRendererPixbuf ();
-			Column.PackStart (iconColumnRender, true);
+			Column.PackStart (iconColumnRender, false);
 
 			Gtk.CellRendererText stringColumnRender = new Gtk.CellRendererText ();
-			Column.PackStart (stringColumnRender, true);
+			Column.PackStart (stringColumnRender, false);
 
 			Column.AddAttribute (iconColumnRender, "pixbuf", 0);
 			Column.AddAttribute (stringColumnRender, "text", 1);

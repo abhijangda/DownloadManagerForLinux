@@ -66,7 +66,7 @@ namespace DownloadManager
 			this.entryAddress = new global::Gtk.Entry ();
 			this.entryAddress.CanFocus = true;
 			this.entryAddress.Name = "entryAddress";
-			this.entryAddress.Text = global::Mono.Unix.Catalog.GetString ("http://jaist.dl.sourceforge.net/project/unetbootin/UNetbootin/585/unetbootin-windows-585.exe");
+			this.entryAddress.Text = global::Mono.Unix.Catalog.GetString ("http://www.woo55.pk/adata/3661/OneRepublic%20-%20Feel%20Again%20(CDQ)%20(www.SongsLover.pk).mp3");
 			this.entryAddress.IsEditable = true;
 			this.entryAddress.InvisibleChar = '•';
 			this.hbox1.Add (this.entryAddress);

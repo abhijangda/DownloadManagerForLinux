@@ -11,16 +11,33 @@ namespace DownloadManager
 		{
 			Gtk.TreeViewColumn filenamecolumn = new Gtk.TreeViewColumn ();
 			filenamecolumn.Title = "File Name";
+			filenamecolumn.Resizable = true;
+			filenamecolumn.Expand = true;
+
 			Gtk.TreeViewColumn sizeColumn = new Gtk.TreeViewColumn ();
 			sizeColumn.Title = "Size";
+			sizeColumn.Resizable = true;
+			sizeColumn.Expand = true;
+
 			Gtk.TreeViewColumn downloadedColumn = new Gtk.TreeViewColumn ();
 			downloadedColumn.Title = "Downloaded";
+			downloadedColumn.Resizable = true;
+			downloadedColumn.Expand = true;
+
 			Gtk.TreeViewColumn timeColumn = new Gtk.TreeViewColumn ();
 			timeColumn.Title = "Time Remaining";
+			timeColumn.Resizable = true;
+			timeColumn.Expand = true;
+
 			Gtk.TreeViewColumn speedColumn = new Gtk.TreeViewColumn ();
 			speedColumn.Title = "Speed";
+			speedColumn.Resizable = true;
+			speedColumn.Expand = true;
+
 			Gtk.TreeViewColumn sectionsColumn = new Gtk.TreeViewColumn ();
 			sectionsColumn.Title = "Sections";
+			sectionsColumn.Resizable = true;
+			sectionsColumn.Expand = true;
 
 			AppendColumn (filenamecolumn);
 			AppendColumn (sizeColumn);
@@ -80,14 +97,30 @@ namespace DownloadManager
 			do
 			{
 				DMDownload dmld = (DMDownload) listStore.GetValue (iter, 7);
-				Console.WriteLine (listStore.GetValue (iter, 1));
 				if (dmld.download.localPath == dwnld.download.localPath)
 				{
-					listStore.SetValue (iter, 2, dwnld.download.length.ToString ());
-					listStore.SetValue (iter, 3, (100*downloaded)/(float)dwnld.download.length);
-					listStore.SetValue (iter, 4, MainWindow.getTime (dwnld.download.length - downloaded, speed));
-					listStore.SetValue (iter, 5, speed.ToString ());
-					listStore.SetValue (iter, 6, dwnld.download.parts.ToString ());
+					if (dmld.download.status == libDownload.DOWNLOAD_STATUS.DOWNLOADING)
+					{
+						listStore.SetValue (iter, 2, dwnld.download.length.ToString ());
+						listStore.SetValue (iter, 3, (100*downloaded)/(float)dwnld.download.length);
+						listStore.SetValue (iter, 4, MainWindow.getTime (dwnld.download.length - downloaded, speed));
+						listStore.SetValue (iter, 5, speed.ToString ());
+						listStore.SetValue (iter, 6, dwnld.download.parts.ToString ());
+					}
+					else if (dmld.download.status == libDownload.DOWNLOAD_STATUS.MERGING)
+					{
+						listStore.SetValue (iter, 3, (float)100.0);
+						listStore.SetValue (iter, 4, "");
+						listStore.SetValue (iter, 5, "");
+						listStore.SetValue (iter, 6, dwnld.download.parts.ToString ());
+					}
+					else if (dmld.download.status == libDownload.DOWNLOAD_STATUS.DOWNLOADED)
+					{
+						listStore.SetValue (iter, 3, (float)100.0);
+						listStore.SetValue (iter, 4, "");
+						listStore.SetValue (iter, 5, "");
+						listStore.SetValue (iter, 6, dwnld.download.parts.ToString ());
+					}
 				}
 			}
 			while (listStore.IterNext (ref iter));

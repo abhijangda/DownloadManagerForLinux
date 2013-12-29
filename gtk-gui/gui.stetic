@@ -148,6 +148,7 @@
             <child>
               <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
                 <property name="MemberName" />
+                <property name="WidthRequest">201</property>
                 <property name="ShadowType">In</property>
                 <child>
                   <widget class="DownloadManager.DMCategoryTreeView" id="dmCategoryTreeView">
@@ -237,7 +238,7 @@
                   <widget class="Gtk.Entry" id="entryAddress">
                     <property name="MemberName">entryAddress</property>
                     <property name="CanFocus">True</property>
-                    <property name="Text" translatable="yes">http://jaist.dl.sourceforge.net/project/unetbootin/UNetbootin/585/unetbootin-windows-585.exe</property>
+                    <property name="Text" translatable="yes">http://www.woo55.pk/adata/3661/OneRepublic%20-%20Feel%20Again%20(CDQ)%20(www.SongsLover.pk).mp3</property>
                     <property name="IsEditable">True</property>
                     <property name="InvisibleChar">•</property>
                     <signal name="Changed" handler="OnEntryAddressChanged" />

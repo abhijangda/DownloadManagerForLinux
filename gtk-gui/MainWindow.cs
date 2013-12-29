@@ -102,6 +102,7 @@ public partial class MainWindow
 		this.hpaned1.Position = 120;
 		// Container child hpaned1.Gtk.Paned+PanedChild
 		this.GtkScrolledWindow = new global::Gtk.ScrolledWindow ();
+		this.GtkScrolledWindow.WidthRequest = 201;
 		this.GtkScrolledWindow.Name = "GtkScrolledWindow";
 		this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 		// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
