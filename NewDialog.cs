@@ -26,6 +26,8 @@ namespace DownloadManager
 			remotePath = entryAddress.Text;
 			localPath = entrySaveTo.Text;
 			chkGenFilename.Active = true;
+			SetSizeRequest (500,450);
+			Resizable = false;
 		}
 
 		protected void chkAuthenticateToggled (object sender, EventArgs e)

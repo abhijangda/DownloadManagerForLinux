@@ -57,7 +57,9 @@ namespace libDownload
 	{
 		protected long _downloaded;
 		protected DOWNLOAD_STATUS _status;
+		protected Thread _mergeThread;
 
+		public const int maxReTryingAttempts = 5;
 		public string remotePath, localPath;
 		public short parts;
 		public long length;
@@ -85,16 +87,44 @@ namespace libDownload
 		public int mergedParts;
 
 		public abstract void start ();
-		public abstract void stop ();
+		public void stop ()
+		{
+			foreach (DownloadPart part in listParts)
+				part.stopDownload ();
+
+			status = DOWNLOAD_STATUS.PAUSED;
+		}
+
 		public abstract void resume (long _length);
-		public abstract void cancel ();
+		public void cancel ()
+		{
+			stop ();
+			foreach (HTTPDownloadPart part in listParts)
+				part.cancelDownload ();
+
+			status = DOWNLOAD_STATUS.NOT_STARTED;
+		}
+
 		public abstract void incrementParts ();
-		public abstract short getParts ();
-		public abstract long getDownloaded ();
+
+		public long getDownloaded ()
+		{
+			long totalDownloaded = 0;
+			foreach (DownloadPart part in listParts)
+			{
+				totalDownloaded += part.downloaded;
+			}
+			return totalDownloaded;
+		}
+
 		public abstract bool isResumeSupported ();
-		public abstract long getSpeed ();
-		public abstract string getRedirectUrl (HttpWebResponse webresponse);
-		public abstract void OnPartDownloaded (DownloadPart part);
+		public long getSpeed ()
+		{
+			long prev_downloaded = _downloaded;
+			_downloaded = getDownloaded ();
+			return (_downloaded - prev_downloaded);
+		}
+
 		public float getPartProgress (int part)
 		{
 			return (100*listParts [part].downloaded)/listParts [part].length;
@@ -105,12 +135,79 @@ namespace libDownload
 			return listParts [part].statusString;
 		}
 		public abstract string getFilename ();
+		public string proxyAddress;
+		public int proxyPort;
+		public string proxyUsername;
+		public string proxyPassword;
+
+		public void setProxy (string _address, int port, string usr = "", string pwd = "")
+		{
+			proxyAddress = _address;
+			proxyPort = port;
+			proxyUsername = usr;
+			proxyPassword = pwd;
+		}
+
+		public void OnPartDownloaded (DownloadPart part)
+		{
+			foreach (DownloadPart _part in listParts)
+			{
+				if (_part.status == DOWNLOAD_PART_STATUS.DOWNLOADING)
+					return;
+			}
+			status = DOWNLOAD_STATUS.MERGING;
+			_mergeThread = new Thread (_mergeParts);
+			_mergeThread.Start ();
+		}
+
+		private void _mergeParts ()
+		{
+			FileStream fs = new FileStream (localPath,
+			                                FileMode.OpenOrCreate,
+			                                FileAccess.Write);
+			mergedParts = 0;
+			foreach (DownloadPart part in listParts)
+			{
+				FileStream _fs = new FileStream (part.localPath, 
+				                                 FileMode.Open,
+				                                 FileAccess.Read);
+				byte[] read = new byte[1024];
+				int count = _fs.Read (read, 0, 1024);
+
+				while (count > 0)
+				{
+					fs.Write (read, 0, count);
+					count = _fs.Read (read, 0, 1024);
+				}
+				_fs.Close ();
+				if (File.Exists (part.localPath))
+					File.Delete (part.localPath);
+				mergedParts+=1;
+			}
+			fs.Close ();
+			status = DOWNLOAD_STATUS.DOWNLOADED;
+		}
+		protected void OnPartError (DownloadPart part)
+		{
+			if (maxReTryingAttempts == part.reTryingAttempts)
+			{
+				stop ();
+				status = DOWNLOAD_STATUS.ERROR;
+				exception = new DownloadException ("Connection Failed", 
+				                                   DOWNLOAD_EXCEPTION_TYPE.CONNECTION_ERROR);
+				return;
+			}
+
+			part.statusString = "Retrying...";
+			part.startDownload ();
+		}
 	}
 
 	public abstract class DownloadPart
 	{
 		public long downloaded;
 		public short partNumber;
+		public WebProxy webProxy;
 		private DOWNLOAD_PART_STATUS _status;
 		public DOWNLOAD_PART_STATUS status
 		{
@@ -135,15 +232,62 @@ namespace libDownload
 		public string remotePath, localPath;
 		protected long start, end;
 		protected Thread downloadThread;
+		public int reTryingAttempts;
 
 		public delegate void OnDownloaded (DownloadPart part);
 		public OnDownloaded downloadedFunction {get; set;}
 		public delegate void OnError (DownloadPart part);
 		public OnError errorFunction {get; set;}
 		public abstract void startDownload ();
-		public abstract void stopDownload ();
+
+		public void stopDownload ()
+		{
+			_stop = true;
+			status = DOWNLOAD_PART_STATUS.IDLE;
+			downloadThread.Join ();
+		}
+
 		public abstract void resumeDownload ();
-		public abstract void cancelDownload ();
+
+		public void reTry ()
+		{
+			reTryingAttempts += 1;
+			if (downloaded == 0)
+				resumeDownload ();
+			else
+				startDownload ();
+		}
+
+		protected void _download (Stream Answer, FileStream fs)
+		{
+			reTryingAttempts = 0;
+			byte[] read = new byte[1024];
+			int count = Answer.Read (read, 0, 1024);
+
+			while (count > 0 && !_stop)
+			{
+				downloaded += count;
+				if (downloaded > length)
+				{
+					count -= (int)(downloaded - length);
+					fs.Write (read, 0, count);
+					break;
+				}
+				fs.Write (read, 0, count);
+				count = Answer.Read (read, 0, 1024);
+				//Console.WriteLine ("Received {0} {1}", partNumber, downloaded);
+				if (speed_level == DOWNLOAD_SPEED_LEVEL.LOW)
+					System.Threading.Thread.Sleep (100);
+				else //speed_level == DOWNLOAD_SPEED_LEVEL.MEDIUM
+					System.Threading.Thread.Sleep (10);
+			}
+		}
+
+		public void cancelDownload ()
+		{
+			if (File.Exists (localPath))
+				File.Delete (localPath);
+		}
 	}
 }
 

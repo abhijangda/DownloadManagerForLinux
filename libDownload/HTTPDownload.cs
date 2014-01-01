@@ -26,6 +26,7 @@ namespace libDownload
 			status = DOWNLOAD_PART_STATUS.IDLE;
 			speed_level = DOWNLOAD_SPEED_LEVEL.HIGH;
 			statusString = "";
+			reTryingAttempts = 0;
 		}
 
 		public override void startDownload ()
@@ -34,6 +35,7 @@ namespace libDownload
 			downloadThread.Start ();
 		}
 
+
 		void _startDownload ()
 		{
 			try
@@ -41,9 +43,11 @@ namespace libDownload
 				statusString = "Sending GET...";
 				status = DOWNLOAD_PART_STATUS.DOWNLOADING;
 				webReq = (HttpWebRequest)WebRequest.Create (remotePath);
+				webReq.Proxy = webProxy;
 				webReq.Method = "GET";
 				webReq.AddRange (start, end);
 				downloaded = 0;
+				length = end - start;
 				Console.WriteLine ("Sending Get {0} {1} {2}", 
 				                   partNumber, start, end);
 				webResp = (HttpWebResponse)webReq.GetResponse ();
@@ -77,13 +81,6 @@ namespace libDownload
 			}
 
 			Console.WriteLine ("DONEDDDDDDDDD {0}", partNumber);
-		}
-
-		public override void stopDownload ()
-		{
-			_stop = true;
-			status = DOWNLOAD_PART_STATUS.IDLE;
-			downloadThread.Join ();
 		}
 
 		public override void resumeDownload ()
@@ -133,37 +130,12 @@ namespace libDownload
 				statusString = "Connection Error...";
 			}
 		}
-
-		void _download (Stream Answer, FileStream fs)
-		{
-			byte[] read = new byte[1024];
-			int count = Answer.Read (read, 0, 1024);
-
-			while (count > 0 && !_stop)
-			{
-				downloaded += count;
-				fs.Write (read, 0, count);
-				count = Answer.Read (read, 0, 1024);
-				//Console.WriteLine ("Received {0} {1}", partNumber, downloaded);
-				if (speed_level == DOWNLOAD_SPEED_LEVEL.LOW)
-				    System.Threading.Thread.Sleep (100);
-				else //speed_level == DOWNLOAD_SPEED_LEVEL.MEDIUM
-					System.Threading.Thread.Sleep (10);
-			}
-		}
-
-		public override void cancelDownload ()
-		{
-			if (File.Exists (localPath))
-				File.Delete (localPath);
-		}
 	}
 
 	public class HTTPDownload : Download
 	{
 		HttpWebRequest webReq;
 		HttpWebResponse webResp;
-		Thread _mergeThread;
 
 		public override DOWNLOAD_STATUS status
 		{
@@ -194,6 +166,7 @@ namespace libDownload
 			webReq = null;
 			speed_level = DOWNLOAD_SPEED_LEVEL.HIGH;
 			generateFileName = _genFile;
+			proxyAddress = "";
 		}
 
 		public override bool isResumeSupported ()
@@ -272,13 +245,25 @@ namespace libDownload
 			}
 
 			string uri = remotePath;
+			WebProxy proxy = null;
+			if (proxyAddress != "")
+			{
+				proxy = new WebProxy (proxyAddress + ":" + proxyPort.ToString (), true);
+				if (proxyUsername != "")
+					proxy.Credentials = new NetworkCredential (proxyUsername, 
+					                                           proxyPassword);
+			}
+
 			try
 			{
 				do
 				{
 					webReq = (HttpWebRequest)WebRequest.Create (uri);
+					webReq.Proxy = proxy;
 					webReq.Method = "HEAD";
 					webReq.UserAgent = "DML"; /*TODO: Change user agent*/
+					webReq.Headers.Add ("Accept-Encoding: gzip");
+					webReq.Headers.Add ("TransferEncoding: gzip");
 					webResp = (HttpWebResponse)webReq.GetResponse ();
 					remotePath = uri;
 				}
@@ -321,29 +306,13 @@ namespace libDownload
 			                                     prev_length, length - 1, parts));
 			foreach (HTTPDownloadPart part in listParts)
 			{
+				part.webProxy = proxy;
 				part.downloadedFunction = OnPartDownloaded;
 				part.errorFunction = OnPartError;
 				part.startDownload ();
 			}
 
 			status = DOWNLOAD_STATUS.DOWNLOADING;
-		}
-
-		public override void stop ()
-		{
-			foreach (HTTPDownloadPart part in listParts)
-				part.stopDownload ();
-
-			status = DOWNLOAD_STATUS.PAUSED;
-		}
-
-		public override void cancel ()
-		{
-			stop ();
-			foreach (HTTPDownloadPart part in listParts)
-				part.cancelDownload ();
-
-			status = DOWNLOAD_STATUS.NOT_STARTED;
 		}
 
 		public override void resume (long _length)
@@ -394,47 +363,7 @@ namespace libDownload
 			status = DOWNLOAD_STATUS.DOWNLOADING;
 		}
 
-		public override void OnPartDownloaded (DownloadPart part)
-		{
-			foreach (HTTPDownloadPart _part in listParts)
-			{
-				if (_part.status == DOWNLOAD_PART_STATUS.DOWNLOADING)
-					return;
-			}
-			status = DOWNLOAD_STATUS.MERGING;
-			_mergeThread = new Thread (_mergeParts);
-			_mergeThread.Start ();
-		}
-
-		private void _mergeParts ()
-		{
-			FileStream fs = new FileStream (localPath,
-			                                FileMode.OpenOrCreate,
-			                                FileAccess.Write);
-			mergedParts = 0;
-			foreach (DownloadPart part in listParts)
-			{
-				FileStream _fs = new FileStream (part.localPath, 
-				                                 FileMode.Open,
-				                                 FileAccess.Read);
-				byte[] read = new byte[1024];
-				int count = _fs.Read (read, 0, 1024);
-
-				while (count > 0)
-				{
-					fs.Write (read, 0, count);
-					count = _fs.Read (read, 0, 1024);
-				}
-				_fs.Close ();
-				if (File.Exists (part.localPath))
-					File.Delete (part.localPath);
-				mergedParts+=1;
-			}
-			fs.Close ();
-			status = DOWNLOAD_STATUS.DOWNLOADED;
-		}
-
-		public override string getRedirectUrl (HttpWebResponse webresponse)
+		public string getRedirectUrl (HttpWebResponse webresponse)
 		{
 			string uri="";
 
@@ -451,37 +380,10 @@ namespace libDownload
 			}
 			return uri;
 		}
+
 		public override void incrementParts ()
 		{
 
-		}
-
-		public override short getParts ()
-		{
-			return parts;
-		}
-
-		public override long getDownloaded ()
-		{
-			long totalDownloaded = 0;
-			foreach (HTTPDownloadPart part in listParts)
-			{
-				totalDownloaded += part.downloaded;
-			}
-			return totalDownloaded;
-		}
-
-		public override long getSpeed ()
-		{
-			long prev_downloaded = _downloaded;
-			_downloaded = getDownloaded ();
-			return (_downloaded - prev_downloaded);
-		}
-
-		private void OnPartError (DownloadPart part)
-		{
-			part.statusString = "Trying Again...";
-			part.startDownload ();
 		}
 	}
 }

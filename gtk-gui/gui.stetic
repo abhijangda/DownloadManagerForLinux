@@ -238,7 +238,7 @@
                   <widget class="Gtk.Entry" id="entryAddress">
                     <property name="MemberName">entryAddress</property>
                     <property name="CanFocus">True</property>
-                    <property name="Text" translatable="yes">http://install.avira-update.com/package/wks_avira13/win32/en/pecl/avira_free_antivirus_en.exe</property>
+                    <property name="Text" translatable="yes">http://jaist.dl.sourceforge.net/project/unetbootin/UNetbootin/585/unetbootin-windows-585.exe</property>
                     <property name="IsEditable">True</property>
                     <property name="InvisibleChar">•</property>
                     <signal name="Changed" handler="OnEntryAddressChanged" />

@@ -8,6 +8,7 @@ namespace DownloadManager
 	{
 		public static void Main (string[] args)
 		{
+			//Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments
 			ServicePointManager.DefaultConnectionLimit = 10;
 			Application.Init ();
 			MainWindow win = new MainWindow ();

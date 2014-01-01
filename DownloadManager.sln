@@ -21,6 +21,6 @@ Global
 		{FF5519D8-3AD1-4B89-B615-0562EE5B5A8B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = DownloadManager.csproj
+		StartupItem = libDownload\libDownload.csproj
 	EndGlobalSection
 EndGlobal

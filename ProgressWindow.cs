@@ -106,15 +106,16 @@ namespace DownloadManager
 				lblTimeLeft.Text = MainWindow.getTime (dwnload.download.length - downloaded, speed);
 				if (dwnload.download.length != 0)
 				{
-					dmprogressbar.setProgress ((float)((double)downloaded / dwnload.download.length));
+					dmprogressbar.setProgress (
+						(float)((double)downloaded / dwnload.download.length));
 					Gtk.TreeIter iter;
 					partsProgress._listStore.GetIterFirst (out iter);
 					for (int i = 0; i < dwnload.download.parts; i++)
 					{
-						partsProgress._listStore.SetValue (iter, 1, 
-						                                   dwnload.download.getPartStatusString (i));
-						partsProgress._listStore.SetValue (iter, 2, 
-						                                   dwnload.download.getPartProgress (i));
+						partsProgress._listStore.SetValue (
+							iter, 1, dwnload.download.getPartStatusString (i));
+						partsProgress._listStore.SetValue (
+							iter, 2, dwnload.download.getPartProgress (i));
 						partsProgress._listStore.IterNext (ref iter);
 					}
 				}
@@ -127,7 +128,8 @@ namespace DownloadManager
 				btnClose.Sensitive = false;
 				btnStartPause.Sensitive = false;
 				btnCancel.Sensitive = false;
-				dmprogressbar.setProgress ((float)dwnload.download.mergedParts / dwnload.download.parts);
+				dmprogressbar.setProgress (
+					(float)dwnload.download.mergedParts / dwnload.download.parts);
 			}
 		}
 

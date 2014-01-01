@@ -37,5 +37,6 @@
     <Compile Include="Main.cs" />
     <Compile Include="libDownload.cs" />
     <Compile Include="HTTPDownload.cs" />
+    <Compile Include="FTPDownload.cs" />
   </ItemGroup>
 </Project>
