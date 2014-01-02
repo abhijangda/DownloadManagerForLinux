@@ -116,10 +116,22 @@ public partial class MainWindow: Gtk.Window
 				return;
 			}
 
-			Download dl = new HTTPDownload (new_dlg.remotePath,
-			                                new_dlg.localPath,
-			                                OnDownloadStatusChanged,
-			                                new_dlg.genFilename);
+			Download dl;
+
+			if (new_dlg.remotePath.IndexOf ("ftp://") == 0)
+			{
+				dl = new FTPDownload (new_dlg.remotePath,
+				                      new_dlg.localPath,
+				                      OnDownloadStatusChanged,
+				                      new_dlg.genFilename);
+			}
+			else
+			{
+				dl = new HTTPDownload (new_dlg.remotePath,
+				                       new_dlg.localPath,
+				                       OnDownloadStatusChanged,
+				                       new_dlg.genFilename);
+			}
 
 			DMDownload dmdl = new DMDownload (dl, null);
 			dmdl.typeCategory = new DMTypeCategory (new_dlg.typeCategory);
