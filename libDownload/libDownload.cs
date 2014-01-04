@@ -13,6 +13,81 @@ namespace libDownload
 		FILESYSTEM_ERROR
 	}
 
+	public class Length
+	{
+		public long value;
+		public Length (long _value)
+		{
+			value = _value;
+		}
+
+		public override string ToString ()
+		{
+			if (value > 1024*1024*1024)
+			{
+				string s = (value/(1024*1024*1024.0)).ToString ();
+				if (s.IndexOf (".") == -1)
+					return s + " GB";
+				return s.Substring (0, s.IndexOf (".") + 2) + " GB";
+			}
+			
+			if (this.value > 1024*1024)
+			{
+				string s = (value/(1024*1024.0)).ToString ();
+				if (s.IndexOf (".") == -1)
+					return s + " GB";
+				return s.Substring (0, s.IndexOf (".") + 2) + " MB";
+			}
+
+			if (this.value > 1024)
+			{
+				string s = (value/(1024.0)).ToString ();
+				if (s.IndexOf (".") == -1)
+					return s + " GB";
+				return s.Substring (0, s.IndexOf (".") + 2) + " KB";
+			}
+
+			return value.ToString () + " Bytes";
+		}
+	}
+
+	public class Speed
+	{
+		public long value;
+		public Speed (long _value)
+		{
+			value = _value;
+		}
+
+		public override string ToString ()
+		{
+			if (value > 1024*1024*1024)
+			{
+				string s = (value/(1024*1024*1024.0)).ToString ();
+				if (s.IndexOf (".") == -1)
+					return s + " GB";
+				return s.Substring (0, s.IndexOf (".") + 2) + " GB/s";
+			}
+
+			if (this.value > 1024*1024)
+			{
+				string s = (value/(1024*1024.0)).ToString ();
+				if (s.IndexOf (".") == -1)
+					return s + " GB";
+				return s.Substring (0, s.IndexOf (".") + 2) + " MB/s";
+			}
+
+			if (this.value > 1024)
+			{
+				string s = (value/(1024.0)).ToString ();
+				if (s.IndexOf (".") == -1)
+					return s + " GB";
+				return s.Substring (0, s.IndexOf (".") + 2) + " KB/s";
+			}
+
+			return value.ToString () + " Bytes/s";
+		}
+	}
 	public class DownloadException : Exception
 	{
 		public DOWNLOAD_EXCEPTION_TYPE type;
@@ -55,14 +130,14 @@ namespace libDownload
 
 	public abstract class Download
 	{
-		protected long _downloaded;
+		protected Length _downloaded;
 		protected DOWNLOAD_STATUS _status;
 		protected Thread _mergeThread;
 
 		public const int maxReTryingAttempts = 5;
 		public string remotePath, localPath;
 		public short parts;
-		public long length;
+		public Length length;
 		public List<DownloadPart> listParts;
 		public abstract DOWNLOAD_STATUS status {get;set;}
 		public bool generateFileName {get;set;}
@@ -107,22 +182,22 @@ namespace libDownload
 
 		public abstract void incrementParts ();
 
-		public long getDownloaded ()
+		public Length getDownloaded ()
 		{
-			long totalDownloaded = 0;
+			Length totalDownloaded = new Length(0);
 			foreach (DownloadPart part in listParts)
 			{
-				totalDownloaded += part.downloaded;
+				totalDownloaded.value += part.downloaded;
 			}
 			return totalDownloaded;
 		}
 
 		public abstract bool isResumeSupported ();
-		public long getSpeed ()
+		public Speed getSpeed ()
 		{
-			long prev_downloaded = _downloaded;
+			Length prev_downloaded = _downloaded;
 			_downloaded = getDownloaded ();
-			return (_downloaded - prev_downloaded);
+			return new Speed (_downloaded.value - prev_downloaded.value);
 		}
 
 		public float getPartProgress (int part)

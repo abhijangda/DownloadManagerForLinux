@@ -141,41 +141,81 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.HPaned" id="hpaned1">
+          <widget class="Gtk.Notebook" id="notebook1">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="Position">120</property>
+            <property name="CurrentPage">0</property>
             <child>
-              <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+              <widget class="Gtk.HPaned" id="hpaned1">
                 <property name="MemberName" />
-                <property name="WidthRequest">201</property>
-                <property name="ShadowType">In</property>
+                <property name="CanFocus">True</property>
+                <property name="Position">120</property>
                 <child>
-                  <widget class="DownloadManager.DMCategoryTreeView" id="dmCategoryTreeView">
+                  <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
                     <property name="MemberName" />
-                    <property name="CanFocus">True</property>
-                    <property name="ShowScrollbars">True</property>
-                    <signal name="RowActivated" handler="dmCategoryTreeViewRowActivated" />
+                    <property name="WidthRequest">201</property>
+                    <property name="ShadowType">In</property>
+                    <child>
+                      <widget class="DownloadManager.DMCategoryTreeView" id="dmCategoryTreeView">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="ShowScrollbars">True</property>
+                        <signal name="RowActivated" handler="dmCategoryTreeViewRowActivated" />
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Resize">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow1">
+                    <property name="MemberName" />
+                    <property name="ShadowType">In</property>
+                    <child>
+                      <widget class="DownloadManager.DMDownloadTreeView" id="dmDownloadTreeView">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="ShowScrollbars">True</property>
+                        <signal name="RowActivated" handler="dmDownloadTreeViewRowActivated" />
+                      </widget>
+                    </child>
                   </widget>
                 </child>
               </widget>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label1">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Downloads</property>
+              </widget>
               <packing>
-                <property name="Resize">False</property>
+                <property name="type">tab</property>
               </packing>
             </child>
             <child>
-              <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow1">
+              <placeholder />
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label2">
                 <property name="MemberName" />
-                <property name="ShadowType">In</property>
-                <child>
-                  <widget class="DownloadManager.DMDownloadTreeView" id="dmDownloadTreeView">
-                    <property name="MemberName" />
-                    <property name="CanFocus">True</property>
-                    <property name="ShowScrollbars">True</property>
-                    <signal name="RowActivated" handler="dmDownloadTreeViewRowActivated" />
-                  </widget>
-                </child>
+                <property name="LabelProp" translatable="yes">Torrents</property>
               </widget>
+              <packing>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label3">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">FTP Get</property>
+              </widget>
+              <packing>
+                <property name="type">tab</property>
+              </packing>
             </child>
           </widget>
           <packing>
@@ -188,10 +228,28 @@
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <child>
-              <placeholder />
+              <widget class="Gtk.Label" id="lblDownloaded">
+                <property name="MemberName">lblDownloaded</property>
+                <property name="LabelProp" translatable="yes">Downloaded</property>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
             </child>
             <child>
-              <placeholder />
+              <widget class="Gtk.Label" id="lblSpeed">
+                <property name="MemberName">lblSpeed</property>
+                <property name="LabelProp" translatable="yes">Speed</property>
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
             </child>
           </widget>
           <packing>
@@ -1132,13 +1190,6 @@
           </packing>
         </child>
       </widget>
-    </child>
-  </widget>
-  <widget class="Gtk.Bin" id="DownloadManager.Widget" design-size="300 300">
-    <property name="MemberName" />
-    <property name="Visible">False</property>
-    <child>
-      <placeholder />
     </child>
   </widget>
 </stetic-interface>

@@ -98,8 +98,8 @@ namespace libDownload
 				localPath = Path.Combine (localPath, filename);
 			}
 		
-			length = webResp.ContentLength;
-			long part_length = length/parts;
+			length = new Length (webResp.ContentLength);
+			long part_length = length.value/parts;
 			long prev_length = 0, next_length = part_length;
 			string _localPath;
 
@@ -114,7 +114,7 @@ namespace libDownload
 			}
 			_localPath = localPath + ".part" + (parts).ToString();
 			listParts.Add (new FTPDownloadPart (remotePath, _localPath, 
-			                                     prev_length, length - 1, parts));
+			                                     prev_length, length.value - 1, parts));
 			foreach (HTTPDownloadPart part in listParts)
 			{
 				part.webProxy = proxy;
@@ -145,8 +145,8 @@ namespace libDownload
 					}
 				}
 
-				length = _length;
-				long part_length = length/parts;
+				length = new Length (_length);
+				long part_length = length.value/parts;
 				long prev_length = 0, next_length = part_length;
 				string _localPath;
 
@@ -162,7 +162,7 @@ namespace libDownload
 
 				_localPath = localPath + ".part" + (parts).ToString();
 				listParts.Add (new FTPDownloadPart (remotePath, _localPath, 
-				                                    prev_length, length, parts));
+				                                    prev_length, length.value, parts));
 			}
 
 			foreach (DownloadPart part in listParts)

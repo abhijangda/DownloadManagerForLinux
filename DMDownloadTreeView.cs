@@ -1,5 +1,6 @@
 using System;
 using Gtk;
+using libDownload;
 
 namespace DownloadManager
 {
@@ -89,7 +90,7 @@ namespace DownloadManager
 			                               "", "", "", "", "", dwnld);
 		}
 
-		public void updateDownloadStatus (DMDownload dwnld, long downloaded, long speed)
+		public void updateDownloadStatus (DMDownload dwnld, Length downloaded, Speed speed)
 		{
 			Gtk.TreeIter iter;
 			listStore.GetIterFirst (out iter);
@@ -102,8 +103,8 @@ namespace DownloadManager
 					if (dmld.download.status == libDownload.DOWNLOAD_STATUS.DOWNLOADING)
 					{
 						listStore.SetValue (iter, 2, dwnld.download.length.ToString ());
-						listStore.SetValue (iter, 3, (100*downloaded)/(float)dwnld.download.length);
-						listStore.SetValue (iter, 4, MainWindow.getTime (dwnld.download.length - downloaded, speed));
+						listStore.SetValue (iter, 3, (100*downloaded.value)/(float)dwnld.download.length.value);
+						listStore.SetValue (iter, 4, MainWindow.getTime (dwnld.download.length.value - downloaded.value, speed.value));
 						listStore.SetValue (iter, 5, speed.ToString ());
 						listStore.SetValue (iter, 6, dwnld.download.parts.ToString ());
 					}

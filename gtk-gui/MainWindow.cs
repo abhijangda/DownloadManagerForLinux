@@ -20,12 +20,18 @@ public partial class MainWindow
 	private global::Gtk.VBox vbox1;
 	private global::Gtk.MenuBar menubar1;
 	private global::Gtk.Toolbar toolbar1;
+	private global::Gtk.Notebook notebook1;
 	private global::Gtk.HPaned hpaned1;
 	private global::Gtk.ScrolledWindow GtkScrolledWindow;
 	private global::DownloadManager.DMCategoryTreeView dmCategoryTreeView;
 	private global::Gtk.ScrolledWindow GtkScrolledWindow1;
 	private global::DownloadManager.DMDownloadTreeView dmDownloadTreeView;
+	private global::Gtk.Label label1;
+	private global::Gtk.Label label2;
+	private global::Gtk.Label label3;
 	private global::Gtk.Statusbar statusbar1;
+	private global::Gtk.Label lblDownloaded;
+	private global::Gtk.Label lblSpeed;
 
 	protected virtual void Build ()
 	{
@@ -96,6 +102,11 @@ public partial class MainWindow
 		w3.Expand = false;
 		w3.Fill = false;
 		// Container child vbox1.Gtk.Box+BoxChild
+		this.notebook1 = new global::Gtk.Notebook ();
+		this.notebook1.CanFocus = true;
+		this.notebook1.Name = "notebook1";
+		this.notebook1.CurrentPage = 0;
+		// Container child notebook1.Gtk.Notebook+NotebookChild
 		this.hpaned1 = new global::Gtk.HPaned ();
 		this.hpaned1.CanFocus = true;
 		this.hpaned1.Name = "hpaned1";
@@ -123,18 +134,61 @@ public partial class MainWindow
 		this.dmDownloadTreeView.Name = "dmDownloadTreeView";
 		this.GtkScrolledWindow1.Add (this.dmDownloadTreeView);
 		this.hpaned1.Add (this.GtkScrolledWindow1);
-		this.vbox1.Add (this.hpaned1);
-		global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.hpaned1]));
-		w8.Position = 2;
+		this.notebook1.Add (this.hpaned1);
+		// Notebook tab
+		this.label1 = new global::Gtk.Label ();
+		this.label1.Name = "label1";
+		this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Downloads");
+		this.notebook1.SetTabLabel (this.hpaned1, this.label1);
+		this.label1.ShowAll ();
+		// Notebook tab
+		global::Gtk.Label w9 = new global::Gtk.Label ();
+		w9.Visible = true;
+		this.notebook1.Add (w9);
+		this.label2 = new global::Gtk.Label ();
+		this.label2.Name = "label2";
+		this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Torrents");
+		this.notebook1.SetTabLabel (w9, this.label2);
+		this.label2.ShowAll ();
+		// Notebook tab
+		global::Gtk.Label w10 = new global::Gtk.Label ();
+		w10.Visible = true;
+		this.notebook1.Add (w10);
+		this.label3 = new global::Gtk.Label ();
+		this.label3.Name = "label3";
+		this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("FTP Get");
+		this.notebook1.SetTabLabel (w10, this.label3);
+		this.label3.ShowAll ();
+		this.vbox1.Add (this.notebook1);
+		global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.notebook1]));
+		w11.Position = 2;
 		// Container child vbox1.Gtk.Box+BoxChild
 		this.statusbar1 = new global::Gtk.Statusbar ();
 		this.statusbar1.Name = "statusbar1";
 		this.statusbar1.Spacing = 6;
+		// Container child statusbar1.Gtk.Box+BoxChild
+		this.lblDownloaded = new global::Gtk.Label ();
+		this.lblDownloaded.Name = "lblDownloaded";
+		this.lblDownloaded.LabelProp = global::Mono.Unix.Catalog.GetString ("Downloaded");
+		this.statusbar1.Add (this.lblDownloaded);
+		global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.statusbar1 [this.lblDownloaded]));
+		w12.Position = 1;
+		w12.Expand = false;
+		w12.Fill = false;
+		// Container child statusbar1.Gtk.Box+BoxChild
+		this.lblSpeed = new global::Gtk.Label ();
+		this.lblSpeed.Name = "lblSpeed";
+		this.lblSpeed.LabelProp = global::Mono.Unix.Catalog.GetString ("Speed");
+		this.statusbar1.Add (this.lblSpeed);
+		global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.statusbar1 [this.lblSpeed]));
+		w13.Position = 2;
+		w13.Expand = false;
+		w13.Fill = false;
 		this.vbox1.Add (this.statusbar1);
-		global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.statusbar1]));
-		w9.Position = 3;
-		w9.Expand = false;
-		w9.Fill = false;
+		global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.statusbar1]));
+		w14.Position = 3;
+		w14.Expand = false;
+		w14.Fill = false;
 		this.Add (this.vbox1);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();

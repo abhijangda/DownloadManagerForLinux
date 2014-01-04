@@ -159,7 +159,7 @@ namespace libDownload
 			localPath = _localPath;
 			parts = _parts;
 			listParts = new List<DownloadPart> ();
-			_downloaded = 0;
+			_downloaded = new Length (0);
 			statusChangeHandler = _statusChangedHandler;
 			status = DOWNLOAD_STATUS.NOT_STARTED;
 			webResp = null;
@@ -217,7 +217,7 @@ namespace libDownload
 
 			if (canResume ())
 			{
-				resume (length);
+				resume (length.value);
 				return;
 			}
 
@@ -225,10 +225,10 @@ namespace libDownload
 			{
 				if (!Directory.Exists (Path.GetPathRoot (localPath)))
 				{
-					status = DOWNLOAD_STATUS.ERROR;
 					exception = new DownloadException (
 						"Cannot find "+Path.GetPathRoot (localPath), 
 						DOWNLOAD_EXCEPTION_TYPE.FILESYSTEM_ERROR);
+					status = DOWNLOAD_STATUS.ERROR;
 
 					return;
 				}
@@ -237,9 +237,9 @@ namespace libDownload
 			{
 				if (!Directory.Exists (localPath))
 				{
-					status = DOWNLOAD_STATUS.ERROR;
 					exception = new DownloadException (
 						"Cannot find "+ localPath, DOWNLOAD_EXCEPTION_TYPE.FILESYSTEM_ERROR);
+					status = DOWNLOAD_STATUS.ERROR;
 					return;
 				}
 			}
@@ -287,8 +287,8 @@ namespace libDownload
 				localPath = Path.Combine (localPath, filename);
 			}
 
-			length = webResp.ContentLength;
-			long part_length = length/parts;
+			length = new Length (webResp.ContentLength);
+			long part_length = length.value/parts;
 			long prev_length = 0, next_length = part_length;
 			string _localPath;
 
@@ -303,7 +303,7 @@ namespace libDownload
 			}
 			_localPath = localPath + ".part" + (parts).ToString();
 			listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
-			                                     prev_length, length - 1, parts));
+			                                     prev_length, length.value - 1, parts));
 			foreach (HTTPDownloadPart part in listParts)
 			{
 				part.webProxy = proxy;
@@ -326,16 +326,16 @@ namespace libDownload
 				{
 					if (!File.Exists (localPath + ".part" + i.ToString ()))
 					{
-						status = DOWNLOAD_STATUS.ERROR;
 						exception = new DownloadException ("Cannot find file " + 
 						                             localPath + ".part" +
 						                             i.ToString (),
-						                                   DOWNLOAD_EXCEPTION_TYPE.FILESYSTEM_ERROR);
+					                                 DOWNLOAD_EXCEPTION_TYPE.FILESYSTEM_ERROR);
+						status = DOWNLOAD_STATUS.ERROR;
 					}
 				}
 
-				length = _length;
-				long part_length = length/parts;
+				length = new Length (_length);
+				long part_length = length.value/parts;
 				long prev_length = 0, next_length = part_length;
 				string _localPath;
 
@@ -351,7 +351,7 @@ namespace libDownload
 
 				_localPath = localPath + ".part" + (parts).ToString();
 				listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
-				                                     prev_length, length, parts));
+				                                     prev_length, length.value, parts));
 			}
 
 			foreach (HTTPDownloadPart part in listParts)

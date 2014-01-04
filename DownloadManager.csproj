@@ -62,13 +62,11 @@
     <Compile Include="DMCategoryTreeView.cs" />
     <Compile Include="ProgressWindow.cs" />
     <Compile Include="gtk-gui\DownloadManager.ProgressWindow.cs" />
-    <Compile Include="DMDownload.cs">
-      <DependentUpon>DMDownloadTreeView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="FindDialog.cs" />
     <Compile Include="gtk-gui\DownloadManager.FindDialog.cs" />
     <Compile Include="PartsProgressWidget.cs" />
+    <Compile Include="DMDownload.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

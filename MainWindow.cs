@@ -59,15 +59,15 @@ public partial class MainWindow: Gtk.Window
 		if (time > 60)
 			return (time/60).ToString () + ":" + (time%60).ToString ();
 
-		return time.ToString ();
+		return time.ToString () + " sec";
 	}
 
 	bool updateFunc ()
 	{
 		foreach (DMDownload dwnld in listDownloads)
 		{
-			long downloaded = dwnld.download.getDownloaded ();
-			long speed = dwnld.download.getSpeed ();
+			Length downloaded = dwnld.download.getDownloaded ();
+			Speed speed = dwnld.download.getSpeed ();
 			if (dwnld.window != null)
 			    dwnld.window.updateProgress (downloaded, speed);
 

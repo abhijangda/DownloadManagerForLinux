@@ -97,17 +97,17 @@ namespace DownloadManager
 			}
 		}
 
-		public void updateProgress (long downloaded, long speed)
+		public void updateProgress (Length downloaded, Speed speed)
 		{
 			if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADING)
 			{
 				lblSpeed.Text = speed.ToString ();
 				lblStatus.Text = downloaded.ToString () + " / " + dwnload.download.length.ToString ();
-				lblTimeLeft.Text = MainWindow.getTime (dwnload.download.length - downloaded, speed);
-				if (dwnload.download.length != 0)
+				lblTimeLeft.Text = MainWindow.getTime (dwnload.download.length.value - downloaded.value, speed.value);
+				if (dwnload.download.length.value != 0)
 				{
 					dmprogressbar.setProgress (
-						(float)((double)downloaded / dwnload.download.length));
+						(float)((double)downloaded.value / dwnload.download.length.value));
 					Gtk.TreeIter iter;
 					partsProgress._listStore.GetIterFirst (out iter);
 					for (int i = 0; i < dwnload.download.parts; i++)
@@ -148,7 +148,7 @@ namespace DownloadManager
 			}
 			else
 			{
-				dwnload.download.resume (dwnload.download.length);
+				dwnload.download.resume (dwnload.download.length.value);
 			}
 		}
 
