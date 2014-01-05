@@ -1,13 +1,14 @@
 using System;
 using Gtk;
 using libDownload;
+using System.Collections.Generic;
 
 namespace DownloadManager
 {
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class DMDownloadTreeView : Gtk.TreeView
 	{
-		Gtk.ListStore listStore;
+		public Gtk.ListStore listStore {get; private set;}
 		public DMDownloadTreeView ()
 		{
 			Gtk.TreeViewColumn filenamecolumn = new Gtk.TreeViewColumn ();
@@ -130,6 +131,31 @@ namespace DownloadManager
 		public void showCategory (params string[] cats)
 		{
 
+		}
+
+		public void searchInColumns (string text, List<int> columns)
+		{
+			TreeIter iter;
+			if (this.Selection.GetSelected (out iter))
+			    listStore.IterNext (ref iter);
+			else
+				listStore.GetIterFirst (out iter);
+
+			while (listStore.IterIsValid (iter))
+			{
+				string value = "";
+				foreach (int column in columns)
+				{
+					value = (string) listStore.GetValue (iter, column+1);
+					if (value == text)
+					{
+						this.Selection.SelectIter (iter);
+						return;
+					}
+				}
+
+				listStore.IterNext (ref iter);
+			}
 		}
 	}
 }

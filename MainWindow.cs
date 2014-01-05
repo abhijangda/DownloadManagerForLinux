@@ -10,9 +10,11 @@ public partial class MainWindow: Gtk.Window
 	List<DMDownload> listAllDownloads;
 	public static DownloadManager.Settings settingsManager;
 	public static MainWindow main_instance;
+	public Length total_downloaded;
 
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
+		total_downloaded = new Length (0);
 		listRunningDownloads = new List<DMDownload> ();
 		GLib.Timeout.Add (1000, this.updateFunc);
 		settingsManager = new DownloadManager.Settings (
@@ -21,6 +23,12 @@ public partial class MainWindow: Gtk.Window
 		settingsManager.loadDownloads (ref listAllDownloads);
 		Build ();
 		notebook.CurrentPage = 0;
+	}
+
+	private void updateDMDownloadTreeView ()
+	{
+		foreach (DMDownload dmld in listAllDownloads)
+			dmDownloadTreeView.addDownloadRow (dmld);
 	}
 
 	public void addToListRunningDownloads (DMDownload dmld)
@@ -81,6 +89,8 @@ public partial class MainWindow: Gtk.Window
 
 	bool updateFunc ()
 	{
+		Speed total_speed = new Speed (0);
+
 		foreach (DMDownload dwnld in listRunningDownloads)
 		{
 			Length downloaded = dwnld.download.getDownloaded ();
@@ -89,7 +99,12 @@ public partial class MainWindow: Gtk.Window
 			    dwnld.window.updateProgress (downloaded, speed);
 
 			dmDownloadTreeView.updateDownloadStatus (dwnld, downloaded, speed);
+			total_speed.value += speed.value;
 		}
+
+		lblSpeed.Text = "Speed " + total_speed.ToString ();
+		total_downloaded.value += total_speed.value;
+		lblDownloaded.Text = "Downloaded " + total_downloaded.ToString ();
 		return true;
 	}
 
@@ -225,7 +240,7 @@ public partial class MainWindow: Gtk.Window
 		Download.speed_level = DOWNLOAD_SPEED_LEVEL.MEDIUM;
 	}
 
-	protected void OnSpeedHighActivated (object sender, EventArgs e)
+	protected void OnSpeedMediumActivateded (object sender, EventArgs e)
 	{
 		Download.speed_level = DOWNLOAD_SPEED_LEVEL.HIGH;
 	}
@@ -284,6 +299,14 @@ public partial class MainWindow: Gtk.Window
 	}
 	protected void OnToolbarFindActivated (object sender, EventArgs e)
 	{
+		TreeViewColumn [] columns = dmDownloadTreeView.Columns;
+		List<string> array = new List<string> ();
+		foreach (TreeViewColumn column in columns)
+		{
+			array.Add (column.Title);
+		}
 
+		FindDialog find_dlg = new FindDialog (array, dmDownloadTreeView.searchInColumns);
+		find_dlg.ShowAll ();
 	}
 }
