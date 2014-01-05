@@ -20,7 +20,7 @@ public partial class MainWindow
 	private global::Gtk.VBox vbox1;
 	private global::Gtk.MenuBar menubar1;
 	private global::Gtk.Toolbar toolbar1;
-	private global::Gtk.Notebook notebook1;
+	private global::Gtk.Notebook notebook;
 	private global::Gtk.HPaned hpaned1;
 	private global::Gtk.ScrolledWindow GtkScrolledWindow;
 	private global::DownloadManager.DMCategoryTreeView dmCategoryTreeView;
@@ -102,11 +102,11 @@ public partial class MainWindow
 		w3.Expand = false;
 		w3.Fill = false;
 		// Container child vbox1.Gtk.Box+BoxChild
-		this.notebook1 = new global::Gtk.Notebook ();
-		this.notebook1.CanFocus = true;
-		this.notebook1.Name = "notebook1";
-		this.notebook1.CurrentPage = 0;
-		// Container child notebook1.Gtk.Notebook+NotebookChild
+		this.notebook = new global::Gtk.Notebook ();
+		this.notebook.CanFocus = true;
+		this.notebook.Name = "notebook";
+		this.notebook.CurrentPage = 0;
+		// Container child notebook.Gtk.Notebook+NotebookChild
 		this.hpaned1 = new global::Gtk.HPaned ();
 		this.hpaned1.CanFocus = true;
 		this.hpaned1.Name = "hpaned1";
@@ -134,33 +134,33 @@ public partial class MainWindow
 		this.dmDownloadTreeView.Name = "dmDownloadTreeView";
 		this.GtkScrolledWindow1.Add (this.dmDownloadTreeView);
 		this.hpaned1.Add (this.GtkScrolledWindow1);
-		this.notebook1.Add (this.hpaned1);
+		this.notebook.Add (this.hpaned1);
 		// Notebook tab
 		this.label1 = new global::Gtk.Label ();
 		this.label1.Name = "label1";
 		this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Downloads");
-		this.notebook1.SetTabLabel (this.hpaned1, this.label1);
+		this.notebook.SetTabLabel (this.hpaned1, this.label1);
 		this.label1.ShowAll ();
 		// Notebook tab
 		global::Gtk.Label w9 = new global::Gtk.Label ();
 		w9.Visible = true;
-		this.notebook1.Add (w9);
+		this.notebook.Add (w9);
 		this.label2 = new global::Gtk.Label ();
 		this.label2.Name = "label2";
 		this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Torrents");
-		this.notebook1.SetTabLabel (w9, this.label2);
+		this.notebook.SetTabLabel (w9, this.label2);
 		this.label2.ShowAll ();
 		// Notebook tab
 		global::Gtk.Label w10 = new global::Gtk.Label ();
 		w10.Visible = true;
-		this.notebook1.Add (w10);
+		this.notebook.Add (w10);
 		this.label3 = new global::Gtk.Label ();
 		this.label3.Name = "label3";
 		this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("FTP Get");
-		this.notebook1.SetTabLabel (w10, this.label3);
+		this.notebook.SetTabLabel (w10, this.label3);
 		this.label3.ShowAll ();
-		this.vbox1.Add (this.notebook1);
-		global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.notebook1]));
+		this.vbox1.Add (this.notebook);
+		global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.notebook]));
 		w11.Position = 2;
 		// Container child vbox1.Gtk.Box+BoxChild
 		this.statusbar1 = new global::Gtk.Statusbar ();

@@ -13,6 +13,7 @@ namespace DownloadManager
 			Application.Init ();
 			MainWindow win = new MainWindow ();
 			MainWindow.main_instance = win;
+			win.Maximize ();
 			win.Show ();
 			Application.Run ();
 		}

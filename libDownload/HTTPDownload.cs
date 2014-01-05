@@ -35,7 +35,6 @@ namespace libDownload
 			downloadThread.Start ();
 		}
 
-
 		void _startDownload ()
 		{
 			try

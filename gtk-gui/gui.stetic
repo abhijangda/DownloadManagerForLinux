@@ -89,6 +89,243 @@
         <property name="ShortLabel" translatable="yes">SpeedFull</property>
         <signal name="Activated" handler="OnSpeedHighActivated" />
       </action>
+      <action id="DownloadAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Download</property>
+        <property name="ShortLabel" translatable="yes">Download</property>
+      </action>
+      <action id="StartAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Start</property>
+        <property name="ShortLabel" translatable="yes">Start</property>
+      </action>
+      <action id="PauseAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Pause</property>
+        <property name="ShortLabel" translatable="yes">Pause</property>
+      </action>
+      <action id="RestartAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Restart</property>
+        <property name="ShortLabel" translatable="yes">Restart</property>
+      </action>
+      <action id="CancelAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Cancel</property>
+        <property name="ShortLabel" translatable="yes">Cancel</property>
+      </action>
+      <action id="CreateQueueAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Create Queue</property>
+        <property name="ShortLabel" translatable="yes">Create Queue Download</property>
+      </action>
+      <action id="StartQueueAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Start Queue</property>
+        <property name="ShortLabel" translatable="yes">Start Queue</property>
+      </action>
+      <action id="StopQueueAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Stop Queue</property>
+        <property name="ShortLabel" translatable="yes">Stop Queue</property>
+      </action>
+      <action id="DeleteQueueAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Delete Queue</property>
+        <property name="ShortLabel" translatable="yes">Delete Queue</property>
+      </action>
+      <action id="ViewAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">View</property>
+        <property name="ShortLabel" translatable="yes">View</property>
+      </action>
+      <action id="ToolbarAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Toolbar</property>
+        <property name="ShortLabel" translatable="yes">Toolbar</property>
+      </action>
+      <action id="NewDownloadAction1">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">New Download</property>
+        <property name="ShortLabel" translatable="yes">New Download</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="AddExistingDownloadAction1">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Add Existing Download</property>
+        <property name="ShortLabel" translatable="yes">Add Existing Download</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="StartAction1">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Start </property>
+        <property name="ShortLabel" translatable="yes">Start </property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="PauseAction1">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Pause</property>
+        <property name="ShortLabel" translatable="yes">Pause</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="CancelAction1">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Cancel</property>
+        <property name="ShortLabel" translatable="yes">Cancel</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="RestartAction1">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Restart</property>
+        <property name="ShortLabel" translatable="yes">Restart</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="SpeedLimitAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Speed Limit</property>
+        <property name="ShortLabel" translatable="yes">Speed Limit</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="ProgressWindowAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Progress Window</property>
+        <property name="ShortLabel" translatable="yes">Progress Window</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="PartsStatusAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Parts Status</property>
+        <property name="ShortLabel" translatable="yes">Parts Status</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="ProgressBarAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Progress Bar</property>
+        <property name="ShortLabel" translatable="yes">Progress Bar</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="StatusAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Status</property>
+        <property name="ShortLabel" translatable="yes">Status</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="TimeLeftAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Time Left</property>
+        <property name="ShortLabel" translatable="yes">Time Left</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="SpeedAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Speed</property>
+        <property name="ShortLabel" translatable="yes">Speed</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="StatusBarAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Status Bar</property>
+        <property name="ShortLabel" translatable="yes">Status Bar</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="DownloadedAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Downloaded</property>
+        <property name="ShortLabel" translatable="yes">Downloaded</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="SpeedAction1">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Speed</property>
+        <property name="ShortLabel" translatable="yes">Speed</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="DownloadsAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Downloads</property>
+        <property name="ShortLabel" translatable="yes">Downloads</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="TorrentsAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Torrents</property>
+        <property name="ShortLabel" translatable="yes">Torrents</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="FTPGetAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">FTP Get</property>
+        <property name="ShortLabel" translatable="yes">FTP Get</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="FindAction">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Find</property>
+        <property name="ShortLabel" translatable="yes">Find</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
+      <action id="OptionsAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Options</property>
+        <property name="ShortLabel" translatable="yes">Options</property>
+      </action>
+      <action id="PreferencesAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Preferences</property>
+        <property name="ShortLabel" translatable="yes">Preferences</property>
+      </action>
+      <action id="TrafficUsageModeAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Traffic Usage Mode</property>
+        <property name="ShortLabel" translatable="yes">Traffic Usage Mode</property>
+      </action>
+      <action id="LowSpeedAction">
+        <property name="Type">Radio</property>
+        <property name="Label" translatable="yes">Low Speed</property>
+        <property name="ShortLabel" translatable="yes">Low Speed</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+        <property name="Value">0</property>
+        <property name="Group">group1</property>
+      </action>
+      <action id="MediumSpeedAction">
+        <property name="Type">Radio</property>
+        <property name="Label" translatable="yes">Medium Speed</property>
+        <property name="ShortLabel" translatable="yes">Medium Speed</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+        <property name="Value">0</property>
+        <property name="Group">group1</property>
+      </action>
+      <action id="HighSpeedAction">
+        <property name="Type">Radio</property>
+        <property name="Label" translatable="yes">High Speed</property>
+        <property name="ShortLabel" translatable="yes">High Speed</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+        <property name="Value">0</property>
+        <property name="Group">group1</property>
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MainWindow</property>
@@ -105,6 +342,51 @@
               <node type="Menu" action="FileAction">
                 <node type="Menuitem" action="NewDownloadAction" />
                 <node type="Menuitem" action="AddExistingDownloadAction" />
+                <node type="Menuitem" action="CreateQueueAction" />
+                <node type="Menuitem" action="DeleteQueueAction" />
+              </node>
+              <node type="Menu" action="DownloadAction">
+                <node type="Menuitem" action="StartAction" />
+                <node type="Menuitem" action="PauseAction" />
+                <node type="Menuitem" action="RestartAction" />
+                <node type="Menuitem" action="CancelAction" />
+                <node type="Separator" />
+                <node type="Menuitem" action="StartQueueAction" />
+                <node type="Menuitem" action="StopQueueAction" />
+              </node>
+              <node type="Menu" action="ViewAction">
+                <node type="Menu" action="ToolbarAction">
+                  <node type="Menuitem" action="NewDownloadAction1" />
+                  <node type="Menuitem" action="AddExistingDownloadAction1" />
+                  <node type="Menuitem" action="StartAction1" />
+                  <node type="Menuitem" action="PauseAction1" />
+                  <node type="Menuitem" action="CancelAction1" />
+                  <node type="Menuitem" action="RestartAction1" />
+                  <node type="Menuitem" action="SpeedLimitAction" />
+                  <node type="Menuitem" action="FindAction" />
+                </node>
+                <node type="Menu" action="ProgressWindowAction">
+                  <node type="Menuitem" action="PartsStatusAction" />
+                  <node type="Menuitem" action="ProgressBarAction" />
+                  <node type="Menuitem" action="StatusAction" />
+                  <node type="Menuitem" action="TimeLeftAction" />
+                  <node type="Menuitem" action="SpeedAction" />
+                </node>
+                <node type="Menu" action="StatusBarAction">
+                  <node type="Menuitem" action="DownloadedAction" />
+                  <node type="Menuitem" action="SpeedAction1" />
+                </node>
+                <node type="Menuitem" action="DownloadsAction" />
+                <node type="Menuitem" action="TorrentsAction" />
+                <node type="Menuitem" action="FTPGetAction" />
+              </node>
+              <node type="Menu" action="OptionsAction">
+                <node type="Menuitem" action="PreferencesAction" />
+                <node type="Menu" action="TrafficUsageModeAction">
+                  <node type="Menuitem" action="LowSpeedAction" />
+                  <node type="Menuitem" action="MediumSpeedAction" />
+                  <node type="Menuitem" action="HighSpeedAction" />
+                </node>
               </node>
             </node>
           </widget>
@@ -122,11 +404,14 @@
             <node name="toolbar1" type="Toolbar">
               <node type="Toolitem" action="toolbarNewDownload" />
               <node type="Toolitem" action="toolbarAddDownload" />
+              <node type="Separator" />
               <node type="Toolitem" action="mediaPlayAction" />
               <node type="Toolitem" action="mediaPauseAction" />
               <node type="Toolitem" action="cancelAction" />
               <node type="Toolitem" action="refreshAction" />
+              <node type="Separator" />
               <node type="Toolitem" action="findAction" />
+              <node type="Separator" />
               <node type="Toolitem" action="preferencesAction" />
               <node type="Toolitem" action="SpeedLowAction" />
               <node type="Toolitem" action="SpeedMediumAction" />
@@ -141,8 +426,8 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.Notebook" id="notebook1">
-            <property name="MemberName" />
+          <widget class="Gtk.Notebook" id="notebook">
+            <property name="MemberName">notebook</property>
             <property name="CanFocus">True</property>
             <property name="CurrentPage">0</property>
             <child>
@@ -622,6 +907,7 @@
                         <property name="MemberName">rbNow</property>
                         <property name="CanFocus">True</property>
                         <property name="Label" translatable="yes">Now</property>
+                        <property name="Active">True</property>
                         <property name="DrawIndicator">True</property>
                         <property name="HasLabel">True</property>
                         <property name="UseUnderline">True</property>

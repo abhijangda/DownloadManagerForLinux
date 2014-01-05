@@ -6,21 +6,32 @@ using DownloadManager;
 
 public partial class MainWindow: Gtk.Window
 {	
-	List<DMDownload> listDownloads;
+	List<DMDownload> listRunningDownloads;
+	List<DMDownload> listAllDownloads;
 	public static DownloadManager.Settings settingsManager;
 	public static MainWindow main_instance;
 
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
-		listDownloads = new List<DMDownload> ();
+		listRunningDownloads = new List<DMDownload> ();
 		GLib.Timeout.Add (1000, this.updateFunc);
-		settingsManager = new DownloadManager.Settings ("");
+		settingsManager = new DownloadManager.Settings (
+			Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+		listAllDownloads = new List<DMDownload> ();
+		settingsManager.loadDownloads (ref listAllDownloads);
 		Build ();
+		notebook.CurrentPage = 0;
+	}
+
+	public void addToListRunningDownloads (DMDownload dmld)
+	{
+		listRunningDownloads.Add (dmld);
+		listAllDownloads.Add (dmld);
 	}
 
 	public void OnDownloadStatusChanged (Download dwnld)
 	{
-		foreach (DMDownload dmld in listDownloads)
+		foreach (DMDownload dmld in listRunningDownloads)
 		{
 			if (dmld.download == dwnld)
 			{
@@ -29,17 +40,23 @@ public partial class MainWindow: Gtk.Window
 
 				if (dwnld.status == DOWNLOAD_STATUS.DOWNLOADED)
 				{
+					listRunningDownloads.Remove (dmld);
 				}
 				else if (dwnld.status == DOWNLOAD_STATUS.DOWNLOADING)
 				{
 				}
 				else if (dwnld.status == DOWNLOAD_STATUS.ERROR)
 				{
+					listRunningDownloads.Remove (dmld);
 				}
 				else if (dwnld.status == DOWNLOAD_STATUS.NOT_STARTED)
 				{
 				}
-				else
+				else if (dwnld.status == DOWNLOAD_STATUS.PAUSED)
+				{
+					listRunningDownloads.Remove (dmld);
+				}
+				else //dwnld.status == DOWNLOAD_STATUS.MERGING
 				{
 				}
 			}
@@ -64,7 +81,7 @@ public partial class MainWindow: Gtk.Window
 
 	bool updateFunc ()
 	{
-		foreach (DMDownload dwnld in listDownloads)
+		foreach (DMDownload dwnld in listRunningDownloads)
 		{
 			Length downloaded = dwnld.download.getDownloaded ();
 			Speed speed = dwnld.download.getSpeed ();
@@ -76,8 +93,35 @@ public partial class MainWindow: Gtk.Window
 		return true;
 	}
 
+	private void quitWindow ()
+	{
+		foreach (DMDownload dmld in listRunningDownloads)
+			dmld.download.stop ();
+
+		settingsManager.storeInfo (listAllDownloads);
+	}
+
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
 	{
+		foreach (DMDownload dmld in listRunningDownloads)
+		{
+			if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADING)
+			{
+				Gtk.MessageDialog msg_dlg =
+					new Gtk.MessageDialog (this, DialogFlags.Modal, MessageType.Warning,
+					                       ButtonsType.YesNo, 
+					                       "Downloads are still in progress."+
+					                       " Are you sure you want to close?");
+				msg_dlg.ShowAll ();
+				if (msg_dlg.Run () == (int)ResponseType.No)
+				{
+					a.RetVal = false;
+					return;
+				}
+				quitWindow ();
+				a.RetVal = true;
+			}
+		}
 		Application.Quit ();
 		a.RetVal = true;
 	}
@@ -135,7 +179,7 @@ public partial class MainWindow: Gtk.Window
 
 			DMDownload dmdl = new DMDownload (dl, null);
 			dmdl.typeCategory = new DMTypeCategory (new_dlg.typeCategory);
-			listDownloads.Add (dmdl);
+			addToListRunningDownloads (dmdl);
 			dmDownloadTreeView.addDownloadRow (dmdl);
 
 			if (new_dlg.start == 0)
@@ -178,39 +222,21 @@ public partial class MainWindow: Gtk.Window
 	
 	protected void OnSpeedMediumActivated (object sender, EventArgs e)
 	{
-		foreach (DMDownload dmld in listDownloads)
-			dmld.download.speed_level = DOWNLOAD_SPEED_LEVEL.MEDIUM;
+		Download.speed_level = DOWNLOAD_SPEED_LEVEL.MEDIUM;
 	}
 
 	protected void OnSpeedHighActivated (object sender, EventArgs e)
 	{
-		foreach (DMDownload dmld in listDownloads)
-			dmld.download.speed_level = DOWNLOAD_SPEED_LEVEL.HIGH;
+		Download.speed_level = DOWNLOAD_SPEED_LEVEL.HIGH;
 	}
 
 	protected void OnSpeedLowActivated (object o, EventArgs args)
 	{
-		foreach (DMDownload dmld in listDownloads)
-			dmld.download.speed_level = DOWNLOAD_SPEED_LEVEL.LOW;
+		Download.speed_level = DOWNLOAD_SPEED_LEVEL.LOW;
 	}
 
 	protected override bool OnDestroyEvent (Gdk.Event evnt)
 	{
-		foreach (DMDownload dmld in listDownloads)
-		{
-			if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADING)
-			{
-				Gtk.MessageDialog msg_dlg =
-					new Gtk.MessageDialog (this, DialogFlags.Modal, MessageType.Warning,
-				                           ButtonsType.YesNo, 
-					                       "Downloads are still in progress."+
-					                       " Are you sure you want to close?");
-				msg_dlg.ShowAll ();
-				if (msg_dlg.Run () == (int)ResponseType.Yes)
-					return false;
-				return true;
-			}
-		}
 		return true;
 	}
 
@@ -226,6 +252,7 @@ public partial class MainWindow: Gtk.Window
 			dmld.download.start ();
 		    dmld.window = new ProgressWindow (dmld);
 		    dmld.window.ShowAll ();
+			listRunningDownloads.Add (dmld);
 		}
 	}
 

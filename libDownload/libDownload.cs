@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -145,20 +146,7 @@ namespace libDownload
 		public delegate void OnStatusChanged (Download dwnld);
 		public OnStatusChanged statusChangeHandler;
 		public DownloadException exception;
-		private DOWNLOAD_SPEED_LEVEL _speed_level;
-		public DOWNLOAD_SPEED_LEVEL speed_level
-		{
-			get
-			{
-				return _speed_level;
-			}
-			set
-			{
-				foreach (DownloadPart part in listParts)
-					part.speed_level = value;
-				_speed_level = value;
-			}
-		}
+		public static DOWNLOAD_SPEED_LEVEL speed_level;
 		public int mergedParts;
 
 		public abstract void start ();
@@ -276,6 +264,13 @@ namespace libDownload
 			part.statusString = "Retrying...";
 			part.startDownload ();
 		}
+
+		public static Download loadFromXML (string xml)
+		{
+			MatchCollection mc = Regex.Matches (xml, ".+");
+
+			return null;
+		}
 	}
 
 	public abstract class DownloadPart
@@ -351,7 +346,7 @@ namespace libDownload
 				fs.Write (read, 0, count);
 				count = Answer.Read (read, 0, 1024);
 				//Console.WriteLine ("Received {0} {1}", partNumber, downloaded);
-				if (speed_level == DOWNLOAD_SPEED_LEVEL.LOW)
+				if (Download.speed_level == DOWNLOAD_SPEED_LEVEL.LOW)
 					System.Threading.Thread.Sleep (100);
 				else //speed_level == DOWNLOAD_SPEED_LEVEL.MEDIUM
 					System.Threading.Thread.Sleep (10);
