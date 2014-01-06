@@ -27,6 +27,7 @@ namespace libDownload
 			speed_level = DOWNLOAD_SPEED_LEVEL.HIGH;
 			statusString = "";
 			reTryingAttempts = 0;
+			credentials = null;
 		}
 
 		public override void startDownload ()
@@ -44,6 +45,7 @@ namespace libDownload
 				webReq = (HttpWebRequest)WebRequest.Create (remotePath);
 				webReq.Proxy = webProxy;
 				webReq.Method = "GET";
+				webReq.Credentials = credentials;
 				webReq.AddRange (start, end);
 				downloaded = 0;
 				length = end - start;
@@ -166,6 +168,8 @@ namespace libDownload
 			speed_level = DOWNLOAD_SPEED_LEVEL.HIGH;
 			generateFileName = _genFile;
 			proxyAddress = "";
+			authUsername = "";
+			authPassword = "";
 		}
 
 		public override bool isResumeSupported ()
@@ -252,6 +256,11 @@ namespace libDownload
 					proxy.Credentials = new NetworkCredential (proxyUsername, 
 					                                           proxyPassword);
 			}
+			NetworkCredential _credential = null;
+			if (authUsername != "")
+			{
+				_credential = new NetworkCredential (authUsername, authPassword);
+			}
 
 			try
 			{
@@ -263,6 +272,7 @@ namespace libDownload
 					webReq.UserAgent = "DML"; /*TODO: Change user agent*/
 					webReq.Headers.Add ("Accept-Encoding: gzip");
 					webReq.Headers.Add ("TransferEncoding: gzip");
+					webReq.Credentials = _credential;
 					webResp = (HttpWebResponse)webReq.GetResponse ();
 					remotePath = uri;
 				}
@@ -300,14 +310,18 @@ namespace libDownload
 				prev_length += part_length;
 				next_length += part_length;
 			}
+
 			_localPath = localPath + ".part" + (parts).ToString();
 			listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
-			                                     prev_length, length.value - 1, parts));
+			                                     prev_length, length.value - 1,
+			                                     parts));
+
 			foreach (HTTPDownloadPart part in listParts)
 			{
 				part.webProxy = proxy;
 				part.downloadedFunction = OnPartDownloaded;
 				part.errorFunction = OnPartError;
+				part.credentials = _credential;
 				part.startDownload ();
 			}
 
@@ -353,9 +367,14 @@ namespace libDownload
 				                                     prev_length, length.value, parts));
 			}
 
+			NetworkCredential credential = null;
+			if (authUsername != "")
+				credential = new NetworkCredential (authUsername, authPassword);
+
 			foreach (HTTPDownloadPart part in listParts)
 			{
 				part.downloadedFunction = OnPartDownloaded;
+				part.credentials = credential;
 				part.resumeDownload ();
 			}
 

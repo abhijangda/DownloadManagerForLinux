@@ -236,7 +236,7 @@ public partial class MainWindow
 		this.MediumSpeedAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Medium Speed");
 		w1.Add (this.MediumSpeedAction, null);
 		this.HighSpeedAction = new global::Gtk.RadioAction ("HighSpeedAction", global::Mono.Unix.Catalog.GetString ("High Speed"), null, null, 0);
-		this.HighSpeedAction.Group = this.MediumSpeedAction.Group;
+		this.HighSpeedAction.Group = this.LowSpeedAction.Group;
 		this.HighSpeedAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("High Speed");
 		w1.Add (this.HighSpeedAction, null);
 		this.UIManager.InsertActionGroup (w1, 0);
@@ -276,10 +276,10 @@ public partial class MainWindow
 		this.hpaned1 = new global::Gtk.HPaned ();
 		this.hpaned1.CanFocus = true;
 		this.hpaned1.Name = "hpaned1";
-		this.hpaned1.Position = 120;
+		this.hpaned1.Position = 174;
 		// Container child hpaned1.Gtk.Paned+PanedChild
 		this.GtkScrolledWindow = new global::Gtk.ScrolledWindow ();
-		this.GtkScrolledWindow.WidthRequest = 201;
+		this.GtkScrolledWindow.WidthRequest = 515;
 		this.GtkScrolledWindow.Name = "GtkScrolledWindow";
 		this.GtkScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
 		// Container child GtkScrolledWindow.Gtk.Container+ContainerChild

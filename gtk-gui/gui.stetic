@@ -436,11 +436,11 @@
               <widget class="Gtk.HPaned" id="hpaned1">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
-                <property name="Position">120</property>
+                <property name="Position">174</property>
                 <child>
                   <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
                     <property name="MemberName" />
-                    <property name="WidthRequest">201</property>
+                    <property name="WidthRequest">515</property>
                     <property name="ShadowType">In</property>
                     <child>
                       <widget class="DownloadManager.DMCategoryTreeView" id="dmCategoryTreeView">
@@ -1946,6 +1946,7 @@
                             <property name="MemberName">rbNow</property>
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes">Now</property>
+                            <property name="Active">True</property>
                             <property name="DrawIndicator">True</property>
                             <property name="HasLabel">True</property>
                             <property name="UseUnderline">True</property>

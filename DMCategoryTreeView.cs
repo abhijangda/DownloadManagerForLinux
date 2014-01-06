@@ -72,7 +72,8 @@ namespace DownloadManager
 			Gtk.TreeIter iter = treeStore.AppendValues (new Gdk.Pixbuf ("./../../field.png"), "Status");
 			foreach (DMStatusCategory satCat in listStatusCategories)
 			{
-				treeStore.AppendValues (iter, new Gdk.Pixbuf ("./../../field.png"), satCat.name);
+				treeStore.AppendValues (iter, new Gdk.Pixbuf ("./../../field.png"), 
+				                        satCat.name.Substring (0, 1) + satCat.name.Substring (1).ToLower ());
 			}
 
 			iter = treeStore.AppendValues (new Gdk.Pixbuf ("./../../field.png"), "Type");

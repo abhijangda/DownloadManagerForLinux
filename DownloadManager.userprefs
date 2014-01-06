@@ -1,13 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="AddExistingDialog.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DMCategoryTreeView.cs">
     <Files>
-      <File FileName="AddExistingDialog.cs" Line="60" Column="19" />
-      <File FileName="MainWindow.cs" Line="322" Column="4" />
-      <File FileName="DMDownloadTreeView.cs" Line="1" Column="1" />
+      <File FileName="AddExistingDialog.cs" Line="11" Column="18" />
+      <File FileName="MainWindow.cs" Line="326" Column="7" />
+      <File FileName="DMDownloadTreeView.cs" Line="87" Column="28" />
       <File FileName="libDownload/libDownload.cs" Line="1" Column="1" />
-      <File FileName="DMCategoryTreeView.cs" Line="1" Column="1" />
-      <File FileName="NewDialog.cs" Line="97" Column="4" />
+      <File FileName="DMCategoryTreeView.cs" Line="76" Column="57" />
+      <File FileName="NewDialog.cs" Line="1" Column="1" />
       <File FileName="libDownload/HTTPDownload.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>

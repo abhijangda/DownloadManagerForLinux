@@ -22,6 +22,13 @@ namespace DownloadManager
 			localPath = entryFilePath.Text;
 			SetSizeRequest (500,450);
 			Resizable = false;
+
+			foreach (string a in MainWindow.settingsManager.getKeyValueArray ("type-category"))
+			{
+				cbCategory.AppendText (a);
+			}
+
+			cbCategory.Active = 0;
 		}
 
 		protected void OnbuttonAddClicked (object sender, EventArgs e)

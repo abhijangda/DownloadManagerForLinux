@@ -27,6 +27,8 @@ namespace libDownload
 			webReq = null;
 			speed_level = DOWNLOAD_SPEED_LEVEL.HIGH;
 			proxyAddress = "";
+			authUsername = "";
+			authPassword = "";
 		}
 
 		public override void start ()
@@ -73,12 +75,17 @@ namespace libDownload
 					                                           proxyPassword);
 			}
 
+			NetworkCredential credential = null;
+			if (authUsername != "")
+				credential = new NetworkCredential (authUsername, authPassword);
+
 			try
 			{
 			    webReq = (FtpWebRequest)WebRequest.Create (remotePath);
 				webReq.UseBinary = true;
 				webReq.Proxy = proxy;
 				webReq.Method = WebRequestMethods.Ftp.DownloadFile;
+				webReq.Credentials = credential;
 				webResp = (FtpWebResponse)webReq.GetResponse ();
 			}
 
@@ -115,11 +122,12 @@ namespace libDownload
 			_localPath = localPath + ".part" + (parts).ToString();
 			listParts.Add (new FTPDownloadPart (remotePath, _localPath, 
 			                                     prev_length, length.value - 1, parts));
-			foreach (HTTPDownloadPart part in listParts)
+			foreach (DownloadPart part in listParts)
 			{
 				part.webProxy = proxy;
 				part.downloadedFunction = OnPartDownloaded;
 				part.errorFunction = OnPartError;
+				part.credentials = credential;
 				part.startDownload ();
 			}
 
@@ -165,9 +173,14 @@ namespace libDownload
 				                                    prev_length, length.value, parts));
 			}
 
+			NetworkCredential credential = null;
+			if (authUsername != "")
+				credential = new NetworkCredential (authUsername, authPassword);
+
 			foreach (DownloadPart part in listParts)
 			{
 				part.downloadedFunction = OnPartDownloaded;
+				part.credentials = credential;
 				part.resumeDownload ();
 			}
 
@@ -230,6 +243,7 @@ namespace libDownload
 				webReq.Proxy = webProxy;
 				webReq.Method = WebRequestMethods.Ftp.DownloadFile;
 				webReq.ContentOffset = start;
+				webReq.Credentials = credentials;
 				downloaded = 0;
 				length = end - start;
 				Console.WriteLine ("Sending Get {0} {1} {2}", 
@@ -288,6 +302,7 @@ namespace libDownload
 				status = DOWNLOAD_PART_STATUS.DOWNLOADING;
 				webReq = (FtpWebRequest)WebRequest.Create (remotePath);
 				webReq.Method = WebRequestMethods.Ftp.DownloadFile;
+				webReq.Credentials = credentials;
 				fs = new FileStream (localPath, FileMode.Append);
 				start = downloaded = fs.Length;
 

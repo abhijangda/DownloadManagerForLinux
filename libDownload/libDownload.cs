@@ -150,6 +150,25 @@ namespace libDownload
 		public int mergedParts;
 
 		public abstract void start ();
+		public string proxyAddress {get; protected set;}
+		public int proxyPort {get; protected set;}
+		public string proxyUsername {get; protected set;}
+		public string proxyPassword {get; protected set;}
+
+		public string authUsername {get; protected set;}
+		public string authPassword {get; protected set;}
+
+		public abstract string getFilename ();
+		public abstract void resume (long _length);
+		public abstract void incrementParts ();
+		public abstract bool isResumeSupported ();
+
+		public void setAuthentication (string _username, string _password)
+		{
+			authUsername = _username;
+			authPassword = _password;
+		}
+
 		public void stop ()
 		{
 			foreach (DownloadPart part in listParts)
@@ -158,7 +177,6 @@ namespace libDownload
 			status = DOWNLOAD_STATUS.PAUSED;
 		}
 
-		public abstract void resume (long _length);
 		public void cancel ()
 		{
 			stop ();
@@ -167,8 +185,6 @@ namespace libDownload
 
 			status = DOWNLOAD_STATUS.NOT_STARTED;
 		}
-
-		public abstract void incrementParts ();
 
 		public Length getDownloaded ()
 		{
@@ -180,7 +196,6 @@ namespace libDownload
 			return totalDownloaded;
 		}
 
-		public abstract bool isResumeSupported ();
 		public Speed getSpeed ()
 		{
 			Length prev_downloaded = _downloaded;
@@ -197,11 +212,6 @@ namespace libDownload
 		{
 			return listParts [part].statusString;
 		}
-		public abstract string getFilename ();
-		public string proxyAddress;
-		public int proxyPort;
-		public string proxyUsername;
-		public string proxyPassword;
 
 		public void setProxy (string _address, int port, string usr = "", string pwd = "")
 		{
@@ -250,6 +260,7 @@ namespace libDownload
 			fs.Close ();
 			status = DOWNLOAD_STATUS.DOWNLOADED;
 		}
+
 		protected void OnPartError (DownloadPart part)
 		{
 			if (maxReTryingAttempts == part.reTryingAttempts)
@@ -278,13 +289,14 @@ namespace libDownload
 		public long downloaded;
 		public short partNumber;
 		public WebProxy webProxy;
+		public NetworkCredential credentials;
 		private DOWNLOAD_PART_STATUS _status;
 		public DOWNLOAD_PART_STATUS status
 		{
 			get
 			{
 				return _status;
-			}
+			} 
 
 			set
 			{
@@ -294,6 +306,7 @@ namespace libDownload
 					downloadedFunction (this);
 			}
 		}
+
 		public DOWNLOAD_SPEED_LEVEL speed_level;
 		public long length;
 		public string statusString;
@@ -308,7 +321,9 @@ namespace libDownload
 		public OnDownloaded downloadedFunction {get; set;}
 		public delegate void OnError (DownloadPart part);
 		public OnError errorFunction {get; set;}
+
 		public abstract void startDownload ();
+		public abstract void resumeDownload ();
 
 		public void stopDownload ()
 		{
@@ -316,8 +331,6 @@ namespace libDownload
 			status = DOWNLOAD_PART_STATUS.IDLE;
 			downloadThread.Join ();
 		}
-
-		public abstract void resumeDownload ();
 
 		public void reTry ()
 		{
