@@ -22,6 +22,8 @@ public partial class MainWindow: Gtk.Window
 		listAllDownloads = new List<DMDownload> ();
 		settingsManager.loadDownloads (ref listAllDownloads);
 		Build ();
+		HighSpeedAction.Active = true;
+		dmDownloadTreeView.listAllDownloads = listAllDownloads;
 		notebook.CurrentPage = 0;
 	}
 
@@ -147,70 +149,77 @@ public partial class MainWindow: Gtk.Window
 		new_dlg.ShowAll ();
 		if (new_dlg.Run () == (int)Gtk.ResponseType.Ok)
 		{
-			if (new_dlg.remotePath == "")
-			{
-				Gtk.MessageDialog dlg = new Gtk.MessageDialog (
-					this, DialogFlags.DestroyWithParent, 
-					MessageType.Error, ButtonsType.Ok, 
-					"Please enter valid Address");
-
-				dlg.Show ();
-				dlg.Run ();
-				dlg.Destroy ();
-				new_dlg.Destroy ();
-				return;
-			}
-
-			if (new_dlg.localPath == "")
-			{
-				Gtk.MessageDialog dlg = new Gtk.MessageDialog (
-					this, DialogFlags.DestroyWithParent, 
-				    MessageType.Error, ButtonsType.Ok, 
-				    "Please enter valid Destination");
-
-				dlg.Show ();
-				dlg.Run ();
-				dlg.Destroy ();
-				new_dlg.Destroy ();
-				return;
-			}
-
-			Download dl;
-
-			if (new_dlg.remotePath.IndexOf ("ftp://") == 0)
-			{
-				dl = new FTPDownload (new_dlg.remotePath,
-				                      new_dlg.localPath,
-				                      OnDownloadStatusChanged,
-				                      new_dlg.genFilename);
-			}
-			else
-			{
-				dl = new HTTPDownload (new_dlg.remotePath,
-				                       new_dlg.localPath,
-				                       OnDownloadStatusChanged,
-				                       new_dlg.genFilename);
-			}
-
-			DMDownload dmdl = new DMDownload (dl, null);
-			dmdl.typeCategory = new DMTypeCategory (new_dlg.typeCategory);
-			addToListRunningDownloads (dmdl);
-			dmDownloadTreeView.addDownloadRow (dmdl);
-
-			if (new_dlg.start == 0)
-			{
-				/*Start Download Now*/
-				ProgressWindow progress_dlg = new ProgressWindow (dmdl);
-				progress_dlg.ShowAll ();
-				dmdl.window = progress_dlg;
-			}
-			else if (new_dlg.start == 2)
-			{
-				/*TODO: Schedule download*/
-			}
+			createNewDownload (new_dlg.remotePath, new_dlg.localPath,
+			                   new_dlg.genFilename, new_dlg.typeCategory,
+			                   new_dlg.start);
 		}
 
 		new_dlg.Destroy ();
+	}
+
+	private bool createNewDownload (string remotePath, string localPath, bool genFilename,
+			                        string typeCategory, int start)
+	{
+		if (remotePath == "")
+		{
+			Gtk.MessageDialog dlg = new Gtk.MessageDialog (
+				this, DialogFlags.DestroyWithParent, 
+				MessageType.Error, ButtonsType.Ok, 
+				"Please enter valid Address");
+
+			dlg.Show ();
+			dlg.Run ();
+			dlg.Destroy ();
+			return false;
+		}
+
+		if (localPath == "")
+		{
+			Gtk.MessageDialog dlg = new Gtk.MessageDialog (
+				this, DialogFlags.DestroyWithParent, 
+				MessageType.Error, ButtonsType.Ok, 
+				"Please enter valid Destination");
+
+			dlg.Show ();
+			dlg.Run ();
+			dlg.Destroy ();
+			return false;
+		}
+
+		Download dl;
+
+		if (remotePath.IndexOf ("ftp://") == 0)
+		{
+			dl = new FTPDownload (remotePath,
+			                      localPath,
+			                      OnDownloadStatusChanged,
+			                      genFilename);
+		}
+		else
+		{
+			dl = new HTTPDownload (remotePath,
+			                       localPath,
+			                       OnDownloadStatusChanged,
+			                       genFilename);
+		}
+
+		DMDownload dmdl = new DMDownload (dl, null);
+		dmdl.typeCategory = new DMTypeCategory (typeCategory);
+		addToListRunningDownloads (dmdl);
+		dmDownloadTreeView.addDownloadRow (dmdl);
+
+		if (start == 0)
+		{
+			/*Start Download Now*/
+			ProgressWindow progress_dlg = new ProgressWindow (dmdl);
+			progress_dlg.ShowAll ();
+			dmdl.window = progress_dlg;
+		}
+		else if (start == 2)
+		{
+			/*TODO: Schedule download*/
+		}
+		return true;
 	}
 
 	protected void dmDownloadTreeViewRowActivated (object o, RowActivatedArgs args)
@@ -240,7 +249,7 @@ public partial class MainWindow: Gtk.Window
 		Download.speed_level = DOWNLOAD_SPEED_LEVEL.MEDIUM;
 	}
 
-	protected void OnSpeedMediumActivateded (object sender, EventArgs e)
+	protected void OnSpeedHighActivated (object sender, EventArgs e)
 	{
 		Download.speed_level = DOWNLOAD_SPEED_LEVEL.HIGH;
 	}
@@ -297,6 +306,7 @@ public partial class MainWindow: Gtk.Window
 	{
 
 	}
+
 	protected void OnToolbarFindActivated (object sender, EventArgs e)
 	{
 		TreeViewColumn [] columns = dmDownloadTreeView.Columns;
@@ -308,5 +318,17 @@ public partial class MainWindow: Gtk.Window
 
 		FindDialog find_dlg = new FindDialog (array, dmDownloadTreeView.searchInColumns);
 		find_dlg.ShowAll ();
+	}
+
+	protected void OnAddExistingDownloadActivated (object sender, EventArgs e)
+	{
+		AddExistingDialog dlg = new AddExistingDialog ();
+		dlg.ShowAll ();
+		if (dlg.Run () == (int)ResponseType.Ok)
+		{
+			createNewDownload (dlg.remotePath, dlg.localPath, false, 
+			                   dlg.typeCategory, dlg.start);
+		}
+		dlg.Destroy ();
 	}
 }

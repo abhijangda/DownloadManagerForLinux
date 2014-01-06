@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Gtk;
 
 namespace DownloadManager
 {
@@ -78,6 +79,21 @@ namespace DownloadManager
 			   localPath = System.IO.Path.Combine (entrySaveTo.Text, entryFilename.Text);
 
 			Respond (Gtk.ResponseType.Ok);
+		}
+
+		protected void btnSelectFileClicked (object sender, EventArgs e)
+		{
+			FileChooserDialog dlg = new FileChooserDialog ("Select Folder", this, 
+			                                               FileChooserAction.SelectFolder);
+			dlg.AddButton (Stock.Cancel, ResponseType.Cancel);
+			dlg.AddButton (Stock.Open, ResponseType.Accept);
+			dlg.ShowAll ();
+
+			if (dlg.Run () == (int)ResponseType.Accept)
+			{
+				entrySaveTo.Text = dlg.Filename;
+			}
+			dlg.Destroy ();
 		}
 	}
 }

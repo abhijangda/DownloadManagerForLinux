@@ -9,6 +9,8 @@ namespace DownloadManager
 	public partial class DMDownloadTreeView : Gtk.TreeView
 	{
 		public Gtk.ListStore listStore {get; private set;}
+		public List<DMDownload> listAllDownloads {private get; set;}
+
 		public DMDownloadTreeView ()
 		{
 			Gtk.TreeViewColumn filenamecolumn = new Gtk.TreeViewColumn ();
@@ -81,6 +83,8 @@ namespace DownloadManager
 			stringColumnRender = new Gtk.CellRendererText ();
 			sectionsColumn.PackStart (stringColumnRender, true);
 			sectionsColumn.AddAttribute (stringColumnRender, "text", 6);
+
+			HeadersClickable = true;
 		}
 
 		public void addDownloadRow (DMDownload dwnld)
@@ -101,36 +105,56 @@ namespace DownloadManager
 				DMDownload dmld = (DMDownload) listStore.GetValue (iter, 7);
 				if (dmld.download.localPath == dwnld.download.localPath)
 				{
-					if (dmld.download.status == libDownload.DOWNLOAD_STATUS.DOWNLOADING)
-					{
-						listStore.SetValue (iter, 2, dwnld.download.length.ToString ());
-						listStore.SetValue (iter, 3, (100*downloaded.value)/(float)dwnld.download.length.value);
-						listStore.SetValue (iter, 4, MainWindow.getTime (dwnld.download.length.value - downloaded.value, speed.value));
-						listStore.SetValue (iter, 5, speed.ToString ());
-						listStore.SetValue (iter, 6, dwnld.download.parts.ToString ());
-					}
-					else if (dmld.download.status == libDownload.DOWNLOAD_STATUS.MERGING)
-					{
-						listStore.SetValue (iter, 3, (float)100.0);
-						listStore.SetValue (iter, 4, "");
-						listStore.SetValue (iter, 5, "");
-						listStore.SetValue (iter, 6, dwnld.download.parts.ToString ());
-					}
-					else if (dmld.download.status == libDownload.DOWNLOAD_STATUS.DOWNLOADED)
-					{
-						listStore.SetValue (iter, 3, (float)100.0);
-						listStore.SetValue (iter, 4, "");
-						listStore.SetValue (iter, 5, "");
-						listStore.SetValue (iter, 6, dwnld.download.parts.ToString ());
-					}
+					setIterValues (dmld, iter, downloaded, speed);
 				}
 			}
 			while (listStore.IterNext (ref iter));
 		}
 
+		private void setIterValues (DMDownload dwnld, TreeIter iter, 
+		                            Length downloaded = default (Length),
+		                            Speed speed = default (Speed))
+		{
+			if (dwnld.download.status == libDownload.DOWNLOAD_STATUS.DOWNLOADING)
+			{
+				listStore.SetValue (iter, 2, dwnld.download.length.ToString ());
+				listStore.SetValue (iter, 3, (100*downloaded.value)/(float)dwnld.download.length.value);
+				listStore.SetValue (iter, 4, MainWindow.getTime (dwnld.download.length.value - downloaded.value, speed.value));
+				listStore.SetValue (iter, 5, speed.ToString ());
+				listStore.SetValue (iter, 6, dwnld.download.parts.ToString ());
+			}
+			else if (dwnld.download.status == libDownload.DOWNLOAD_STATUS.MERGING)
+			{
+				listStore.SetValue (iter, 3, (float)100.0);
+				listStore.SetValue (iter, 4, "");
+				listStore.SetValue (iter, 5, "");
+				listStore.SetValue (iter, 6, dwnld.download.parts.ToString ());
+			}
+			else if (dwnld.download.status == libDownload.DOWNLOAD_STATUS.DOWNLOADED)
+			{
+				listStore.SetValue (iter, 3, (float)100.0);
+				listStore.SetValue (iter, 4, "");
+				listStore.SetValue (iter, 5, "");
+				listStore.SetValue (iter, 6, dwnld.download.parts.ToString ());
+			}
+		}
+
 		public void showCategory (params string[] cats)
 		{
-
+			listStore.Clear ();
+			foreach (DMDownload dmld in listAllDownloads)
+			{
+				foreach (string cat in cats)
+				{
+					TreeIter iter;
+					if (dmld.typeCategory.name == cat ||
+					    Enum.GetName (typeof (DOWNLOAD_STATUS) ,dmld.download.status) == cat)
+					{
+						iter = listStore.Append ();
+						setIterValues (dmld, iter);
+					}
+				}
+			}
 		}
 
 		public void searchInColumns (string text, List<int> columns)

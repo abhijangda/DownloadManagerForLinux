@@ -67,6 +67,8 @@
     <Compile Include="gtk-gui\DownloadManager.FindDialog.cs" />
     <Compile Include="PartsProgressWidget.cs" />
     <Compile Include="DMDownload.cs" />
+    <Compile Include="AddExistingDialog.cs" />
+    <Compile Include="gtk-gui\DownloadManager.AddExistingDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

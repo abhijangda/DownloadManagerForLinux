@@ -10,7 +10,6 @@ namespace DownloadManager
 		private global::Gtk.Label label2;
 		private global::Gtk.Table table;
 		private global::Gtk.Button btnClose;
-		private global::Gtk.Button btnFindPrevious;
 		private global::Gtk.Button btnFind;
 
 		protected virtual void Build ()
@@ -89,17 +88,6 @@ namespace DownloadManager
 			w8.Expand = false;
 			w8.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
-			this.btnFindPrevious = new global::Gtk.Button ();
-			this.btnFindPrevious.CanFocus = true;
-			this.btnFindPrevious.Name = "btnFindPrevious";
-			this.btnFindPrevious.UseUnderline = true;
-			this.btnFindPrevious.Label = global::Mono.Unix.Catalog.GetString ("Find Previous");
-			this.AddActionWidget (this.btnFindPrevious, 0);
-			global::Gtk.ButtonBox.ButtonBoxChild w9 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w7 [this.btnFindPrevious]));
-			w9.Position = 1;
-			w9.Expand = false;
-			w9.Fill = false;
-			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.btnFind = new global::Gtk.Button ();
 			this.btnFind.CanDefault = true;
 			this.btnFind.CanFocus = true;
@@ -107,10 +95,10 @@ namespace DownloadManager
 			this.btnFind.UseUnderline = true;
 			this.btnFind.Label = global::Mono.Unix.Catalog.GetString ("Find Next");
 			this.AddActionWidget (this.btnFind, -5);
-			global::Gtk.ButtonBox.ButtonBoxChild w10 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w7 [this.btnFind]));
-			w10.Position = 2;
-			w10.Expand = false;
-			w10.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w9 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w7 [this.btnFind]));
+			w9.Position = 1;
+			w9.Expand = false;
+			w9.Fill = false;
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}

@@ -11,7 +11,7 @@ namespace DownloadManager
 		private global::Gtk.HBox hbox2;
 		private global::Gtk.Label label2;
 		private global::Gtk.Entry entrySaveTo;
-		private global::Gtk.Button button13;
+		private global::Gtk.Button btnSelectFile;
 		private global::Gtk.CheckButton chkGenFilename;
 		private global::Gtk.HBox hbox4;
 		private global::Gtk.Label label6;
@@ -104,13 +104,13 @@ namespace DownloadManager
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.entrySaveTo]));
 			w6.Position = 1;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.button13 = new global::Gtk.Button ();
-			this.button13.CanFocus = true;
-			this.button13.Name = "button13";
-			this.button13.UseUnderline = true;
-			this.button13.Label = global::Mono.Unix.Catalog.GetString ("...");
-			this.hbox2.Add (this.button13);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.button13]));
+			this.btnSelectFile = new global::Gtk.Button ();
+			this.btnSelectFile.CanFocus = true;
+			this.btnSelectFile.Name = "btnSelectFile";
+			this.btnSelectFile.UseUnderline = true;
+			this.btnSelectFile.Label = global::Mono.Unix.Catalog.GetString ("...");
+			this.hbox2.Add (this.btnSelectFile);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.btnSelectFile]));
 			w7.Position = 2;
 			w7.Expand = false;
 			w7.Fill = false;
@@ -242,10 +242,11 @@ namespace DownloadManager
 			// Container child table1.Gtk.Table+TableChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
+			this.label3.Xalign = 0F;
 			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("User ID");
 			this.table1.Add (this.label3);
 			global::Gtk.Table.TableChild w19 = ((global::Gtk.Table.TableChild)(this.table1 [this.label3]));
-			w19.XOptions = ((global::Gtk.AttachOptions)(0));
+			w19.XOptions = ((global::Gtk.AttachOptions)(4));
 			w19.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label4 = new global::Gtk.Label ();
@@ -371,6 +372,7 @@ namespace DownloadManager
 			this.Show ();
 			this.entryAddress.Changed += new global::System.EventHandler (this.OnEntryAddressChanged);
 			this.entrySaveTo.Changed += new global::System.EventHandler (this.OnEntrySaveToChanged);
+			this.btnSelectFile.Clicked += new global::System.EventHandler (this.btnSelectFileClicked);
 			this.chkGenFilename.Toggled += new global::System.EventHandler (this.chkGenFilenameToggled);
 			this.cbCategory.Changed += new global::System.EventHandler (this.OncbCategoryChanged);
 			this.chkAuthenticate.Toggled += new global::System.EventHandler (this.chkAuthenticateToggled);
