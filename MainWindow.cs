@@ -331,4 +331,41 @@ public partial class MainWindow: Gtk.Window
 		}
 		dlg.Destroy ();
 	}
+	protected void OnShowToolbarActivated (object sender, EventArgs e)
+	{
+		Gtk.ToggleAction chk_item = (Gtk.ToggleAction) sender;
+		if (chk_item.Label == "New Download")
+			toolbarNewDownload.Visible = chk_item.Active;
+
+		else if (chk_item.Label == "Add Existing Download")
+			toolbarAddDownload.Visible = chk_item.Active;
+
+		else if (chk_item.Label == "Start")
+			toolbarStart.Visible = chk_item.Active;
+
+		else if (chk_item.Label == "Pause")
+			toolbarPause.Visible = chk_item.Active;
+
+		else if (chk_item.Label == "Cancel")
+			toolbarCancel.Visible = chk_item.Active;
+
+		else if (chk_item.Label == "Restart")
+			toolbarRestart.Visible = chk_item.Active;
+
+		else if (chk_item.Label == "Speed Limit")
+		{
+			toolbarSpeedLow.Visible = chk_item.Active;
+			toolbarSpeedMedium.Visible = chk_item.Active;
+			toolbarSpeedFull.Visible = chk_item.Active;
+		}
+
+		else if (chk_item.Label == "Find")
+			toolbarFind.Visible = chk_item.Active;
+
+	}
+
+	protected void OnProgressWindowActivated (object sender, EventArgs e)
+	{
+
+	}
 }

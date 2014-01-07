@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using libDownload;
 using Gtk;
 using System.Threading;
@@ -9,6 +10,101 @@ namespace DownloadManager
 	{
 		private Thread downloadThread;
 		public DMDownload dwnload {get; set;}
+		static bool _isPartStatusVisible;
+		public static bool isPartStatusVisible 
+		{
+			get
+			{
+				return _isPartStatusVisible;
+			}
+			set
+			{
+				_isPartStatusVisible = value;
+				foreach (ProgressWindow wnd in listObjects)
+				{
+					wnd.setVisibleWidget ();
+				}
+			}
+
+		}
+		static bool _isProgressBarVisible;
+		public static bool isProgressBarVisible 
+		{
+			get
+			{
+				return _isProgressBarVisible;
+			}
+			set
+			{
+				_isProgressBarVisible = value;
+				foreach (ProgressWindow wnd in listObjects)
+				{
+					wnd.setVisibleWidget ();
+				}
+			}
+		}
+
+		static bool _isStatusVisible;
+		public static bool isStatusVisible
+		{
+			get
+			{
+				return _isStatusVisible;
+			}
+			set
+			{
+				_isStatusVisible = value;
+				foreach (ProgressWindow wnd in listObjects)
+				{
+					wnd.setVisibleWidget ();
+				}
+			}
+		}
+		static bool _isTimeLeftVisible;
+		public static bool isTimeLeftVisible
+		{
+			get
+			{
+				return _isTimeLeftVisible;
+			}
+			set
+			{
+				_isTimeLeftVisible = value;
+				foreach (ProgressWindow wnd in listObjects)
+				{
+					wnd.setVisibleWidget ();
+				}
+			}
+		}
+
+		static bool _isSpeedVisible;
+		public static bool isSpeedVisible
+		{
+			get
+			{
+				return _isSpeedVisible;
+			}
+			set
+			{
+				_isSpeedVisible = value;
+				foreach (ProgressWindow wnd in listObjects)
+				{
+					wnd.setVisibleWidget ();
+				}
+			}
+		}
+
+
+		static List<ProgressWindow> listObjects;
+
+		static ProgressWindow ()
+		{
+			isPartStatusVisible = true;
+			isProgressBarVisible = true;
+			isStatusVisible = true;
+			isSpeedVisible = true;
+			isTimeLeftVisible = true;
+		}
 
 		public ProgressWindow (DMDownload _dwnload) : base (Gtk.WindowType.Toplevel)
 		{
@@ -25,8 +121,22 @@ namespace DownloadManager
 			    partsProgress.appendPart ();
 			}
 			Resizable = false;
+			setVisibleWidget ();
+			listObjects.Add (this);
 		}
 
+		public void setVisibleWidget ()
+		{
+			foreach (ProgressWindow wnd in listObjects)
+			{
+				partsProgress.Visible = isPartStatusVisible;
+				dmprogressbar.Visible = isProgressBarVisible;
+				lblStatus.Visible = isStatusVisible;
+				lblSpeed.Visible = isSpeedVisible;
+				lblTimeLeft.Visible = isTimeLeftVisible;
+			}
+		}
+	
 		protected override bool OnDeleteEvent (Gdk.Event evnt)
 		{
 			if (dwnload.download.status == DOWNLOAD_STATUS.MERGING)

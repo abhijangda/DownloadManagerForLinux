@@ -37,31 +37,31 @@
         <property name="Label" translatable="yes" />
         <property name="StockId">gtk-open</property>
       </action>
-      <action id="mediaPlayAction">
+      <action id="toolbarStart">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
         <property name="StockId">gtk-media-play</property>
         <signal name="Activated" handler="OnToolbarStartActivated" />
       </action>
-      <action id="mediaPauseAction">
+      <action id="toolbarPause">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
         <property name="StockId">gtk-media-pause</property>
         <signal name="Activated" handler="OnToolbarPauseActivated" />
       </action>
-      <action id="cancelAction">
+      <action id="toolbarCancel">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
         <property name="StockId">gtk-cancel</property>
         <signal name="Activated" handler="OnToolbarCancelActivated" />
       </action>
-      <action id="refreshAction">
+      <action id="toolbarRestart">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
         <property name="StockId">gtk-refresh</property>
         <signal name="Activated" handler="OnToolbarRestartActivated" />
       </action>
-      <action id="findAction">
+      <action id="toolbarFind">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
         <property name="StockId">gtk-find</property>
@@ -72,19 +72,19 @@
         <property name="Label" translatable="yes" />
         <property name="StockId">gtk-preferences</property>
       </action>
-      <action id="SpeedLowAction">
+      <action id="toolbarSpeedLow">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">Speed Low</property>
         <property name="ShortLabel" translatable="yes">Speed Low</property>
         <signal name="Activated" handler="OnSpeedLowActivated" />
       </action>
-      <action id="SpeedMediumAction">
+      <action id="toolbarSpeedMedium">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">SpeedMedium</property>
         <property name="ShortLabel" translatable="yes">SpeedMedium</property>
         <signal name="Activated" handler="OnSpeedMediumActivated" />
       </action>
-      <action id="SpeedFullAction">
+      <action id="toolbarSpeedFull">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">SpeedFull</property>
         <property name="ShortLabel" translatable="yes">SpeedFull</property>
@@ -155,6 +155,7 @@
         <property name="ShortLabel" translatable="yes">New Download</property>
         <property name="DrawAsRadio">False</property>
         <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowToolbarActivated" />
       </action>
       <action id="AddExistingDownloadAction1">
         <property name="Type">Toggle</property>
@@ -162,6 +163,7 @@
         <property name="ShortLabel" translatable="yes">Add Existing Download</property>
         <property name="DrawAsRadio">False</property>
         <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowToolbarActivated" />
       </action>
       <action id="StartAction1">
         <property name="Type">Toggle</property>
@@ -169,6 +171,7 @@
         <property name="ShortLabel" translatable="yes">Start </property>
         <property name="DrawAsRadio">False</property>
         <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowToolbarActivated" />
       </action>
       <action id="PauseAction1">
         <property name="Type">Toggle</property>
@@ -176,6 +179,7 @@
         <property name="ShortLabel" translatable="yes">Pause</property>
         <property name="DrawAsRadio">False</property>
         <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowToolbarActivated" />
       </action>
       <action id="CancelAction1">
         <property name="Type">Toggle</property>
@@ -183,6 +187,7 @@
         <property name="ShortLabel" translatable="yes">Cancel</property>
         <property name="DrawAsRadio">False</property>
         <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowToolbarActivated" />
       </action>
       <action id="RestartAction1">
         <property name="Type">Toggle</property>
@@ -190,6 +195,7 @@
         <property name="ShortLabel" translatable="yes">Restart</property>
         <property name="DrawAsRadio">False</property>
         <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowToolbarActivated" />
       </action>
       <action id="SpeedLimitAction">
         <property name="Type">Toggle</property>
@@ -197,6 +203,7 @@
         <property name="ShortLabel" translatable="yes">Speed Limit</property>
         <property name="DrawAsRadio">False</property>
         <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowToolbarActivated" />
       </action>
       <action id="ProgressWindowAction">
         <property name="Type">Action</property>
@@ -208,35 +215,40 @@
         <property name="Label" translatable="yes">Parts Status</property>
         <property name="ShortLabel" translatable="yes">Parts Status</property>
         <property name="DrawAsRadio">False</property>
-        <property name="Active">False</property>
+        <property name="Active">True</property>
+        <signal name="Toggled" handler="OnProgressWindowActivated" />
       </action>
       <action id="ProgressBarAction">
         <property name="Type">Toggle</property>
         <property name="Label" translatable="yes">Progress Bar</property>
         <property name="ShortLabel" translatable="yes">Progress Bar</property>
         <property name="DrawAsRadio">False</property>
-        <property name="Active">False</property>
+        <property name="Active">True</property>
+        <signal name="Toggled" handler="OnProgressWindowActivated" />
       </action>
       <action id="StatusAction">
         <property name="Type">Toggle</property>
         <property name="Label" translatable="yes">Status</property>
         <property name="ShortLabel" translatable="yes">Status</property>
         <property name="DrawAsRadio">False</property>
-        <property name="Active">False</property>
+        <property name="Active">True</property>
+        <signal name="Toggled" handler="OnProgressWindowActivated" />
       </action>
       <action id="TimeLeftAction">
         <property name="Type">Toggle</property>
         <property name="Label" translatable="yes">Time Left</property>
         <property name="ShortLabel" translatable="yes">Time Left</property>
         <property name="DrawAsRadio">False</property>
-        <property name="Active">False</property>
+        <property name="Active">True</property>
+        <signal name="Toggled" handler="OnProgressWindowActivated" />
       </action>
       <action id="SpeedAction">
         <property name="Type">Toggle</property>
         <property name="Label" translatable="yes">Speed</property>
         <property name="ShortLabel" translatable="yes">Speed</property>
         <property name="DrawAsRadio">False</property>
-        <property name="Active">False</property>
+        <property name="Active">True</property>
+        <signal name="Toggled" handler="OnProgressWindowActivated" />
       </action>
       <action id="StatusBarAction">
         <property name="Type">Toggle</property>
@@ -286,6 +298,7 @@
         <property name="ShortLabel" translatable="yes">Find</property>
         <property name="DrawAsRadio">False</property>
         <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowToolbarActivated" />
       </action>
       <action id="OptionsAction">
         <property name="Type">Action</property>
@@ -407,17 +420,17 @@
               <node type="Toolitem" action="toolbarNewDownload" />
               <node type="Toolitem" action="toolbarAddDownload" />
               <node type="Separator" />
-              <node type="Toolitem" action="mediaPlayAction" />
-              <node type="Toolitem" action="mediaPauseAction" />
-              <node type="Toolitem" action="cancelAction" />
-              <node type="Toolitem" action="refreshAction" />
+              <node type="Toolitem" action="toolbarStart" />
+              <node type="Toolitem" action="toolbarPause" />
+              <node type="Toolitem" action="toolbarCancel" />
+              <node type="Toolitem" action="toolbarRestart" />
               <node type="Separator" />
-              <node type="Toolitem" action="findAction" />
+              <node type="Toolitem" action="toolbarFind" />
               <node type="Separator" />
               <node type="Toolitem" action="preferencesAction" />
-              <node type="Toolitem" action="SpeedLowAction" />
-              <node type="Toolitem" action="SpeedMediumAction" />
-              <node type="Toolitem" action="SpeedFullAction" />
+              <node type="Toolitem" action="toolbarSpeedLow" />
+              <node type="Toolitem" action="toolbarSpeedMedium" />
+              <node type="Toolitem" action="toolbarSpeedFull" />
             </node>
           </widget>
           <packing>
@@ -1946,7 +1959,6 @@
                             <property name="MemberName">rbNow</property>
                             <property name="CanFocus">True</property>
                             <property name="Label" translatable="yes">Now</property>
-                            <property name="Active">True</property>
                             <property name="DrawIndicator">True</property>
                             <property name="HasLabel">True</property>
                             <property name="UseUnderline">True</property>

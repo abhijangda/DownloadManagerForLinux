@@ -10,6 +10,7 @@ namespace DownloadManager
 	{
 		public Gtk.ListStore listStore {get; private set;}
 		public List<DMDownload> listAllDownloads {private get; set;}
+		Gtk.TreeSortable sortable;
 
 		public DMDownloadTreeView ()
 		{
@@ -85,6 +86,99 @@ namespace DownloadManager
 			sectionsColumn.AddAttribute (stringColumnRender, "text", 6);
 
 			HeadersClickable = true;
+
+			sortable = (TreeSortable)listStore;
+
+			sortable.SetSortFunc (1, filenameSortFunc);
+			sortable.SetSortColumnId (1, SortType.Descending);
+
+			sortable.SetSortFunc (2, sizeSortFunc);
+			sortable.SetSortColumnId (2, SortType.Descending);
+
+			sortable.SetSortFunc (3, downloadedOrSpeedSortFunc);
+			sortable.SetSortColumnId (3, SortType.Descending);
+
+			sortable.SetSortFunc (4, timeSortFunc);
+			sortable.SetSortColumnId (4, SortType.Descending);
+
+			sortable.SetSortFunc (5, downloadedOrSpeedSortFunc);
+			sortable.SetSortColumnId (5, SortType.Descending);
+		}
+
+		private int downloadedOrSpeedSortFunc (TreeModel treeModel, TreeIter iter1,
+		                              TreeIter iter2)
+		{
+			string str1 = (string)listStore.GetValue (iter1, 1);
+			string str2 = (string)listStore.GetValue (iter2, 1);
+
+			if (str1.Substring (str1.IndexOf (" ")) == str2.Substring (str2.IndexOf (" ")))
+				return str1.CompareTo (str2);
+
+			if (str1.Contains ("Bytes"))
+				return -1;
+
+			if (str2.Contains ("Bytes"))
+				return 1;
+
+			if (str1.Contains ("GB"))
+				return 1;
+
+			if (str2.Contains ("GB"))
+				return -1;
+
+			if (str2.Contains ("MB") && !str1.Contains ("MB"))
+				return -1;
+
+			if (str1.Contains ("MB") && !str2.Contains ("MB"))
+				return 1;
+
+			if (str1.Contains ("KB") && !str2.Contains ("KB"))
+				return 1;
+
+			if (str2.Contains ("KB") && !str1.Contains ("KB"))
+				return -1;
+
+			return 0;
+		}
+
+		private int timeSortFunc (TreeModel treeModel, TreeIter iter1,
+		                              TreeIter iter2)
+		{
+			string str1 = (string)listStore.GetValue (iter1, 4);
+			string str2 = (string)listStore.GetValue (iter2, 4);
+			short countInstr1 = MainClass.countInString (str1, ":");
+			short countInstr2 = MainClass.countInString (str2, ":");
+
+			if (countInstr1 < countInstr2)
+				return 1;
+			else if (countInstr1 > countInstr2)
+				return -1;
+
+			return str1.CompareTo (str2);
+		}
+
+		private int sizeSortFunc (TreeModel treeModel, TreeIter iter1,
+		                              TreeIter iter2)
+		{
+		    DMDownload dmld1 = (DMDownload)listStore.GetValue (iter1, 7);
+			DMDownload dmld2 = (DMDownload)listStore.GetValue (iter2, 1);
+
+			if (dmld1.download.length.value == dmld2.download.length.value)
+				return 0;
+
+			if (dmld1.download.length.value > dmld2.download.length.value)
+				return 1;
+
+			return -1;
+		}
+
+		private int filenameSortFunc (TreeModel treeModel, TreeIter iter1,
+		                              TreeIter iter2)
+		{
+			string str1 = (string)listStore.GetValue (iter1, 1);
+			string str2 = (string)listStore.GetValue (iter2, 1);
+
+			return str1.CompareTo (str2);
 		}
 
 		public void addDownloadRow (DMDownload dwnld)
