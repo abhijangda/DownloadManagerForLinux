@@ -12,7 +12,6 @@ public partial class MainWindow
 	private global::Gtk.Action toolbarPause;
 	private global::Gtk.Action toolbarCancel;
 	private global::Gtk.Action toolbarRestart;
-	private global::Gtk.Action toolbarFind;
 	private global::Gtk.Action preferencesAction;
 	private global::Gtk.Action toolbarSpeedLow;
 	private global::Gtk.Action toolbarSpeedMedium;
@@ -54,6 +53,9 @@ public partial class MainWindow
 	private global::Gtk.RadioAction LowSpeedAction;
 	private global::Gtk.RadioAction MediumSpeedAction;
 	private global::Gtk.RadioAction HighSpeedAction;
+	private global::Gtk.Action toolbarStopAll;
+	private global::Gtk.Action toolbarPauseAll;
+	private global::Gtk.Action toolbarFind;
 	private global::Gtk.VBox vbox1;
 	private global::Gtk.MenuBar menubar1;
 	private global::Gtk.Toolbar toolbar1;
@@ -98,18 +100,16 @@ public partial class MainWindow
 		w1.Add (this.toolbarCancel, null);
 		this.toolbarRestart = new global::Gtk.Action ("toolbarRestart", null, null, "gtk-refresh");
 		w1.Add (this.toolbarRestart, null);
-		this.toolbarFind = new global::Gtk.Action ("toolbarFind", null, null, "gtk-find");
-		w1.Add (this.toolbarFind, null);
 		this.preferencesAction = new global::Gtk.Action ("preferencesAction", null, null, "gtk-preferences");
 		w1.Add (this.preferencesAction, null);
 		this.toolbarSpeedLow = new global::Gtk.Action ("toolbarSpeedLow", global::Mono.Unix.Catalog.GetString ("Speed Low"), null, null);
 		this.toolbarSpeedLow.ShortLabel = global::Mono.Unix.Catalog.GetString ("Speed Low");
 		w1.Add (this.toolbarSpeedLow, null);
-		this.toolbarSpeedMedium = new global::Gtk.Action ("toolbarSpeedMedium", global::Mono.Unix.Catalog.GetString ("SpeedMedium"), null, null);
-		this.toolbarSpeedMedium.ShortLabel = global::Mono.Unix.Catalog.GetString ("SpeedMedium");
+		this.toolbarSpeedMedium = new global::Gtk.Action ("toolbarSpeedMedium", global::Mono.Unix.Catalog.GetString ("Speed Medium"), null, null);
+		this.toolbarSpeedMedium.ShortLabel = global::Mono.Unix.Catalog.GetString ("Speed Medium");
 		w1.Add (this.toolbarSpeedMedium, null);
-		this.toolbarSpeedFull = new global::Gtk.Action ("toolbarSpeedFull", global::Mono.Unix.Catalog.GetString ("SpeedFull"), null, null);
-		this.toolbarSpeedFull.ShortLabel = global::Mono.Unix.Catalog.GetString ("SpeedFull");
+		this.toolbarSpeedFull = new global::Gtk.Action ("toolbarSpeedFull", global::Mono.Unix.Catalog.GetString ("Speed Full"), null, null);
+		this.toolbarSpeedFull.ShortLabel = global::Mono.Unix.Catalog.GetString ("Speed Full");
 		w1.Add (this.toolbarSpeedFull, null);
 		this.DownloadAction = new global::Gtk.Action ("DownloadAction", global::Mono.Unix.Catalog.GetString ("Download"), null, null);
 		this.DownloadAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Download");
@@ -241,9 +241,17 @@ public partial class MainWindow
 		this.MediumSpeedAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Medium Speed");
 		w1.Add (this.MediumSpeedAction, null);
 		this.HighSpeedAction = new global::Gtk.RadioAction ("HighSpeedAction", global::Mono.Unix.Catalog.GetString ("High Speed"), null, null, 0);
-		this.HighSpeedAction.Group = this.MediumSpeedAction.Group;
+		this.HighSpeedAction.Group = this.LowSpeedAction.Group;
 		this.HighSpeedAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("High Speed");
 		w1.Add (this.HighSpeedAction, null);
+		this.toolbarStopAll = new global::Gtk.Action ("toolbarStopAll", global::Mono.Unix.Catalog.GetString ("Stop All"), null, null);
+		this.toolbarStopAll.ShortLabel = global::Mono.Unix.Catalog.GetString ("Stop All");
+		w1.Add (this.toolbarStopAll, null);
+		this.toolbarPauseAll = new global::Gtk.Action ("toolbarPauseAll", global::Mono.Unix.Catalog.GetString ("Pause All"), null, null);
+		this.toolbarPauseAll.ShortLabel = global::Mono.Unix.Catalog.GetString ("Pause All");
+		w1.Add (this.toolbarPauseAll, null);
+		this.toolbarFind = new global::Gtk.Action ("toolbarFind", null, null, "gtk-find");
+		w1.Add (this.toolbarFind, null);
 		this.UIManager.InsertActionGroup (w1, 0);
 		this.AddAccelGroup (this.UIManager.AccelGroup);
 		this.Name = "MainWindow";
@@ -254,7 +262,7 @@ public partial class MainWindow
 		this.vbox1.Name = "vbox1";
 		this.vbox1.Spacing = 1;
 		// Container child vbox1.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString ("<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='NewDownloadAction' action='NewDownloadAction'/><menuitem name='AddExistingDownloadAction' action='AddExistingDownloadAction'/><menuitem name='CreateQueueAction' action='CreateQueueAction'/><menuitem name='DeleteQueueAction' action='DeleteQueueAction'/></menu><menu name='DownloadAction' action='DownloadAction'><menuitem name='StartAction' action='StartAction'/><menuitem name='PauseAction' action='PauseAction'/><menuitem name='RestartAction' action='RestartAction'/><menuitem name='CancelAction' action='CancelAction'/><separator/><menuitem name='StartQueueAction' action='StartQueueAction'/><menuitem name='StopQueueAction' action='StopQueueAction'/></menu><menu name='ViewAction' action='ViewAction'><menu name='ToolbarAction' action='ToolbarAction'><menuitem name='NewDownloadAction1' action='NewDownloadAction1'/><menuitem name='AddExistingDownloadAction1' action='AddExistingDownloadAction1'/><menuitem name='StartAction1' action='StartAction1'/><menuitem name='PauseAction1' action='PauseAction1'/><menuitem name='CancelAction1' action='CancelAction1'/><menuitem name='RestartAction1' action='RestartAction1'/><menuitem name='SpeedLimitAction' action='SpeedLimitAction'/><menuitem name='FindAction' action='FindAction'/></menu><menu name='ProgressWindowAction' action='ProgressWindowAction'><menuitem name='PartsStatusAction' action='PartsStatusAction'/><menuitem name='ProgressBarAction' action='ProgressBarAction'/><menuitem name='StatusAction' action='StatusAction'/><menuitem name='TimeLeftAction' action='TimeLeftAction'/><menuitem name='SpeedAction' action='SpeedAction'/></menu><menuitem name='StatusBarAction' action='StatusBarAction'/><menuitem name='DownloadsAction' action='DownloadsAction'/><menuitem name='TorrentsAction' action='TorrentsAction'/><menuitem name='FTPGetAction' action='FTPGetAction'/></menu><menu name='OptionsAction' action='OptionsAction'><menuitem name='PreferencesAction' action='PreferencesAction'/><menu name='TrafficUsageModeAction' action='TrafficUsageModeAction'><menuitem name='LowSpeedAction' action='LowSpeedAction'/><menuitem name='MediumSpeedAction' action='MediumSpeedAction'/><menuitem name='HighSpeedAction' action='HighSpeedAction'/></menu></menu></menubar></ui>");
+		this.UIManager.AddUiFromString ("<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='NewDownloadAction' action='NewDownloadAction'/><menuitem name='AddExistingDownloadAction' action='AddExistingDownloadAction'/><separator/><menuitem name='CreateQueueAction' action='CreateQueueAction'/><menuitem name='DeleteQueueAction' action='DeleteQueueAction'/></menu><menu name='DownloadAction' action='DownloadAction'><menuitem name='StartAction' action='StartAction'/><menuitem name='PauseAction' action='PauseAction'/><menuitem name='RestartAction' action='RestartAction'/><menuitem name='CancelAction' action='CancelAction'/><separator/><menuitem name='StartQueueAction' action='StartQueueAction'/><menuitem name='StopQueueAction' action='StopQueueAction'/></menu><menu name='ViewAction' action='ViewAction'><menu name='ToolbarAction' action='ToolbarAction'><menuitem name='NewDownloadAction1' action='NewDownloadAction1'/><menuitem name='AddExistingDownloadAction1' action='AddExistingDownloadAction1'/><menuitem name='StartAction1' action='StartAction1'/><menuitem name='PauseAction1' action='PauseAction1'/><menuitem name='CancelAction1' action='CancelAction1'/><menuitem name='RestartAction1' action='RestartAction1'/><menuitem name='SpeedLimitAction' action='SpeedLimitAction'/><menuitem name='FindAction' action='FindAction'/></menu><menu name='ProgressWindowAction' action='ProgressWindowAction'><menuitem name='PartsStatusAction' action='PartsStatusAction'/><menuitem name='ProgressBarAction' action='ProgressBarAction'/><menuitem name='StatusAction' action='StatusAction'/><menuitem name='TimeLeftAction' action='TimeLeftAction'/><menuitem name='SpeedAction' action='SpeedAction'/></menu><menuitem name='StatusBarAction' action='StatusBarAction'/><menuitem name='DownloadsAction' action='DownloadsAction'/><menuitem name='TorrentsAction' action='TorrentsAction'/><menuitem name='FTPGetAction' action='FTPGetAction'/></menu><menu name='OptionsAction' action='OptionsAction'><menuitem name='PreferencesAction' action='PreferencesAction'/><menu name='TrafficUsageModeAction' action='TrafficUsageModeAction'><menuitem name='LowSpeedAction' action='LowSpeedAction'/><menuitem name='MediumSpeedAction' action='MediumSpeedAction'/><menuitem name='HighSpeedAction' action='HighSpeedAction'/></menu></menu></menubar></ui>");
 		this.menubar1 = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/menubar1")));
 		this.menubar1.Name = "menubar1";
 		this.vbox1.Add (this.menubar1);
@@ -263,10 +271,11 @@ public partial class MainWindow
 		w2.Expand = false;
 		w2.Fill = false;
 		// Container child vbox1.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString ("<ui><toolbar name='toolbar1'><toolitem name='toolbarNewDownload' action='toolbarNewDownload'/><toolitem name='toolbarAddDownload' action='toolbarAddDownload'/><separator/><toolitem name='toolbarStart' action='toolbarStart'/><toolitem name='toolbarPause' action='toolbarPause'/><toolitem name='toolbarCancel' action='toolbarCancel'/><toolitem name='toolbarRestart' action='toolbarRestart'/><separator/><toolitem name='toolbarFind' action='toolbarFind'/><separator/><toolitem name='preferencesAction' action='preferencesAction'/><toolitem name='toolbarSpeedLow' action='toolbarSpeedLow'/><toolitem name='toolbarSpeedMedium' action='toolbarSpeedMedium'/><toolitem name='toolbarSpeedFull' action='toolbarSpeedFull'/></toolbar></ui>");
+		this.UIManager.AddUiFromString ("<ui><toolbar name='toolbar1'><toolitem name='toolbarNewDownload' action='toolbarNewDownload'/><toolitem name='toolbarAddDownload' action='toolbarAddDownload'/><separator/><toolitem name='toolbarStart' action='toolbarStart'/><toolitem name='toolbarPause' action='toolbarPause'/><toolitem name='toolbarCancel' action='toolbarCancel'/><toolitem name='toolbarRestart' action='toolbarRestart'/><separator/><toolitem name='toolbarFind' action='toolbarFind'/><toolitem name='preferencesAction' action='preferencesAction'/><separator/><toolitem name='toolbarSpeedLow' action='toolbarSpeedLow'/><toolitem name='toolbarSpeedMedium' action='toolbarSpeedMedium'/><toolitem name='toolbarSpeedFull' action='toolbarSpeedFull'/></toolbar></ui>");
 		this.toolbar1 = ((global::Gtk.Toolbar)(this.UIManager.GetWidget ("/toolbar1")));
 		this.toolbar1.Name = "toolbar1";
 		this.toolbar1.ShowArrow = false;
+		this.toolbar1.ToolbarStyle = ((global::Gtk.ToolbarStyle)(0));
 		this.vbox1.Add (this.toolbar1);
 		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.toolbar1]));
 		w3.Position = 1;
@@ -372,7 +381,7 @@ public partial class MainWindow
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
 		}
-		this.DefaultWidth = 867;
+		this.DefaultWidth = 1052;
 		this.DefaultHeight = 438;
 		this.Show ();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
@@ -382,7 +391,6 @@ public partial class MainWindow
 		this.toolbarPause.Activated += new global::System.EventHandler (this.OnToolbarPauseActivated);
 		this.toolbarCancel.Activated += new global::System.EventHandler (this.OnToolbarCancelActivated);
 		this.toolbarRestart.Activated += new global::System.EventHandler (this.OnToolbarRestartActivated);
-		this.toolbarFind.Activated += new global::System.EventHandler (this.OnToolbarFindActivated);
 		this.toolbarSpeedLow.Activated += new global::System.EventHandler (this.OnSpeedLowActivated);
 		this.toolbarSpeedMedium.Activated += new global::System.EventHandler (this.OnSpeedMediumActivated);
 		this.toolbarSpeedFull.Activated += new global::System.EventHandler (this.OnSpeedHighActivated);
@@ -405,5 +413,6 @@ public partial class MainWindow
 		this.FindAction.Toggled += new global::System.EventHandler (this.OnShowToolbarActivated);
 		this.MediumSpeedAction.Activated += new global::System.EventHandler (this.OnSpeedMediumActivated);
 		this.HighSpeedAction.Activated += new global::System.EventHandler (this.OnSpeedHighActivated);
+		this.toolbarFind.Activated += new global::System.EventHandler (this.OnToolbarFindActivated);
 	}
 }

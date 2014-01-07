@@ -99,6 +99,7 @@ namespace DownloadManager
 
 		static ProgressWindow ()
 		{
+			listObjects = new List<ProgressWindow> ();
 			isPartStatusVisible = true;
 			isProgressBarVisible = true;
 			isStatusVisible = true;

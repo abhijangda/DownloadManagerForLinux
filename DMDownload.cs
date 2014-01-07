@@ -8,6 +8,7 @@ namespace DownloadManager
 		public Download download;
 		public ProgressWindow window;
 		public DMTypeCategory typeCategory;
+		public Gtk.TreeRowReference rowReference;
 
 		public DMDownload (Download _dwnld, ProgressWindow wnd)
 		{

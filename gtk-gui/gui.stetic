@@ -8,7 +8,7 @@
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../bin/Debug/DownloadManager.exe" internal="true" />
   </import>
-  <widget class="Gtk.Window" id="MainWindow" design-size="867 438">
+  <widget class="Gtk.Window" id="MainWindow" design-size="1052 438">
     <action-group name="Default">
       <action id="FileAction">
         <property name="Type">Action</property>
@@ -61,12 +61,6 @@
         <property name="StockId">gtk-refresh</property>
         <signal name="Activated" handler="OnToolbarRestartActivated" />
       </action>
-      <action id="toolbarFind">
-        <property name="Type">Action</property>
-        <property name="Label" translatable="yes" />
-        <property name="StockId">gtk-find</property>
-        <signal name="Activated" handler="OnToolbarFindActivated" />
-      </action>
       <action id="preferencesAction">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
@@ -80,14 +74,14 @@
       </action>
       <action id="toolbarSpeedMedium">
         <property name="Type">Action</property>
-        <property name="Label" translatable="yes">SpeedMedium</property>
-        <property name="ShortLabel" translatable="yes">SpeedMedium</property>
+        <property name="Label" translatable="yes">Speed Medium</property>
+        <property name="ShortLabel" translatable="yes">Speed Medium</property>
         <signal name="Activated" handler="OnSpeedMediumActivated" />
       </action>
       <action id="toolbarSpeedFull">
         <property name="Type">Action</property>
-        <property name="Label" translatable="yes">SpeedFull</property>
-        <property name="ShortLabel" translatable="yes">SpeedFull</property>
+        <property name="Label" translatable="yes">Speed Full</property>
+        <property name="ShortLabel" translatable="yes">Speed Full</property>
         <signal name="Activated" handler="OnSpeedHighActivated" />
       </action>
       <action id="DownloadAction">
@@ -344,6 +338,22 @@
         <property name="Group">group1</property>
         <signal name="Activated" handler="OnSpeedHighActivated" />
       </action>
+      <action id="toolbarStopAll">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Stop All</property>
+        <property name="ShortLabel" translatable="yes">Stop All</property>
+      </action>
+      <action id="toolbarPauseAll">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Pause All</property>
+        <property name="ShortLabel" translatable="yes">Pause All</property>
+      </action>
+      <action id="toolbarFind">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-find</property>
+        <signal name="Activated" handler="OnToolbarFindActivated" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MainWindow</property>
@@ -360,6 +370,7 @@
               <node type="Menu" action="FileAction">
                 <node type="Menuitem" action="NewDownloadAction" />
                 <node type="Menuitem" action="AddExistingDownloadAction" />
+                <node type="Separator" />
                 <node type="Menuitem" action="CreateQueueAction" />
                 <node type="Menuitem" action="DeleteQueueAction" />
               </node>
@@ -416,6 +427,7 @@
           <widget class="Gtk.Toolbar" id="toolbar1">
             <property name="MemberName" />
             <property name="ShowArrow">False</property>
+            <property name="ButtonStyle">Icons</property>
             <node name="toolbar1" type="Toolbar">
               <node type="Toolitem" action="toolbarNewDownload" />
               <node type="Toolitem" action="toolbarAddDownload" />
@@ -424,10 +436,11 @@
               <node type="Toolitem" action="toolbarPause" />
               <node type="Toolitem" action="toolbarCancel" />
               <node type="Toolitem" action="toolbarRestart" />
+              <node type="Toolitem" />
               <node type="Separator" />
               <node type="Toolitem" action="toolbarFind" />
-              <node type="Separator" />
               <node type="Toolitem" action="preferencesAction" />
+              <node type="Separator" />
               <node type="Toolitem" action="toolbarSpeedLow" />
               <node type="Toolitem" action="toolbarSpeedMedium" />
               <node type="Toolitem" action="toolbarSpeedFull" />

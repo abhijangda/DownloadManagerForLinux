@@ -25,6 +25,44 @@ public partial class MainWindow: Gtk.Window
 		HighSpeedAction.Active = true;
 		dmDownloadTreeView.listAllDownloads = listAllDownloads;
 		notebook.CurrentPage = 0;
+		dmDownloadTreeView.Selection.Changed += dmDownloadTreeViewSelectionChanged;
+		toolbar1.ToolbarStyle = ToolbarStyle.Icons;
+	}
+
+	private void dmDownloadTreeViewSelectionChanged (object o, EventArgs args)
+	{
+		TreeIter iter;
+		dmDownloadTreeView.Selection.GetSelected (out iter);
+		DMDownload dmld = (DMDownload) dmCategoryTreeView.Model.GetValue (iter, 7);
+		if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADED)
+		{
+			toolbarStart.Sensitive = StartAction.Sensitive = false;
+			toolbarCancel.Sensitive = CancelAction.Sensitive = false;
+			toolbarPause.Sensitive = PauseAction.Sensitive = false;
+			toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+		}
+		else if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADING)
+		{
+			toolbarStart.Sensitive = StartAction.Sensitive = false;
+			toolbarCancel.Sensitive = CancelAction.Sensitive = true;
+			toolbarPause.Sensitive = PauseAction.Sensitive = true;
+			toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+		}
+		else if (dmld.download.status == DOWNLOAD_STATUS.ERROR ||
+		         dmld.download.status == DOWNLOAD_STATUS.NOT_STARTED)
+		{
+			toolbarStart.Sensitive = StartAction.Sensitive = true;
+			toolbarCancel.Sensitive = CancelAction.Sensitive = false;
+			toolbarPause.Sensitive = PauseAction.Sensitive = false;
+			toolbarRestart.Sensitive = RestartAction.Sensitive = false;
+		}
+		else if (dmld.download.status == DOWNLOAD_STATUS.PAUSED)
+		{
+			toolbarStart.Sensitive = StartAction.Sensitive = true;
+			toolbarCancel.Sensitive = CancelAction.Sensitive = false;
+			toolbarPause.Sensitive = PauseAction.Sensitive = true;
+			toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+		}
 	}
 
 	private void updateDMDownloadTreeView ()
@@ -331,8 +369,10 @@ public partial class MainWindow: Gtk.Window
 		}
 		dlg.Destroy ();
 	}
+
 	protected void OnShowToolbarActivated (object sender, EventArgs e)
 	{
+		Console.WriteLine ("show toolbar");
 		Gtk.ToggleAction chk_item = (Gtk.ToggleAction) sender;
 		if (chk_item.Label == "New Download")
 			toolbarNewDownload.Visible = chk_item.Active;

@@ -11,6 +11,9 @@ namespace DownloadManager
 		public Gtk.ListStore listStore {get; private set;}
 		public List<DMDownload> listAllDownloads {private get; set;}
 		Gtk.TreeSortable sortable;
+		Gtk.Menu contextMenu;
+		Gtk.MenuItem contextStart, contextPause, contextRestart;
+		Gtk.MenuItem contextCancel, contextStartAll, contextPauseAll;
 
 		public DMDownloadTreeView ()
 		{
@@ -103,6 +106,30 @@ namespace DownloadManager
 
 			sortable.SetSortFunc (5, downloadedOrSpeedSortFunc);
 			sortable.SetSortColumnId (5, SortType.Descending);
+
+			contextMenu = new Gtk.Menu ();
+
+			contextStart = new Gtk.MenuItem ("Start");
+			contextMenu.Append (contextStart);
+
+			contextPause = new Gtk.MenuItem ("Pause");
+			contextMenu.Append (contextPause);
+
+			contextRestart = new Gtk.MenuItem ("Restart");
+			contextMenu.Append (contextRestart);
+
+			contextCancel = new Gtk.MenuItem ("Cancel");
+			contextMenu.Append (contextCancel);
+
+			contextMenu.Append (new SeparatorMenuItem ());
+
+			contextStartAll = new Gtk.MenuItem ("Start All");
+			contextMenu.Append (contextStartAll);
+
+			contextPauseAll = new Gtk.MenuItem ("Pause All");
+			contextMenu.Append (contextPauseAll);
+
+			contextMenu.AttachToWidget (this, null);
 		}
 
 		private int downloadedOrSpeedSortFunc (TreeModel treeModel, TreeIter iter1,
@@ -183,18 +210,25 @@ namespace DownloadManager
 
 		public void addDownloadRow (DMDownload dwnld)
 		{
-			listStore.AppendValues (new Gdk.Pixbuf ("./../../field.png"), 
+			Gtk.TreeIter iter;
+			iter = listStore.AppendValues (new Gdk.Pixbuf ("./../../field.png"), 
 			                               dwnld.download.localPath.Substring( 
 			                                   dwnld.download.localPath.LastIndexOf ('/')+1),
 			                               "", "", "", "", "", dwnld);
+			dwnld.rowReference = new Gtk.TreeRowReference (listStore, 
+			                                               listStore.GetPath (iter));
 		}
 
 		public void updateDownloadStatus (DMDownload dwnld, Length downloaded, Speed speed)
 		{
 			Gtk.TreeIter iter;
-			listStore.GetIterFirst (out iter);
-
-			do
+			if (dwnld.rowReference.Valid ())
+			{
+				listStore.GetIter (out iter, dwnld.rowReference.Path);
+			    setIterValues (dwnld, iter, downloaded, speed);
+			}
+			//listStore.GetIterFirst (out iter);
+			/*do
 			{
 				DMDownload dmld = (DMDownload) listStore.GetValue (iter, 7);
 				if (dmld.download.localPath == dwnld.download.localPath)
@@ -202,7 +236,7 @@ namespace DownloadManager
 					setIterValues (dmld, iter, downloaded, speed);
 				}
 			}
-			while (listStore.IterNext (ref iter));
+			while (listStore.IterNext (ref iter));*/
 		}
 
 		private void setIterValues (DMDownload dwnld, TreeIter iter, 
@@ -211,6 +245,7 @@ namespace DownloadManager
 		{
 			if (dwnld.download.status == libDownload.DOWNLOAD_STATUS.DOWNLOADING)
 			{
+				listStore.SetValue (iter, 1, dwnld.download.localPath.Substring (dwnld.download.localPath.LastIndexOf ('/') +1));
 				listStore.SetValue (iter, 2, dwnld.download.length.ToString ());
 				listStore.SetValue (iter, 3, (100*downloaded.value)/(float)dwnld.download.length.value);
 				listStore.SetValue (iter, 4, MainWindow.getTime (dwnld.download.length.value - downloaded.value, speed.value));
@@ -246,6 +281,8 @@ namespace DownloadManager
 					{
 						iter = listStore.Append ();
 						setIterValues (dmld, iter);
+						dmld.rowReference = new Gtk.TreeRowReference (listStore, 
+						                                              listStore.GetPath (iter));
 					}
 				}
 			}
@@ -274,6 +311,66 @@ namespace DownloadManager
 
 				listStore.IterNext (ref iter);
 			}
+		}
+
+		protected override bool OnButtonReleaseEvent (Gdk.EventButton evnt)
+		{
+			if (evnt.Button != 3)
+				return base.OnButtonReleaseEvent (evnt);
+
+			TreePath[] selectedPaths = Selection.GetSelectedRows ();
+			if (selectedPaths.Length == 0)
+			{
+				contextStart.Sensitive = false;
+				contextPause.Sensitive = false;
+				contextRestart.Sensitive = false;
+				contextCancel.Sensitive = false;
+			}
+
+			else
+			{
+				if (selectedPaths.Length == 1)
+				{
+					TreeIter iter;
+					listStore.GetIter (out iter, selectedPaths [0]);
+					DMDownload dmld = (DMDownload) listStore.GetValue (iter, 7);
+					if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADED)
+					{
+						contextStart.Sensitive = false;
+						contextPause.Sensitive = false;
+						contextRestart.Sensitive = true;
+						contextCancel.Sensitive = false;
+					}
+					else if (dmld.download.status == DOWNLOAD_STATUS.NOT_STARTED ||
+					    dmld.download.status == DOWNLOAD_STATUS.ERROR)
+					{
+						contextStart.Sensitive = true;
+						contextPause.Sensitive = false;
+						contextRestart.Sensitive = false;
+						contextCancel.Sensitive = false;
+					}
+					else if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADING)
+					{
+						contextStart.Sensitive = false;
+						contextPause.Sensitive = true;
+						contextRestart.Sensitive = true;
+						contextCancel.Sensitive = true;
+					}
+					else if (dmld.download.status == DOWNLOAD_STATUS.PAUSED)
+					{
+						contextStart.Sensitive = true;
+						contextPause.Sensitive = false;
+						contextRestart.Sensitive = true;
+						contextCancel.Sensitive = false;
+					}
+				}
+			}
+
+
+			contextMenu.Popup ();
+			contextMenu.ShowAll ();
+
+			return base.OnButtonReleaseEvent (evnt);
 		}
 	}
 }
