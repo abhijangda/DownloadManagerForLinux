@@ -24,6 +24,7 @@ public partial class MainWindow: Gtk.Window
 		Build ();
 		HighSpeedAction.Active = true;
 		dmDownloadTreeView.listAllDownloads = listAllDownloads;
+		dmDownloadTreeView.loadDownloads ();
 		notebook.CurrentPage = 0;
 		dmDownloadTreeView.Selection.Changed += dmDownloadTreeViewSelectionChanged;
 		toolbar1.ToolbarStyle = ToolbarStyle.Icons;
@@ -34,6 +35,9 @@ public partial class MainWindow: Gtk.Window
 		TreeIter iter;
 		dmDownloadTreeView.Selection.GetSelected (out iter);
 		DMDownload dmld = (DMDownload) dmCategoryTreeView.Model.GetValue (iter, 7);
+		if (dmld == null)
+			return;
+
 		if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADED)
 		{
 			toolbarStart.Sensitive = StartAction.Sensitive = false;
@@ -79,6 +83,7 @@ public partial class MainWindow: Gtk.Window
 
 	public void OnDownloadStatusChanged (Download dwnld)
 	{
+		DMDownload toRemove = null;
 		foreach (DMDownload dmld in listRunningDownloads)
 		{
 			if (dmld.download == dwnld)
@@ -88,27 +93,46 @@ public partial class MainWindow: Gtk.Window
 
 				if (dwnld.status == DOWNLOAD_STATUS.DOWNLOADED)
 				{
-					listRunningDownloads.Remove (dmld);
+					toRemove = dmld;
 				}
+
 				else if (dwnld.status == DOWNLOAD_STATUS.DOWNLOADING)
 				{
 				}
+
 				else if (dwnld.status == DOWNLOAD_STATUS.ERROR)
 				{
-					listRunningDownloads.Remove (dmld);
+					toRemove = dmld;
 				}
+
 				else if (dwnld.status == DOWNLOAD_STATUS.NOT_STARTED)
 				{
 				}
+
 				else if (dwnld.status == DOWNLOAD_STATUS.PAUSED)
 				{
-					listRunningDownloads.Remove (dmld);
+					toRemove = dmld;
 				}
+
 				else //dwnld.status == DOWNLOAD_STATUS.MERGING
 				{
 				}
 			}
 		}
+		if (toRemove != null)
+		    listRunningDownloads.Remove (toRemove);
+	}
+
+	public void startDownload (DMDownload dwnld)
+	{
+		listRunningDownloads.Add (dwnld);
+		dwnld.download.start ();
+	}
+
+	public void resumeDownload (DMDownload dwnld)
+	{
+		listRunningDownloads.Add (dwnld);
+		dwnld.download.resume (dwnld.download.length.value);
 	}
 
 	public static string getTime (long remaining, long speed)
@@ -118,13 +142,50 @@ public partial class MainWindow: Gtk.Window
 
 		long time = remaining/speed;
 		if (time > 3600)
-			return (time/3600).ToString () + ":" + ((time%3600)/60).ToString ()
-				+ ":" + ((time%3600)%60).ToString ();
+		{
+			string s = (time/3600).ToString (), toret = "";
+			if (s.Length == 1)
+				toret += "0" + s;
+			else
+				toret += s;
+
+			s = ((time%3600)/60).ToString ();
+			if (s.Length == 1)
+				toret += ":0" + s;
+			else
+				toret += ":" + s;
+
+			s = ((time%3600)%60).ToString ();
+			if (s.Length == 1)
+				toret += ":0" + s;
+			else
+				toret += ":" + s;
+
+			return toret;
+		}
 			
 		if (time > 60)
-			return (time/60).ToString () + ":" + (time%60).ToString ();
+		{
+			string s = (time/60).ToString (), toret = "";
+			if (s.Length == 1)
+				toret += "0" + s;
+			else
+				toret += s;
 
-		return time.ToString () + " sec";
+			s = (time%60).ToString ();
+			if (s.Length == 1)
+				toret += ":0" + s;
+			else
+				toret += ":" + s;
+
+			return toret;
+		}
+
+		string k = time.ToString ();
+		if (k.Length == 1)
+			k = "0" + k;
+
+		return k + " sec";
 	}
 
 	bool updateFunc ()
@@ -150,33 +211,33 @@ public partial class MainWindow: Gtk.Window
 
 	private void quitWindow ()
 	{
-		foreach (DMDownload dmld in listRunningDownloads)
-			dmld.download.stop ();
+		foreach (DMDownload dmld in listAllDownloads)
+			if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADING)
+			    dmld.download.stop ();
 
 		settingsManager.storeInfo (listAllDownloads);
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
 	{
-		foreach (DMDownload dmld in listRunningDownloads)
+		if (listRunningDownloads.Count > 0)
 		{
-			if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADING)
+			Gtk.MessageDialog msg_dlg =
+				new Gtk.MessageDialog (this, DialogFlags.Modal, MessageType.Warning,
+				                       ButtonsType.YesNo, 
+				                       "Downloads are still in progress."+
+				                       " Are you sure you want to close?");
+			msg_dlg.ShowAll ();
+			if (msg_dlg.Run () == (int)ResponseType.No)
 			{
-				Gtk.MessageDialog msg_dlg =
-					new Gtk.MessageDialog (this, DialogFlags.Modal, MessageType.Warning,
-					                       ButtonsType.YesNo, 
-					                       "Downloads are still in progress."+
-					                       " Are you sure you want to close?");
-				msg_dlg.ShowAll ();
-				if (msg_dlg.Run () == (int)ResponseType.No)
-				{
-					a.RetVal = false;
-					return;
-				}
-				quitWindow ();
-				a.RetVal = true;
+				a.RetVal = false;
+				return;
 			}
+			quitWindow ();
+			a.RetVal = true;
 		}
+
+		quitWindow ();
 		Application.Quit ();
 		a.RetVal = true;
 	}
@@ -243,7 +304,7 @@ public partial class MainWindow: Gtk.Window
 
 		DMDownload dmdl = new DMDownload (dl, null);
 		dmdl.typeCategory = new DMTypeCategory (typeCategory);
-		addToListRunningDownloads (dmdl);
+		listAllDownloads.Add (dmdl);
 		dmDownloadTreeView.addDownloadRow (dmdl);
 
 		if (start == 0)
@@ -314,7 +375,7 @@ public partial class MainWindow: Gtk.Window
 			dmld.download.start ();
 		    dmld.window = new ProgressWindow (dmld);
 		    dmld.window.ShowAll ();
-			listRunningDownloads.Add (dmld);
+			MainWindow.main_instance.startDownload (dmld);
 		}
 	}
 
@@ -401,7 +462,6 @@ public partial class MainWindow: Gtk.Window
 
 		else if (chk_item.Label == "Find")
 			toolbarFind.Visible = chk_item.Active;
-
 	}
 
 	protected void OnProgressWindowActivated (object sender, EventArgs e)

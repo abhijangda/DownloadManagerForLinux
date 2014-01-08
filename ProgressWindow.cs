@@ -94,7 +94,6 @@ namespace DownloadManager
 			}
 		}
 
-
 		static List<ProgressWindow> listObjects;
 
 		static ProgressWindow ()
@@ -196,7 +195,7 @@ namespace DownloadManager
 
 		public void startDownloading ()
 		{
-			dwnload.download.start ();
+			MainWindow.main_instance.startDownload (dwnload);
 			if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADING)
 			{
 				Gtk.Application.Invoke (delegate {
@@ -248,7 +247,9 @@ namespace DownloadManager
 		{
 			if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADING)
 			{
+				Console.WriteLine ("DOWNLOADING");
 				dwnload.download.stop ();
+
 			}
 			else if (dwnload.download.status == DOWNLOAD_STATUS.ERROR)
 			{
@@ -256,10 +257,13 @@ namespace DownloadManager
 				downloadThread.Start ();
 				lblStatus.Text = "Connecting";
 				btnStartPause.Label = "Pause";
+				Console.WriteLine ("ERROR");
 			}
 			else
 			{
-				dwnload.download.resume (dwnload.download.length.value);
+				Console.WriteLine ("Other");
+				if (dwnload.download.length != null)
+					MainWindow.main_instance.resumeDownload (dwnload);
 			}
 		}
 
@@ -275,4 +279,3 @@ namespace DownloadManager
 		}
 	}
 }
-

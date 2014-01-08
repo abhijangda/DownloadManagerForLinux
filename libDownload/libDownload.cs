@@ -36,7 +36,7 @@ namespace libDownload
 			{
 				string s = (value/(1024*1024.0)).ToString ();
 				if (s.IndexOf (".") == -1)
-					return s + " GB";
+					return s + " MB";
 				return s.Substring (0, s.IndexOf (".") + 2) + " MB";
 			}
 
@@ -44,7 +44,7 @@ namespace libDownload
 			{
 				string s = (value/(1024.0)).ToString ();
 				if (s.IndexOf (".") == -1)
-					return s + " GB";
+					return s + " KB";
 				return s.Substring (0, s.IndexOf (".") + 2) + " KB";
 			}
 
@@ -66,7 +66,7 @@ namespace libDownload
 			{
 				string s = (value/(1024*1024*1024.0)).ToString ();
 				if (s.IndexOf (".") == -1)
-					return s + " GB";
+					return s + " GB/s";
 				return s.Substring (0, s.IndexOf (".") + 2) + " GB/s";
 			}
 
@@ -74,7 +74,7 @@ namespace libDownload
 			{
 				string s = (value/(1024*1024.0)).ToString ();
 				if (s.IndexOf (".") == -1)
-					return s + " GB";
+					return s + " MB/s";
 				return s.Substring (0, s.IndexOf (".") + 2) + " MB/s";
 			}
 
@@ -82,7 +82,7 @@ namespace libDownload
 			{
 				string s = (value/(1024.0)).ToString ();
 				if (s.IndexOf (".") == -1)
-					return s + " GB";
+					return s + " KB/s";
 				return s.Substring (0, s.IndexOf (".") + 2) + " KB/s";
 			}
 
@@ -136,12 +136,13 @@ namespace libDownload
 		protected Thread _mergeThread;
 
 		public const int maxReTryingAttempts = 5;
-		public string remotePath, localPath;
+		public string remotePath {get; protected set;}
+		public string localPath {get; protected set;}
 		public short parts;
-		public Length length;
-		public List<DownloadPart> listParts;
-		public abstract DOWNLOAD_STATUS status {get;set;}
-		public bool generateFileName {get;set;}
+		public Length length {get; protected set;}
+		public List<DownloadPart> listParts {get; protected set;}
+		public abstract DOWNLOAD_STATUS status {get; protected set;}
+		public bool generateFileName {get; protected set;}
 
 		public delegate void OnStatusChanged (Download dwnld);
 		public OnStatusChanged statusChangeHandler;
@@ -193,6 +194,10 @@ namespace libDownload
 			{
 				totalDownloaded.value += part.downloaded;
 			}
+			Console.WriteLine ("total"+ _downloaded.value.ToString ());
+			if (totalDownloaded.value == 0)
+				return _downloaded;
+
 			return totalDownloaded;
 		}
 
@@ -200,7 +205,7 @@ namespace libDownload
 		{
 			Length prev_downloaded = _downloaded;
 			_downloaded = getDownloaded ();
-			return new Speed (_downloaded.value - prev_downloaded.value);
+			return new Speed (_downloaded.value - prev_downloaded.value - 1);
 		}
 
 		public float getPartProgress (int part)
@@ -276,11 +281,47 @@ namespace libDownload
 			part.startDownload ();
 		}
 
-		public static Download loadFromXML (string xml)
+		public void initFromXML (string xml)
 		{
-			MatchCollection mc = Regex.Matches (xml, ".+");
+			MatchCollection mc = Regex.Matches (xml, ".+", RegexOptions.None);
+			for (int i = 0; i < mc.Count; i++)
+			{
+				Match m = mc [i];
+				if (m.Value.Contains ("<address>"))
+				{
+					i += 1;
+					remotePath = mc [i].Value.Trim ();
+					i += 1;
+				}
 
-			return null;
+				else if (m.Value.Contains ("<localpath>"))
+				{
+					i += 1;
+					localPath = mc [i].Value.Trim ();
+					i += 1;
+				}
+
+				else if (m.Value.Contains ("<size>"))
+				{
+					i += 1;
+					length = new Length (long.Parse (mc [i].Value.Trim ()));
+					i += 1;
+				}
+
+				else if (m.Value.Contains ("<sections>"))
+				{
+					i += 1;
+					parts = short.Parse (mc [i].Value.Trim ());
+					i += 1;
+				}
+
+				else if (m.Value.Contains ("<downloaded>"))
+				{
+					i += 1;
+					_downloaded = new Length (long.Parse (mc [i].Value.Trim ()));
+					i += 1;
+				}
+			}
 		}
 	}
 
@@ -324,10 +365,14 @@ namespace libDownload
 
 		public abstract void startDownload ();
 		public abstract void resumeDownload ();
+		protected FileStream fs;
 
 		public void stopDownload ()
 		{
-			_stop = true;
+			downloadThread.Abort ();
+			if (fs != null)
+				fs.Close ();
+			//_stop = true;
 			status = DOWNLOAD_PART_STATUS.IDLE;
 			downloadThread.Join ();
 		}
@@ -349,15 +394,21 @@ namespace libDownload
 
 			while (count > 0 && !_stop)
 			{
-				downloaded += count;
-				if (downloaded > length)
+				if (downloaded + count > length)
 				{
-					count -= (int)(downloaded - length);
+					count -= (int)(downloaded + count - length);
 					fs.Write (read, 0, count);
 					break;
 				}
+				if (_stop)
+					return;
 				fs.Write (read, 0, count);
+				downloaded += count;
+				if (_stop)
+					return;
 				count = Answer.Read (read, 0, 1024);
+				if (_stop)
+					return;
 				//Console.WriteLine ("Received {0} {1}", partNumber, downloaded);
 				if (Download.speed_level == DOWNLOAD_SPEED_LEVEL.LOW)
 					System.Threading.Thread.Sleep (100);

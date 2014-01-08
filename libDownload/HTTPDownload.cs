@@ -28,6 +28,8 @@ namespace libDownload
 			statusString = "";
 			reTryingAttempts = 0;
 			credentials = null;
+			webResp = null;
+			fs = null;
 		}
 
 		public override void startDownload ()
@@ -40,6 +42,9 @@ namespace libDownload
 		{
 			try
 			{
+				if (File.Exists (localPath))
+					File.Delete (localPath);
+
 				statusString = "Sending GET...";
 				status = DOWNLOAD_PART_STATUS.DOWNLOADING;
 				webReq = (HttpWebRequest)WebRequest.Create (remotePath);
@@ -55,8 +60,7 @@ namespace libDownload
 				Console.WriteLine ("Start Receiving {0} {1} {2}", 
 				                   partNumber, start, end);
 				Stream Answer = webResp.GetResponseStream ();
-				FileStream fs = new FileStream (localPath, 
-				                                FileMode.OpenOrCreate);
+				fs = new FileStream (localPath, FileMode.OpenOrCreate);
 				statusString = "Downloading...";
 				_download (Answer, fs);
 				webResp.Close();
@@ -73,8 +77,14 @@ namespace libDownload
 					statusString = "Done";
 				}
 			}
-			catch (Exception e)
+			catch (WebException e)
 			{
+				if (fs != null)
+					fs.Close ();
+
+				if (webResp != null)
+					webResp.Close ();
+
 				Console.WriteLine (e.Message);
 				status = DOWNLOAD_PART_STATUS.ERROR;
 				errorFunction (this);
@@ -92,21 +102,26 @@ namespace libDownload
 
 		void _resumeDownload ()
 		{
+			fs = null;
 			try
 			{
 				statusString = "Sending GET...";
 				status = DOWNLOAD_PART_STATUS.DOWNLOADING;
 				webReq = (HttpWebRequest)WebRequest.Create (remotePath);
 				webReq.Method = "GET";
-				FileStream fs = new FileStream (localPath, FileMode.Append);
-				start = downloaded = fs.Length;
+				fs = new FileStream (localPath, FileMode.Append);
+				start += downloaded = fs.Length;
 
+				length = end - start;
 				webReq.AddRange (start, end);
-				Console.WriteLine ("Sending Get {0} {1} {2}",
-				                   partNumber, start, end);
+				Console.WriteLine ("resuming Get {0} {1} {2} {3}",
+				                   partNumber, start, end, start/1024,
+				                   end/1024, end - start);
+
 				webResp = (HttpWebResponse)webReq.GetResponse ();
-				Console.WriteLine ("Start Receiving {0} {1} {2}", 
+				Console.WriteLine ("Start resuming {0} {1} {2}", 
 				                   partNumber, start, end);
+
 				Stream Answer = webResp.GetResponseStream ();
 				statusString = "Downloading...";
 				_download (Answer, fs);
@@ -124,8 +139,13 @@ namespace libDownload
 					statusString = "Done";
 				}
 			}
-			catch (Exception e)
+
+			catch (WebException e)
 			{
+				if (fs != null)
+					fs.Close ();
+				if (webResp != null)
+					webResp.Close ();
 				status = DOWNLOAD_PART_STATUS.ERROR;
 				errorFunction (this);
 				statusString = "Connection Error...";
@@ -144,7 +164,7 @@ namespace libDownload
 			{
 				return _status;
 			}
-			set
+			protected set
 			{
 				_status = value;
 				if (statusChangeHandler != null)
@@ -161,6 +181,7 @@ namespace libDownload
 			parts = _parts;
 			listParts = new List<DownloadPart> ();
 			_downloaded = new Length (0);
+			length = new Length (-1);
 			statusChangeHandler = _statusChangedHandler;
 			status = DOWNLOAD_STATUS.NOT_STARTED;
 			webResp = null;
@@ -335,6 +356,7 @@ namespace libDownload
 
 			if (listParts.Count == 0)
 			{
+				Console.WriteLine ("list empty");
 				for (int i = 1; i <= parts; i++)
 				{
 					if (!File.Exists (localPath + ".part" + i.ToString ()))
@@ -344,6 +366,7 @@ namespace libDownload
 						                             i.ToString (),
 					                                 DOWNLOAD_EXCEPTION_TYPE.FILESYSTEM_ERROR);
 						status = DOWNLOAD_STATUS.ERROR;
+						return;
 					}
 				}
 
@@ -370,7 +393,7 @@ namespace libDownload
 			NetworkCredential credential = null;
 			if (authUsername != "")
 				credential = new NetworkCredential (authUsername, authPassword);
-
+			Console.WriteLine ("resuming"+listParts.Count.ToString ());
 			foreach (HTTPDownloadPart part in listParts)
 			{
 				part.downloadedFunction = OnPartDownloaded;

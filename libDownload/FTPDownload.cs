@@ -11,7 +11,7 @@ namespace libDownload
 		FtpWebRequest webReq;
 		FtpWebResponse webResp;
 
-		public override DOWNLOAD_STATUS status {get;set;}
+		public override DOWNLOAD_STATUS status {get; protected set;}
 
 		public FTPDownload (string _remotePath, string _localPath, 
 		                    OnStatusChanged _statusChangedHandler,

@@ -1,5 +1,6 @@
 using System;
 using Gtk;
+using Gdk;
 using libDownload;
 using System.Collections.Generic;
 
@@ -14,6 +15,7 @@ namespace DownloadManager
 		Gtk.Menu contextMenu;
 		Gtk.MenuItem contextStart, contextPause, contextRestart;
 		Gtk.MenuItem contextCancel, contextStartAll, contextPauseAll;
+		bool ctrlPressed;
 
 		public DMDownloadTreeView ()
 		{
@@ -61,9 +63,9 @@ namespace DownloadManager
 			Model = listStore;
 
 			Gtk.CellRendererPixbuf iconColumnRender = new Gtk.CellRendererPixbuf ();
-			filenamecolumn.PackStart (iconColumnRender, true);
+			filenamecolumn.PackStart (iconColumnRender, false);
 			Gtk.CellRendererText stringColumnRender = new Gtk.CellRendererText ();
-			filenamecolumn.PackStart (stringColumnRender, true);
+			filenamecolumn.PackStart (stringColumnRender, false);
 
 			filenamecolumn.AddAttribute (iconColumnRender, "pixbuf", 0);
 			filenamecolumn.AddAttribute (stringColumnRender, "text", 1);
@@ -130,6 +132,8 @@ namespace DownloadManager
 			contextMenu.Append (contextPauseAll);
 
 			contextMenu.AttachToWidget (this, null);
+
+			ctrlPressed = false;
 		}
 
 		private int downloadedOrSpeedSortFunc (TreeModel treeModel, TreeIter iter1,
@@ -214,7 +218,10 @@ namespace DownloadManager
 			iter = listStore.AppendValues (new Gdk.Pixbuf ("./../../field.png"), 
 			                               dwnld.download.localPath.Substring( 
 			                                   dwnld.download.localPath.LastIndexOf ('/')+1),
-			                               "", "", "", "", "", dwnld);
+			                               dwnld.download.length.ToString (),
+			                               (100*dwnld.download.getDownloaded ().value)/(float)dwnld.download.length.value,
+			                               "", "", dwnld.download.parts, dwnld);
+
 			dwnld.rowReference = new Gtk.TreeRowReference (listStore, 
 			                                               listStore.GetPath (iter));
 		}
@@ -371,6 +378,48 @@ namespace DownloadManager
 			contextMenu.ShowAll ();
 
 			return base.OnButtonReleaseEvent (evnt);
+		}
+
+		protected override bool OnKeyPressEvent (EventKey evnt)
+		{
+			if (evnt.KeyValue == 65507 || evnt.KeyValue == 65508) /*For Ctrl*/
+			{
+				ctrlPressed = true;
+			}
+
+			return base.OnKeyPressEvent (evnt);
+		}
+
+		protected override bool OnKeyReleaseEvent (EventKey evnt)
+		{
+			if (evnt.KeyValue == 65507 || evnt.KeyValue == 65508) /*For Ctrl*/
+			{
+				ctrlPressed = false;
+			}
+
+			return base.OnKeyReleaseEvent (evnt);
+		}
+
+		protected override bool OnButtonPressEvent (EventButton evnt)
+		{
+			if (ctrlPressed == false)
+			{
+				this.Selection.Mode = SelectionMode.Single;
+			    return base.OnButtonPressEvent (evnt);
+			}
+
+			if (evnt.Button == 1)
+			{
+				this.Selection.Mode = SelectionMode.Multiple;
+			}
+
+			return base.OnButtonPressEvent (evnt);
+		}
+
+		public void loadDownloads ()
+		{
+			foreach (DMDownload dmld in listAllDownloads)
+				addDownloadRow (dmld);
 		}
 	}
 }

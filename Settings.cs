@@ -50,18 +50,19 @@ namespace DownloadManager
 
 				s += "\t<address>\n\t\t" + dmld.download.remotePath + "\n\t</address>\n";
 				s += "\t<localpath>\n\t\t" + dmld.download.localPath + "\n\t</localpath>\n";
-				s += "\t<size>\n\t\t" + dmld.download.length + "\n\t</size>\n";
+				s += "\t<size>\n\t\t" + dmld.download.length.value + "\n\t</size>\n";
 				s += "\t<downloaded>\n\t\t" + dmld.download.getDownloaded ().value + "\n\t</downloaded>\n";
-				s += "\t<sections>\n\t\t" + dmld.download.parts.ToString () + "\n\t</sections>";
+				s += "\t<sections>\n\t\t" + dmld.download.parts.ToString () + "\n\t</sections>\n";
 				s += "\t<type>\n\t\t" + dmld.typeCategory.name + "\n\t</type>\n";
 				s += "</download>\n";
 			}
 
 			string _path = Path.Combine (path, "downloadsInfo.conf");
+			Console.Write (_path);
 			if (File.Exists (_path))
 				File.Delete (_path);
 
-			File.WriteAllText(path, s);
+			File.WriteAllText (_path, s);
 		}
 
 		public void loadDownloads (ref List<DMDownload> listDownloads)
@@ -70,55 +71,27 @@ namespace DownloadManager
 				return;
 
 			string text = File.ReadAllText (Path.Combine (path, "downloadsInfo.conf"));
-			MatchCollection mc =  Regex.Matches (text, ".+", RegexOptions.Multiline);
+			MatchCollection mc = Regex.Matches (text, "<download.+</download>", RegexOptions.Singleline);
 			DMDownload dmld = new DMDownload (null, null);
 			Download dwld = null;
-			for (int i = 0; i < mc.Count; i++)
+			foreach (Match m in mc)
 			{
-				Match m = mc [i];
 				if (m.Value.Contains ("<download-http>"))
 					dwld = new HTTPDownload ("", "", null, true, 5);
 
 				else if (m.Value.Contains ("<download-ftp>"))
 					dwld = new FTPDownload ("", "", null, true, 5);
 
-				else if (dwld != null && m.Value.Contains ("<address>"))
+				if (m.Value.Contains ("<type>"))
 				{
-					i += 1;
-					dwld.remotePath = mc [i].Value.Trim ();
-					i += 1;
+					string s = m.Value;
+					int start = s.IndexOf ("<type>") + "<type>".Length;
+					dmld.typeCategory = new DMTypeCategory (s.Substring (start, s.IndexOf ("</type>") - start).Trim ());
 				}
 
-				else if (dwld != null && m.Value.Contains ("<localPath>"))
+				if (dwld != null)
 				{
-					i += 1;
-					dwld.localPath = mc [i].Value.Trim ();
-					i += 1;
-				}
-
-				else if (dwld != null && m.Value.Contains ("<size>"))
-				{
-					i += 1;
-					dwld.length = new Length (long.Parse (mc [i].Value.Trim ()));
-					i += 1;
-				}
-
-				else if (dwld != null && m.Value.Contains ("<sections>"))
-				{
-					i += 1;
-					dwld.parts = short.Parse (mc [i].Value.Trim ());
-					i += 1;
-				}
-
-				else if (dwld != null && m.Value.Contains ("<type>"))
-				{
-					i += 1;
-					dmld.typeCategory = new DMTypeCategory (mc [i].Value);
-					i += 1;
-				}
-
-				else if (dwld != null && m.Value.Contains ("</download>"))
-				{
+					dwld.initFromXML (m.Value);
 					dmld.download = dwld;
 					listDownloads.Add (dmld);
 				}

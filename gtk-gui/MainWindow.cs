@@ -241,7 +241,7 @@ public partial class MainWindow
 		this.MediumSpeedAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Medium Speed");
 		w1.Add (this.MediumSpeedAction, null);
 		this.HighSpeedAction = new global::Gtk.RadioAction ("HighSpeedAction", global::Mono.Unix.Catalog.GetString ("High Speed"), null, null, 0);
-		this.HighSpeedAction.Group = this.LowSpeedAction.Group;
+		this.HighSpeedAction.Group = this.MediumSpeedAction.Group;
 		this.HighSpeedAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("High Speed");
 		w1.Add (this.HighSpeedAction, null);
 		this.toolbarStopAll = new global::Gtk.Action ("toolbarStopAll", global::Mono.Unix.Catalog.GetString ("Stop All"), null, null);

@@ -70,7 +70,7 @@ namespace DownloadManager
 			this.entryAddress = new global::Gtk.Entry ();
 			this.entryAddress.CanFocus = true;
 			this.entryAddress.Name = "entryAddress";
-			this.entryAddress.Text = global::Mono.Unix.Catalog.GetString ("http://jaist.dl.sourceforge.net/project/unetbootin/UNetbootin/585/unetbootin-windows-585.exe");
+			this.entryAddress.Text = global::Mono.Unix.Catalog.GetString ("http://install.avira-update.com/package/wks_avira13/win32/en/pecl/avira_free_antivirus_en.exe");
 			this.entryAddress.IsEditable = true;
 			this.entryAddress.InvisibleChar = '•';
 			this.hbox1.Add (this.entryAddress);
@@ -367,7 +367,7 @@ namespace DownloadManager
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 412;
+			this.DefaultWidth = 455;
 			this.DefaultHeight = 474;
 			this.Show ();
 			this.entryAddress.Changed += new global::System.EventHandler (this.OnEntryAddressChanged);
