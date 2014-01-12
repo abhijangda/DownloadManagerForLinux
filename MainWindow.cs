@@ -34,7 +34,7 @@ public partial class MainWindow: Gtk.Window
 	{
 		TreeIter iter;
 		dmDownloadTreeView.Selection.GetSelected (out iter);
-		DMDownload dmld = (DMDownload) dmCategoryTreeView.Model.GetValue (iter, 7);
+		DMDownload dmld = (DMDownload) dmDownloadTreeView.Model.GetValue (iter, 7);
 		if (dmld == null)
 			return;
 
@@ -143,19 +143,19 @@ public partial class MainWindow: Gtk.Window
 		long time = remaining/speed;
 		if (time > 3600)
 		{
-			string s = (time/3600).ToString (), toret = "";
+			string s = (time / 3600).ToString (), toret = "";
 			if (s.Length == 1)
 				toret += "0" + s;
 			else
 				toret += s;
 
-			s = ((time%3600)/60).ToString ();
+			s = ((time % 3600) / 60).ToString ();
 			if (s.Length == 1)
 				toret += ":0" + s;
 			else
 				toret += ":" + s;
 
-			s = ((time%3600)%60).ToString ();
+			s = ((time % 3600) % 60).ToString ();
 			if (s.Length == 1)
 				toret += ":0" + s;
 			else
@@ -166,13 +166,13 @@ public partial class MainWindow: Gtk.Window
 			
 		if (time > 60)
 		{
-			string s = (time/60).ToString (), toret = "";
+			string s = (time / 60).ToString (), toret = "";
 			if (s.Length == 1)
 				toret += "0" + s;
 			else
 				toret += s;
 
-			s = (time%60).ToString ();
+			s = (time % 60).ToString ();
 			if (s.Length == 1)
 				toret += ":0" + s;
 			else
@@ -256,8 +256,9 @@ public partial class MainWindow: Gtk.Window
 		new_dlg.Destroy ();
 	}
 
-	private bool createNewDownload (string remotePath, string localPath, bool genFilename,
-			                        string typeCategory, int start)
+	private bool createNewDownload (string remotePath, string localPath,
+	                                bool genFilename, string typeCategory,
+	                                int start)
 	{
 		if (remotePath == "")
 		{
@@ -311,8 +312,9 @@ public partial class MainWindow: Gtk.Window
 		{
 			/*Start Download Now*/
 			ProgressWindow progress_dlg = new ProgressWindow (dmdl);
-			progress_dlg.ShowAll ();
 			dmdl.window = progress_dlg;
+			progress_dlg.ShowAll ();
+			progress_dlg.startDownload ();
 		}
 		else if (start == 2)
 		{
@@ -325,7 +327,6 @@ public partial class MainWindow: Gtk.Window
 	{
 		Gtk.TreeIter iter;
 		Gtk.TreeModel model;
-
 		dmDownloadTreeView.Selection.GetSelected (out model, out iter);
 		DMDownload dmld = (DMDownload) model.GetValue (iter, 7);
 		if (dmld.window == null)

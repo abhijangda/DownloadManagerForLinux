@@ -113,16 +113,27 @@ namespace DownloadManager
 			dwnload = _dwnload;
 			lblAddress.Text = dwnload.download.remotePath;
 			lblDestination.Text = dwnload.download.localPath;
-			downloadThread = new Thread (startDownloading);
-			downloadThread.Start ();
-			lblStatus.Text = "Sending HEAD";
 			for (int i = 0; i < dwnload.download.parts; i++)
 			{
 			    partsProgress.appendPart ();
+				partsProgress.setPartStatus (
+					i, dwnload.download.getPartStatusString (i));
+				partsProgress.setPartProgress (
+					i, dwnload.download.getPartProgress (i));
 			}
+
 			Resizable = false;
 			setVisibleWidget ();
 			listObjects.Add (this);
+			btnStartPause.Label = "Start";
+		}
+
+		public void startDownload ()
+		{
+			downloadThread = new Thread (_startDownloading);
+			downloadThread.Start ();
+			lblStatus.Text = "Sending HEAD";
+			btnStartPause.Label = "Pause";
 		}
 
 		public void setVisibleWidget ()
@@ -177,14 +188,11 @@ namespace DownloadManager
 				btnCancel.Sensitive = false;
 				btnStartPause.Sensitive = false;
 				btnClose.Sensitive = false;
-				Gtk.TreeIter iter;
-				partsProgress._treeView.Model.GetIterFirst (out iter);
-				do
+				for (int i = 0; i < dwnload.download.parts; i++)
 				{
-					partsProgress._listStore.SetValue (iter, 1, "Downloaded");
-					partsProgress._listStore.SetValue (iter, 2, (float)100.0);
+					partsProgress.setPartStatus (i, "Downloaded");
+					partsProgress.setPartProgress (i, (float)100.0);
 				}
-				while (partsProgress._treeView.Model.IterNext (ref iter));
 			}
 			else //dwnld.status == DOWNLOAD_STATUS.PAUSED
 			{
@@ -193,7 +201,7 @@ namespace DownloadManager
 			}
 		}
 
-		public void startDownloading ()
+		public void _startDownloading ()
 		{
 			MainWindow.main_instance.startDownload (dwnload);
 			if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADING)
@@ -218,15 +226,13 @@ namespace DownloadManager
 				{
 					dmprogressbar.setProgress (
 						(float)((double)downloaded.value / dwnload.download.length.value));
-					Gtk.TreeIter iter;
-					partsProgress._listStore.GetIterFirst (out iter);
+
 					for (int i = 0; i < dwnload.download.parts; i++)
 					{
-						partsProgress._listStore.SetValue (
-							iter, 1, dwnload.download.getPartStatusString (i));
-						partsProgress._listStore.SetValue (
-							iter, 2, dwnload.download.getPartProgress (i));
-						partsProgress._listStore.IterNext (ref iter);
+						partsProgress.setPartStatus (
+							i, dwnload.download.getPartStatusString (i));
+						partsProgress.setPartProgress (
+							i, dwnload.download.getPartProgress (i));
 					}
 				}
 			}
@@ -253,10 +259,7 @@ namespace DownloadManager
 			}
 			else if (dwnload.download.status == DOWNLOAD_STATUS.ERROR)
 			{
-				downloadThread = new Thread (startDownloading);
-				downloadThread.Start ();
-				lblStatus.Text = "Connecting";
-				btnStartPause.Label = "Pause";
+				startDownload ();
 				Console.WriteLine ("ERROR");
 			}
 			else

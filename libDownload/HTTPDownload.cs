@@ -29,7 +29,12 @@ namespace libDownload
 			reTryingAttempts = 0;
 			credentials = null;
 			webResp = null;
-			fs = null;
+
+			fs = new FileStream (localPath, FileMode.Append);
+			start += downloaded = fs.Length;
+			fs.Close ();
+			Console.WriteLine ("Part {0} Downloaded {1}", 
+			                   _number, downloaded);
 		}
 
 		public override void startDownload ()
@@ -54,8 +59,9 @@ namespace libDownload
 				webReq.AddRange (start, end);
 				downloaded = 0;
 				length = end - start;
-				Console.WriteLine ("Sending Get {0} {1} {2}", 
+				Console.WriteLine ("Sendivvvvng Get {0} {1} {2}", 
 				                   partNumber, start, end);
+
 				webResp = (HttpWebResponse)webReq.GetResponse ();
 				Console.WriteLine ("Start Receiving {0} {1} {2}", 
 				                   partNumber, start, end);
@@ -87,7 +93,7 @@ namespace libDownload
 
 				Console.WriteLine (e.Message);
 				status = DOWNLOAD_PART_STATUS.ERROR;
-				errorFunction (this);
+				errorFunction (this, true);
 				statusString = "Error...";
 			}
 
@@ -109,10 +115,7 @@ namespace libDownload
 				status = DOWNLOAD_PART_STATUS.DOWNLOADING;
 				webReq = (HttpWebRequest)WebRequest.Create (remotePath);
 				webReq.Method = "GET";
-				fs = new FileStream (localPath, FileMode.Append);
-				start += downloaded = fs.Length;
 
-				length = end - start;
 				webReq.AddRange (start, end);
 				Console.WriteLine ("resuming Get {0} {1} {2} {3}",
 				                   partNumber, start, end, start/1024,
@@ -124,14 +127,19 @@ namespace libDownload
 
 				Stream Answer = webResp.GetResponseStream ();
 				statusString = "Downloading...";
+				Console.WriteLine ("Part {0} Dowkkknloading {1}", 
+				                   partNumber, downloaded);
+
+				fs = new FileStream (localPath, FileMode.OpenOrCreate);
 				_download (Answer, fs);
 				webResp.Close();
 				fs.Close ();
+
 				if (_stop == true)
 				{
 					status = DOWNLOAD_PART_STATUS.IDLE;
 					statusString = "Paused";
-					_stop=false;
+					_stop = false;
 				}
 				else
 				{
@@ -146,8 +154,9 @@ namespace libDownload
 					fs.Close ();
 				if (webResp != null)
 					webResp.Close ();
+
 				status = DOWNLOAD_PART_STATUS.ERROR;
-				errorFunction (this);
+				errorFunction (this, false);
 				statusString = "Connection Error...";
 			}
 		}
@@ -181,7 +190,7 @@ namespace libDownload
 			parts = _parts;
 			listParts = new List<DownloadPart> ();
 			_downloaded = new Length (0);
-			length = new Length (-1);
+			length = new Length (0);
 			statusChangeHandler = _statusChangedHandler;
 			status = DOWNLOAD_STATUS.NOT_STARTED;
 			webResp = null;
@@ -210,7 +219,7 @@ namespace libDownload
 			return false;
 		}
 
-		public override string getFilename ()
+		protected override string getFilename ()
 		{
 			if (webResp == null)
 				return "";
@@ -354,50 +363,18 @@ namespace libDownload
 			if (status != DOWNLOAD_STATUS.PAUSED)
 				return;
 
-			if (listParts.Count == 0)
-			{
-				Console.WriteLine ("list empty");
-				for (int i = 1; i <= parts; i++)
-				{
-					if (!File.Exists (localPath + ".part" + i.ToString ()))
-					{
-						exception = new DownloadException ("Cannot find file " + 
-						                             localPath + ".part" +
-						                             i.ToString (),
-					                                 DOWNLOAD_EXCEPTION_TYPE.FILESYSTEM_ERROR);
-						status = DOWNLOAD_STATUS.ERROR;
-						return;
-					}
-				}
-
-				length = new Length (_length);
-				long part_length = length.value/parts;
-				long prev_length = 0, next_length = part_length;
-				string _localPath;
-
-				for (short i = 1; i < parts; i++)
-				{
-					_localPath = localPath + ".part" + i.ToString();
-					listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
-					                                     prev_length, next_length, i));
-					Console.WriteLine ("Part {0}", i);
-					prev_length += part_length;
-					next_length += part_length;
-				}
-
-				_localPath = localPath + ".part" + (parts).ToString();
-				listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
-				                                     prev_length, length.value, parts));
-			}
+			createPartsFromFiles (_length);
 
 			NetworkCredential credential = null;
 			if (authUsername != "")
 				credential = new NetworkCredential (authUsername, authPassword);
+
 			Console.WriteLine ("resuming"+listParts.Count.ToString ());
 			foreach (HTTPDownloadPart part in listParts)
 			{
 				part.downloadedFunction = OnPartDownloaded;
 				part.credentials = credential;
+				part.errorFunction = OnPartError;
 				part.resumeDownload ();
 			}
 
@@ -425,6 +402,51 @@ namespace libDownload
 		public override void incrementParts ()
 		{
 
+		}
+
+		/*TODO: Display Error when file is not found in below function*/
+		protected override void createPartsFromFiles (long _length = 0)
+		{
+			if (listParts.Count == 0)
+			{
+				Console.WriteLine ("list empty" + parts.ToString ());
+				for (int i = 1; i <= parts; i++)
+				{																		
+					if (!File.Exists (localPath + ".part" + i.ToString ()))
+					{
+						exception = new DownloadException ("Cannot find file " + 
+						                                   localPath + ".part" +
+						    				                               i.ToString (),
+						                                   DOWNLOAD_EXCEPTION_TYPE.FILESYSTEM_ERROR);
+						status = DOWNLOAD_STATUS.ERROR;
+						return;
+					}
+				}
+
+				if (_length != 0)
+				    length = new Length (_length);
+
+				long part_length = length.value/parts;
+				long prev_length = 0, next_length = part_length;
+				string _localPath;
+
+				for (short i = 1; i < parts; i++)
+				{
+					_localPath = localPath + ".part" + i.ToString();
+					listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
+					                                     prev_length, next_length, i));
+					Console.WriteLine ("Part {0}", i);
+					prev_length += part_length;
+					next_length += part_length;
+				}
+
+				_localPath = localPath + ".part" + (parts).ToString();
+				listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
+				                                     prev_length, length.value,
+				                                     parts));
+			}
+
+			Console.WriteLine (listParts.Count + "sdfsdf");
 		}
 	}
 }

@@ -54,6 +54,7 @@ namespace DownloadManager
 				s += "\t<downloaded>\n\t\t" + dmld.download.getDownloaded ().value + "\n\t</downloaded>\n";
 				s += "\t<sections>\n\t\t" + dmld.download.parts.ToString () + "\n\t</sections>\n";
 				s += "\t<type>\n\t\t" + dmld.typeCategory.name + "\n\t</type>\n";
+				s += "\t<download-state>\n\t\t" + dmld.download.status.ToString () +"\n\t</download-state>\n";
 				s += "</download>\n";
 			}
 
@@ -71,7 +72,7 @@ namespace DownloadManager
 				return;
 
 			string text = File.ReadAllText (Path.Combine (path, "downloadsInfo.conf"));
-			MatchCollection mc = Regex.Matches (text, "<download.+</download>", RegexOptions.Singleline);
+			MatchCollection mc = Regex.Matches (text, "<download.+?</download>", RegexOptions.Singleline);
 			DMDownload dmld = new DMDownload (null, null);
 			Download dwld = null;
 			foreach (Match m in mc)

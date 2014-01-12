@@ -241,7 +241,7 @@ namespace DownloadManager
 			this.btnStartPause.CanFocus = true;
 			this.btnStartPause.Name = "btnStartPause";
 			this.btnStartPause.UseUnderline = true;
-			this.btnStartPause.Label = global::Mono.Unix.Catalog.GetString ("Pause");
+			this.btnStartPause.Label = global::Mono.Unix.Catalog.GetString ("Start");
 			this.hbox1.Add (this.btnStartPause);
 			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnStartPause]));
 			w19.PackType = ((global::Gtk.PackType)(1));

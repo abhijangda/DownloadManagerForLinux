@@ -9,7 +9,9 @@ namespace DownloadManager
 	{
 		public Gtk.TreeView _treeView;
 		public Gtk.ListStore _listStore;
+
 		private int count;
+		private List<TreeRowReference> listRowReference;
 
 		public PartsProgressWidget () : base ()
 		{
@@ -55,6 +57,8 @@ namespace DownloadManager
 			progressColumnRender.Height = 20;
 
 			_treeView.Selection.Changed += _treeViewSelectionChanged;
+
+			listRowReference = new List<TreeRowReference> ();
 		}
 
 		public void _treeViewSelectionChanged (object o, EventArgs args)
@@ -70,6 +74,22 @@ namespace DownloadManager
 			count ++;
 			Gtk.TreeIter iter = _listStore.Append ();
 			_listStore.SetValue (iter, 0, count.ToString ());
+			listRowReference.Add (new TreeRowReference (_listStore, 
+			                                            _listStore.GetPath (iter)));
+		}
+
+		public void setPartStatus (int part, string status)
+		{
+			TreeIter iter;
+			_listStore.GetIter (out iter, listRowReference [part].Path);
+			_listStore.SetValue (iter, 1, status);
+		}
+
+		public void setPartProgress (int part, float progress)
+		{
+			TreeIter iter;
+			_listStore.GetIter (out iter, listRowReference [part].Path);
+			_listStore.SetValue (iter, 2, progress);
 		}
 	}
 }

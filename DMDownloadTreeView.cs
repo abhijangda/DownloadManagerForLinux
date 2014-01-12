@@ -100,13 +100,10 @@ namespace DownloadManager
 			sortable.SetSortFunc (2, sizeSortFunc);
 			sortable.SetSortColumnId (2, SortType.Descending);
 
-			sortable.SetSortFunc (3, downloadedOrSpeedSortFunc);
-			sortable.SetSortColumnId (3, SortType.Descending);
-
 			sortable.SetSortFunc (4, timeSortFunc);
 			sortable.SetSortColumnId (4, SortType.Descending);
 
-			sortable.SetSortFunc (5, downloadedOrSpeedSortFunc);
+			sortable.SetSortFunc (5, SpeedSortFunc);
 			sortable.SetSortColumnId (5, SortType.Descending);
 
 			contextMenu = new Gtk.Menu ();
@@ -136,11 +133,18 @@ namespace DownloadManager
 			ctrlPressed = false;
 		}
 
-		private int downloadedOrSpeedSortFunc (TreeModel treeModel, TreeIter iter1,
-		                              TreeIter iter2)
+		private int SpeedSortFunc (TreeModel treeModel, TreeIter iter1,
+		                           TreeIter iter2)
 		{
-			string str1 = (string)listStore.GetValue (iter1, 1);
-			string str2 = (string)listStore.GetValue (iter2, 1);
+			string str1 = (string)listStore.GetValue (iter1, 5);
+			string str2 = (string)listStore.GetValue (iter2, 5);
+
+			if (str1 == "" && str2 != "")
+				return -1;
+			else if (str1 == "" && str2 == "")
+				return 0;
+			else if (str1 != "" && str2 == "")
+				return 1;
 
 			if (str1.Substring (str1.IndexOf (" ")) == str2.Substring (str2.IndexOf (" ")))
 				return str1.CompareTo (str2);
@@ -191,8 +195,8 @@ namespace DownloadManager
 		private int sizeSortFunc (TreeModel treeModel, TreeIter iter1,
 		                              TreeIter iter2)
 		{
-		    DMDownload dmld1 = (DMDownload)listStore.GetValue (iter1, 7);
-			DMDownload dmld2 = (DMDownload)listStore.GetValue (iter2, 1);
+		    DMDownload dmld1 = (DMDownload)listStore.GetValue (iter1, 2);
+			DMDownload dmld2 = (DMDownload)listStore.GetValue (iter2, 2);
 
 			if (dmld1.download.length.value == dmld2.download.length.value)
 				return 0;
@@ -216,11 +220,13 @@ namespace DownloadManager
 		{
 			Gtk.TreeIter iter;
 			iter = listStore.AppendValues (new Gdk.Pixbuf ("./../../field.png"), 
-			                               dwnld.download.localPath.Substring( 
+			                               dwnld.download.localPath.Substring(
 			                                   dwnld.download.localPath.LastIndexOf ('/')+1),
 			                               dwnld.download.length.ToString (),
 			                               (100*dwnld.download.getDownloaded ().value)/(float)dwnld.download.length.value,
-			                               "", "", dwnld.download.parts, dwnld);
+			                               "", "", 
+			                               dwnld.download.parts.ToString (),
+			                               dwnld);
 
 			dwnld.rowReference = new Gtk.TreeRowReference (listStore, 
 			                                               listStore.GetPath (iter));
@@ -380,6 +386,22 @@ namespace DownloadManager
 			return base.OnButtonReleaseEvent (evnt);
 		}
 
+		protected override bool OnButtonPressEvent (EventButton evnt)
+		{
+			if (ctrlPressed == false)
+			{
+				this.Selection.Mode = SelectionMode.Single;
+				return base.OnButtonPressEvent (evnt);
+			}
+
+			if (evnt.Button == 1)
+			{
+				this.Selection.Mode = SelectionMode.Multiple;
+			}
+
+			return base.OnButtonPressEvent (evnt);
+		}
+
 		protected override bool OnKeyPressEvent (EventKey evnt)
 		{
 			if (evnt.KeyValue == 65507 || evnt.KeyValue == 65508) /*For Ctrl*/
@@ -398,22 +420,6 @@ namespace DownloadManager
 			}
 
 			return base.OnKeyReleaseEvent (evnt);
-		}
-
-		protected override bool OnButtonPressEvent (EventButton evnt)
-		{
-			if (ctrlPressed == false)
-			{
-				this.Selection.Mode = SelectionMode.Single;
-			    return base.OnButtonPressEvent (evnt);
-			}
-
-			if (evnt.Button == 1)
-			{
-				this.Selection.Mode = SelectionMode.Multiple;
-			}
-
-			return base.OnButtonPressEvent (evnt);
 		}
 
 		public void loadDownloads ()

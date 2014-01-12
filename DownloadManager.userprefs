@@ -1,22 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="libDownload/FTPDownload.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="libDownload/HTTPDownload.cs">
     <Files>
-      <File FileName="AddExistingDialog.cs" Line="1" Column="1" />
-      <File FileName="MainWindow.cs" Line="28" Column="28" />
-      <File FileName="DMDownloadTreeView.cs" Line="220" Column="47" />
-      <File FileName="DMCategoryTreeView.cs" Line="78" Column="4" />
-      <File FileName="libDownload/HTTPDownload.cs" Line="167" Column="14" />
-      <File FileName="ProgressWindow.cs" Line="30" Column="4" />
-      <File FileName="libDownload/libDownload.cs" Line="143" Column="60" />
-      <File FileName="Settings.cs" Line="97" Column="6" />
-      <File FileName="libDownload/FTPDownload.cs" Line="16" Column="29" />
+      <File FileName="MainWindow.cs" Line="24" Column="12" />
+      <File FileName="ProgressWindow.cs" Line="128" Column="18" />
+      <File FileName="PartsProgressWidget.cs" Line="89" Column="4" />
+      <File FileName="libDownload/libDownload.cs" Line="436" Column="12" />
+      <File FileName="libDownload/HTTPDownload.cs" Line="129" Column="40" />
+      <File FileName="Settings.cs" Line="81" Column="13" />
+      <File FileName="libDownload/FTPDownload.cs" Line="142" Column="39" />
+      <File FileName="DMDownloadTreeView.cs" Line="254" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/home/abhi/DownloadManagerForLinux/gtk-gui/DownloadManager.Widget.cs" line="9" column="23" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

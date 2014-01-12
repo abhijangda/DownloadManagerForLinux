@@ -130,7 +130,7 @@ namespace libDownload
 	};
 
 	public abstract class Download
-	{
+	{	
 		protected Length _downloaded;
 		protected DOWNLOAD_STATUS _status;
 		protected Thread _mergeThread;
@@ -159,8 +159,8 @@ namespace libDownload
 		public string authUsername {get; protected set;}
 		public string authPassword {get; protected set;}
 
-		public abstract string getFilename ();
-		public abstract void resume (long _length);
+		protected abstract string getFilename ();
+		public abstract void resume (long _length = 0);
 		public abstract void incrementParts ();
 		public abstract bool isResumeSupported ();
 
@@ -194,27 +194,34 @@ namespace libDownload
 			{
 				totalDownloaded.value += part.downloaded;
 			}
-			Console.WriteLine ("total"+ _downloaded.value.ToString ());
+
 			if (totalDownloaded.value == 0)
 				return _downloaded;
 
 			return totalDownloaded;
 		}
 
-		public Speed getSpeed ()
+		public virtual Speed getSpeed ()
 		{
 			Length prev_downloaded = _downloaded;
 			_downloaded = getDownloaded ();
-			return new Speed (_downloaded.value - prev_downloaded.value - 1);
+			return new Speed (_downloaded.value - prev_downloaded.value);
 		}
 
 		public float getPartProgress (int part)
 		{
+			Console.WriteLine ("p" + part + " total" + listParts.Count);
+			if (part >= listParts.Count)
+				return (float)-1.0;
+
 			return (100*listParts [part].downloaded)/listParts [part].length;
 		}
 
 		public string getPartStatusString (int part)
 		{
+			if (part >= listParts.Count)
+				return "";
+
 			return listParts [part].statusString;
 		}
 
@@ -238,7 +245,7 @@ namespace libDownload
 			_mergeThread.Start ();
 		}
 
-		private void _mergeParts ()
+		protected void _mergeParts ()
 		{
 			FileStream fs = new FileStream (localPath,
 			                                FileMode.OpenOrCreate,
@@ -266,7 +273,7 @@ namespace libDownload
 			status = DOWNLOAD_STATUS.DOWNLOADED;
 		}
 
-		protected void OnPartError (DownloadPart part)
+		protected void OnPartError (DownloadPart part, bool start)
 		{
 			if (maxReTryingAttempts == part.reTryingAttempts)
 			{
@@ -278,8 +285,14 @@ namespace libDownload
 			}
 
 			part.statusString = "Retrying...";
-			part.startDownload ();
+
+			if (start)
+			    part.startDownload ();
+			else
+				part.resumeDownload ();
 		}
+
+		protected abstract void createPartsFromFiles (long _length = 0);
 
 		public void initFromXML (string xml)
 		{
@@ -321,6 +334,30 @@ namespace libDownload
 					_downloaded = new Length (long.Parse (mc [i].Value.Trim ()));
 					i += 1;
 				}
+
+				else if (m.Value.Contains ("<download-state>"))
+				{
+					i += 1;
+					string [] arr = Enum.GetNames (typeof (DOWNLOAD_STATUS));
+					for (int j = 0; j < arr.Length; j++)
+					{
+					    if (mc [i].Value.Trim () == arr [j])
+						{
+							Array array = Enum.GetValues (typeof (DOWNLOAD_STATUS));
+							status = (DOWNLOAD_STATUS) array.GetValue (j);
+							if (status != DOWNLOAD_STATUS.DOWNLOADED &&
+							    status != DOWNLOAD_STATUS.NOT_STARTED)
+							{
+								Console.WriteLine ("Creating parts");
+								createPartsFromFiles ();
+							}
+
+							break;
+						}
+					}
+
+					i += 1;
+				}
 			}
 		}
 	}
@@ -360,7 +397,7 @@ namespace libDownload
 
 		public delegate void OnDownloaded (DownloadPart part);
 		public OnDownloaded downloadedFunction {get; set;}
-		public delegate void OnError (DownloadPart part);
+		public delegate void OnError (DownloadPart part, bool start);
 		public OnError errorFunction {get; set;}
 
 		public abstract void startDownload ();
@@ -400,16 +437,11 @@ namespace libDownload
 					fs.Write (read, 0, count);
 					break;
 				}
-				if (_stop)
-					return;
+
 				fs.Write (read, 0, count);
 				downloaded += count;
-				if (_stop)
-					return;
 				count = Answer.Read (read, 0, 1024);
-				if (_stop)
-					return;
-				//Console.WriteLine ("Received {0} {1}", partNumber, downloaded);
+
 				if (Download.speed_level == DOWNLOAD_SPEED_LEVEL.LOW)
 					System.Threading.Thread.Sleep (100);
 				else //speed_level == DOWNLOAD_SPEED_LEVEL.MEDIUM

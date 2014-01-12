@@ -489,6 +489,7 @@
                         <property name="MemberName" />
                         <property name="CanFocus">True</property>
                         <property name="ShowScrollbars">True</property>
+                        <signal name="RowActivated" handler="dmDownloadTreeViewRowActivated" />
                       </widget>
                     </child>
                   </widget>
@@ -946,6 +947,7 @@
                         <property name="MemberName">rbNow</property>
                         <property name="CanFocus">True</property>
                         <property name="Label" translatable="yes">Now</property>
+                        <property name="Active">True</property>
                         <property name="DrawIndicator">True</property>
                         <property name="HasLabel">True</property>
                         <property name="UseUnderline">True</property>
@@ -1401,7 +1403,7 @@
                 <property name="MemberName">btnStartPause</property>
                 <property name="CanFocus">True</property>
                 <property name="Type">TextOnly</property>
-                <property name="Label" translatable="yes">Pause</property>
+                <property name="Label" translatable="yes">Start</property>
                 <property name="UseUnderline">True</property>
                 <signal name="Clicked" handler="btnStartPauseClicked" />
               </widget>

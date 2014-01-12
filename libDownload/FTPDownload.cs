@@ -134,6 +134,11 @@ namespace libDownload
 			status = DOWNLOAD_STATUS.DOWNLOADING;
 		}
 
+		protected override void createPartsFromFiles (long _length = 0)
+		{
+			 
+		}
+
 		public override void resume (long _length)
 		{
 			if (status != DOWNLOAD_STATUS.PAUSED)
@@ -196,7 +201,7 @@ namespace libDownload
 			return true;
 		}
 
-		public override string getFilename ()
+		protected override string getFilename ()
 		{
 			string filename = remotePath.Substring (remotePath.LastIndexOf ("/") +1);
 			return System.Net.WebUtility.UrlDecode (filename);
@@ -272,7 +277,7 @@ namespace libDownload
 			{
 				Console.WriteLine (e.Message);
 				status = DOWNLOAD_PART_STATUS.ERROR;
-				errorFunction (this);
+				errorFunction (this, true);
 				statusString = "Error...";
 			}
 			finally
@@ -332,7 +337,7 @@ namespace libDownload
 			catch (Exception e)
 			{
 				status = DOWNLOAD_PART_STATUS.ERROR;
-				errorFunction (this);
+				errorFunction (this, false);
 				statusString = "Connection Error...";
 			}
 			finally
