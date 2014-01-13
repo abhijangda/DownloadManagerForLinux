@@ -1,15 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="libDownload/HTTPDownload.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="libDownload/FTPDownload.cs">
     <Files>
-      <File FileName="MainWindow.cs" Line="24" Column="12" />
-      <File FileName="ProgressWindow.cs" Line="128" Column="18" />
-      <File FileName="PartsProgressWidget.cs" Line="89" Column="4" />
-      <File FileName="libDownload/libDownload.cs" Line="436" Column="12" />
-      <File FileName="libDownload/HTTPDownload.cs" Line="129" Column="40" />
-      <File FileName="Settings.cs" Line="81" Column="13" />
-      <File FileName="libDownload/FTPDownload.cs" Line="142" Column="39" />
-      <File FileName="DMDownloadTreeView.cs" Line="254" Column="3" />
+      <File FileName="MainWindow.cs" Line="244" Column="1" />
+      <File FileName="PartsProgressWidget.cs" Line="20" Column="13" />
+      <File FileName="libDownload/HTTPDownload.cs" Line="8" Column="18" />
+      <File FileName="Settings.cs" Line="58" Column="26" />
+      <File FileName="libDownload/FTPDownload.cs" Line="39" Column="4" />
+      <File FileName="DMDownloadTreeView.cs" Line="15" Column="24" />
+      <File FileName="libDownload/libDownload.cs" Line="490" Column="5" />
+      <File FileName="ProgressWindow.cs" Line="267" Column="5" />
+      <File FileName="Program.cs" Line="1" Column="1" />
+      <File FileName="DMCategoryTreeView.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

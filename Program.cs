@@ -23,10 +23,11 @@ namespace DownloadManager
 		public static void Main (string[] args)
 		{
 			//Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments
-			ServicePointManager.DefaultConnectionLimit = 10;
+			ServicePointManager.DefaultConnectionLimit = 50;
 			Application.Init ();
 			MainWindow win = new MainWindow ();
 			MainWindow.main_instance = win;
+			win.loadSettings ();
 			win.Maximize ();
 			win.Show ();
 			Application.Run ();

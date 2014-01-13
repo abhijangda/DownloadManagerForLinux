@@ -210,7 +210,6 @@ namespace libDownload
 
 		public float getPartProgress (int part)
 		{
-			Console.WriteLine ("p" + part + " total" + listParts.Count);
 			if (part >= listParts.Count)
 				return (float)-1.0;
 
@@ -360,6 +359,14 @@ namespace libDownload
 				}
 			}
 		}
+
+		public void writeToFiles ()
+		{
+			foreach (DownloadPart part in listParts)
+			{
+				part.writeToFile ();
+			}
+		}
 	}
 
 	public abstract class DownloadPart
@@ -379,11 +386,17 @@ namespace libDownload
 			set
 			{
 				_status = value;
+				if (_status != DOWNLOAD_PART_STATUS.DOWNLOADING)
+					writeToFile ();
+
 				if (_status == DOWNLOAD_PART_STATUS.DOWNLOADED && 
 				    downloadedFunction != null)
 					downloadedFunction (this);
 			}
 		}
+
+		protected List<byte []> listdataArray;
+		protected List<int> listdataCounts;
 
 		public DOWNLOAD_SPEED_LEVEL speed_level;
 		public long length;
@@ -403,13 +416,15 @@ namespace libDownload
 		public abstract void startDownload ();
 		public abstract void resumeDownload ();
 		protected FileStream fs;
+		protected Mutex mutex;
 
 		public void stopDownload ()
 		{
-			downloadThread.Abort ();
+			//downloadThread.Abort ();
+			_stop = true;
 			if (fs != null)
 				fs.Close ();
-			//_stop = true;
+
 			status = DOWNLOAD_PART_STATUS.IDLE;
 			downloadThread.Join ();
 		}
@@ -423,10 +438,10 @@ namespace libDownload
 				startDownload ();
 		}
 
-		protected void _download (Stream Answer, FileStream fs)
+		protected void _download (Stream Answer)
 		{
 			reTryingAttempts = 0;
-			byte[] read = new byte[1024];
+			byte[] read = new byte [1024];
 			int count = Answer.Read (read, 0, 1024);
 
 			while (count > 0 && !_stop)
@@ -434,16 +449,25 @@ namespace libDownload
 				if (downloaded + count > length)
 				{
 					count -= (int)(downloaded + count - length);
-					fs.Write (read, 0, count);
+					mutex.WaitOne ();
+					listdataCounts.Add (count);
+					listdataArray.Add (read);
+					mutex.ReleaseMutex ();
 					break;
 				}
 
-				fs.Write (read, 0, count);
+				//fs.Write (read, 0, count);
+				mutex.WaitOne ();
+				listdataCounts.Add (count);
+				listdataArray.Add (read);
+				mutex.ReleaseMutex ();
+
 				downloaded += count;
 				count = Answer.Read (read, 0, 1024);
 
 				if (Download.speed_level == DOWNLOAD_SPEED_LEVEL.LOW)
 					System.Threading.Thread.Sleep (100);
+
 				else //speed_level == DOWNLOAD_SPEED_LEVEL.MEDIUM
 					System.Threading.Thread.Sleep (10);
 			}
@@ -453,6 +477,23 @@ namespace libDownload
 		{
 			if (File.Exists (localPath))
 				File.Delete (localPath);
+		}
+
+		public void writeToFile ()
+		{
+			if (mutex == null)
+				return;
+
+			fs = new FileStream (localPath, FileMode.Append);
+			mutex.WaitOne ();
+			for (int i = 0; i < listdataArray.Count; i++)
+			{
+				fs.Write (listdataArray [i], 0, listdataCounts [i]);
+			}
+			listdataArray.Clear ();
+			listdataCounts.Clear ();
+			mutex.ReleaseMutex ();
+			fs.Close ();
 		}
 	}
 }

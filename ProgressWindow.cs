@@ -121,6 +121,15 @@ namespace DownloadManager
 				partsProgress.setPartProgress (
 					i, dwnload.download.getPartProgress (i));
 			}
+			if (dwnload.download.length.value > 0 && 
+			    dwnload.download.status != DOWNLOAD_STATUS.NOT_STARTED)
+			{
+				Length downloaded = dwnload.download.getDownloaded ();
+				lblStatus.Text = downloaded.ToString () + " / " + 
+					dwnload.download.length.ToString ();
+				dmprogressbar.setProgress (
+					(float)((double)downloaded.value / dwnload.download.length.value));
+			}
 
 			Resizable = false;
 			setVisibleWidget ();
@@ -132,7 +141,7 @@ namespace DownloadManager
 		{
 			downloadThread = new Thread (_startDownloading);
 			downloadThread.Start ();
-			lblStatus.Text = "Sending HEAD";
+			lblStatus.Text = "Connecting...";
 			btnStartPause.Label = "Pause";
 		}
 

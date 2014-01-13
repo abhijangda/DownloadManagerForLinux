@@ -30,11 +30,15 @@ namespace libDownload
 			credentials = null;
 			webResp = null;
 
-			fs = new FileStream (localPath, FileMode.Append);
+			fs = new FileStream (localPath, FileMode.OpenOrCreate);
 			start += downloaded = fs.Length;
 			fs.Close ();
 			Console.WriteLine ("Part {0} Downloaded {1}", 
 			                   _number, downloaded);
+
+			listdataArray = new List<byte []> ();
+			listdataCounts = new List<int> ();
+			mutex = new Mutex ();
 		}
 
 		public override void startDownload ()
@@ -66,11 +70,9 @@ namespace libDownload
 				Console.WriteLine ("Start Receiving {0} {1} {2}", 
 				                   partNumber, start, end);
 				Stream Answer = webResp.GetResponseStream ();
-				fs = new FileStream (localPath, FileMode.OpenOrCreate);
 				statusString = "Downloading...";
-				_download (Answer, fs);
+				_download (Answer);
 				webResp.Close();
-				fs.Close ();
 				if (_stop == true)
 				{
 					status = DOWNLOAD_PART_STATUS.IDLE;
@@ -130,10 +132,8 @@ namespace libDownload
 				Console.WriteLine ("Part {0} Dowkkknloading {1}", 
 				                   partNumber, downloaded);
 
-				fs = new FileStream (localPath, FileMode.OpenOrCreate);
-				_download (Answer, fs);
+				_download (Answer);
 				webResp.Close();
-				fs.Close ();
 
 				if (_stop == true)
 				{
@@ -150,8 +150,6 @@ namespace libDownload
 
 			catch (WebException e)
 			{
-				if (fs != null)
-					fs.Close ();
 				if (webResp != null)
 					webResp.Close ();
 

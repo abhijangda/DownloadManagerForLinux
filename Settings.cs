@@ -19,6 +19,9 @@ namespace DownloadManager
 			if (key == "default-dir")
 				return "~/Downloads";
 
+			if (key == "save-time-out")
+				return "2000";
+
 			return "";
 		}
 
@@ -59,7 +62,6 @@ namespace DownloadManager
 			}
 
 			string _path = Path.Combine (path, "downloadsInfo.conf");
-			Console.Write (_path);
 			if (File.Exists (_path))
 				File.Delete (_path);
 
@@ -78,10 +80,14 @@ namespace DownloadManager
 			foreach (Match m in mc)
 			{
 				if (m.Value.Contains ("<download-http>"))
-					dwld = new HTTPDownload ("", "", null, true, 5);
+					dwld = new HTTPDownload ("", "", 
+					                         MainWindow.main_instance.OnDownloadStatusChanged,
+					                         true, 5);
 
 				else if (m.Value.Contains ("<download-ftp>"))
-					dwld = new FTPDownload ("", "", null, true, 5);
+					dwld = new FTPDownload ("", "", 
+					                        MainWindow.main_instance.OnDownloadStatusChanged, 
+					                        true, 5);
 
 				if (m.Value.Contains ("<type>"))
 				{

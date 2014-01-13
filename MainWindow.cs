@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Gtk;
 using System.Collections.Generic;
 using libDownload;
@@ -11,23 +12,48 @@ public partial class MainWindow: Gtk.Window
 	public static DownloadManager.Settings settingsManager;
 	public static MainWindow main_instance;
 	public Length total_downloaded;
+	private Thread savingThread;
+	private bool _stopSavingThread;
 
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
 		total_downloaded = new Length (0);
 		listRunningDownloads = new List<DMDownload> ();
-		GLib.Timeout.Add (1000, this.updateFunc);
+		GLib.Timeout.Add (500, this.updateFunc);
 		settingsManager = new DownloadManager.Settings (
 			Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
 		listAllDownloads = new List<DMDownload> ();
-		settingsManager.loadDownloads (ref listAllDownloads);
+
 		Build ();
+
 		HighSpeedAction.Active = true;
-		dmDownloadTreeView.listAllDownloads = listAllDownloads;
-		dmDownloadTreeView.loadDownloads ();
 		notebook.CurrentPage = 0;
 		dmDownloadTreeView.Selection.Changed += dmDownloadTreeViewSelectionChanged;
 		toolbar1.ToolbarStyle = ToolbarStyle.Icons;
+
+		_stopSavingThread = false;
+		savingThread = new Thread (_saveToFiles);
+		savingThread.Start ();
+	}
+
+	private void _saveToFiles ()
+	{
+		while (!_stopSavingThread)
+		{
+			foreach (DMDownload dwnld in listRunningDownloads)
+			{
+				dwnld.download.writeToFiles ();
+			}
+	
+			Thread.Sleep (int.Parse (settingsManager.getKeyValue ("save-time-out")));
+		}
+	}
+
+	public void loadSettings ()
+	{
+		settingsManager.loadDownloads (ref listAllDownloads);
+		dmDownloadTreeView.listAllDownloads = listAllDownloads;
+		dmDownloadTreeView.loadDownloads ();
 	}
 
 	private void dmDownloadTreeViewSelectionChanged (object o, EventArgs args)
@@ -119,6 +145,7 @@ public partial class MainWindow: Gtk.Window
 				}
 			}
 		}
+
 		if (toRemove != null)
 		    listRunningDownloads.Remove (toRemove);
 	}
@@ -196,6 +223,7 @@ public partial class MainWindow: Gtk.Window
 		{
 			Length downloaded = dwnld.download.getDownloaded ();
 			Speed speed = dwnld.download.getSpeed ();
+			speed.value = 2 * speed.value;
 			if (dwnld.window != null)
 			    dwnld.window.updateProgress (downloaded, speed);
 
@@ -216,6 +244,8 @@ public partial class MainWindow: Gtk.Window
 			    dmld.download.stop ();
 
 		settingsManager.storeInfo (listAllDownloads);
+		_stopSavingThread = true;
+		savingThread.Join ();
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -333,6 +363,7 @@ public partial class MainWindow: Gtk.Window
 			dmld.window = new ProgressWindow (dmld);
 
 		dmld.window.ShowAll ();
+		dmld.window.Present ();
 	}
 
 	protected void dmCategoryTreeViewRowActivated (object o, RowActivatedArgs args)

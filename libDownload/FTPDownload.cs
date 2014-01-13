@@ -260,7 +260,7 @@ namespace libDownload
 				fs = new FileStream (localPath, 
 				                     FileMode.OpenOrCreate);
 				statusString = "Downloading...";
-				_download (Answer, fs);
+				_download (Answer);
 				if (_stop == true)
 				{
 					status = DOWNLOAD_PART_STATUS.IDLE;
@@ -319,7 +319,7 @@ namespace libDownload
 				                   partNumber, start, end);
 				Answer = webResp.GetResponseStream ();
 				statusString = "Downloading...";
-				_download (Answer, fs);
+				_download (Answer);
 				webResp.Close();
 				fs.Close ();
 				if (_stop == true)
