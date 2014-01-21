@@ -52,7 +52,7 @@
       <action id="toolbarCancel">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
-        <property name="StockId">gtk-cancel</property>
+        <property name="StockId">gtk-stop</property>
         <signal name="Activated" handler="OnToolbarCancelActivated" />
       </action>
       <action id="toolbarRestart">
@@ -117,6 +117,7 @@
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">Create Queue</property>
         <property name="ShortLabel" translatable="yes">Create Queue Download</property>
+        <signal name="Activated" handler="CreateQueueActivated" />
       </action>
       <action id="StartQueueAction">
         <property name="Type">Action</property>
@@ -354,6 +355,35 @@
         <property name="StockId">gtk-find</property>
         <signal name="Activated" handler="OnToolbarFindActivated" />
       </action>
+      <action id="toolbarStartQueue">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-yes</property>
+        <signal name="Activated" handler="toolbarStartQueueActivated" />
+      </action>
+      <action id="toolbarStopQueue">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-no</property>
+        <signal name="Activated" handler="toolbarStopQueueActivated" />
+      </action>
+      <action id="toolbarCancelQueue">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-dialog-error</property>
+        <signal name="Activated" handler="toolbarCancelQueueActivated" />
+      </action>
+      <action id="toolbarNewQueue">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-save</property>
+        <signal name="Activated" handler="toolbarNewQueueActivated" />
+      </action>
+      <action id="toolbarRestartQueue">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <signal name="Activated" handler="toolbarRestartQueuectivated" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MainWindow</property>
@@ -436,6 +466,12 @@
               <node type="Toolitem" action="toolbarPause" />
               <node type="Toolitem" action="toolbarCancel" />
               <node type="Toolitem" action="toolbarRestart" />
+              <node type="Separator" />
+              <node type="Toolitem" action="toolbarNewQueue" />
+              <node type="Toolitem" action="toolbarStartQueue" />
+              <node type="Toolitem" action="toolbarStopQueue" />
+              <node type="Toolitem" action="toolbarCancelQueue" />
+              <node type="Toolitem" action="toolbarRestartQueue" />
               <node type="Toolitem" />
               <node type="Separator" />
               <node type="Toolitem" action="toolbarFind" />
@@ -457,7 +493,7 @@
           <widget class="Gtk.Notebook" id="notebook">
             <property name="MemberName">notebook</property>
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">0</property>
+            <property name="CurrentPage">1</property>
             <child>
               <widget class="Gtk.HPaned" id="hpaned1">
                 <property name="MemberName" />
@@ -506,10 +542,35 @@
               </packing>
             </child>
             <child>
-              <placeholder />
+              <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow2">
+                <property name="MemberName" />
+                <property name="ShadowType">In</property>
+                <child>
+                  <widget class="DownloadManager.DMQueueTreeView" id="dmqueuetreeview">
+                    <property name="MemberName">dmqueuetreeview</property>
+                    <property name="CanFocus">True</property>
+                    <property name="ShowScrollbars">True</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+              </packing>
             </child>
             <child>
               <widget class="Gtk.Label" id="label2">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Queues</property>
+              </widget>
+              <packing>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label3">
                 <property name="MemberName" />
                 <property name="LabelProp" translatable="yes">Torrents</property>
               </widget>
@@ -521,7 +582,7 @@
               <placeholder />
             </child>
             <child>
-              <widget class="Gtk.Label" id="label3">
+              <widget class="Gtk.Label" id="label4">
                 <property name="MemberName" />
                 <property name="LabelProp" translatable="yes">FTP Get</property>
               </widget>
@@ -2088,6 +2149,185 @@
             <property name="UseUnderline">True</property>
             <property name="ResponseId">-5</property>
             <signal name="Clicked" handler="OnbuttonAddClicked" />
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Dialog" id="DownloadManager.CreateQueueDialog" design-size="400 190">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">Create Queue</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <property name="Buttons">2</property>
+    <property name="HelpButton">False</property>
+    <child internal-child="VBox">
+      <widget class="Gtk.VBox" id="dialog1_VBox">
+        <property name="MemberName" />
+        <property name="BorderWidth">2</property>
+        <child>
+          <widget class="Gtk.HBox" id="hbox2">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.Label" id="label2">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="LabelProp" translatable="yes">Queue Name</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Entry" id="entryQueueName">
+                <property name="MemberName">entryQueueName</property>
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="InvisibleChar">•</property>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Frame" id="frame2">
+            <property name="MemberName" />
+            <property name="ShadowType">None</property>
+            <child>
+              <widget class="Gtk.Alignment" id="GtkAlignment3">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="Yalign">0</property>
+                <property name="LeftPadding">12</property>
+                <child>
+                  <widget class="Gtk.VBox" id="vbox4">
+                    <property name="MemberName" />
+                    <property name="Spacing">6</property>
+                    <child>
+                      <widget class="Gtk.RadioButton" id="rbNow">
+                        <property name="MemberName">rbNow</property>
+                        <property name="CanFocus">True</property>
+                        <property name="Label" translatable="yes">Now</property>
+                        <property name="DrawIndicator">True</property>
+                        <property name="HasLabel">True</property>
+                        <property name="UseUnderline">True</property>
+                        <property name="Group">group1</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">0</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.RadioButton" id="rbLater">
+                        <property name="MemberName">rbLater</property>
+                        <property name="CanFocus">True</property>
+                        <property name="Label" translatable="yes">Later</property>
+                        <property name="DrawIndicator">True</property>
+                        <property name="HasLabel">True</property>
+                        <property name="UseUnderline">True</property>
+                        <property name="Group">group1</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">1</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.RadioButton" id="rbSchedule">
+                        <property name="MemberName">rbSchedule</property>
+                        <property name="CanFocus">True</property>
+                        <property name="Label" translatable="yes">Schedule</property>
+                        <property name="DrawIndicator">True</property>
+                        <property name="HasLabel">True</property>
+                        <property name="UseUnderline">True</property>
+                        <property name="Group">group1</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="GtkLabel5">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Start</property>
+                <property name="UseMarkup">True</property>
+              </widget>
+              <packing>
+                <property name="type">label_item</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+    <child internal-child="ActionArea">
+      <widget class="Gtk.HButtonBox" id="dialog1_ActionArea">
+        <property name="MemberName" />
+        <property name="Spacing">10</property>
+        <property name="BorderWidth">5</property>
+        <property name="Size">2</property>
+        <property name="LayoutStyle">End</property>
+        <child>
+          <widget class="Gtk.Button" id="buttonCancel">
+            <property name="MemberName" />
+            <property name="CanDefault">True</property>
+            <property name="CanFocus">True</property>
+            <property name="UseStock">True</property>
+            <property name="Type">StockItem</property>
+            <property name="StockId">gtk-cancel</property>
+            <property name="ResponseId">-6</property>
+            <property name="label">gtk-cancel</property>
+          </widget>
+          <packing>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="buttonOk">
+            <property name="MemberName" />
+            <property name="CanDefault">True</property>
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Create</property>
+            <property name="UseUnderline">True</property>
+            <property name="ResponseId">-5</property>
+            <signal name="Clicked" handler="buttonOkClicked" />
           </widget>
           <packing>
             <property name="Position">1</property>

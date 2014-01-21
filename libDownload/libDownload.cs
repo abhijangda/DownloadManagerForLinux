@@ -50,6 +50,21 @@ namespace libDownload
 
 			return value.ToString () + " Bytes";
 		}
+
+		public static Length operator +(Length l1, Length l2)
+		{
+			return new Length (l1.value + l2.value);
+		}
+
+		public static Length operator *(long value, Length l1)
+		{
+			return new Length (l1.value * value);
+		}
+
+		public static float operator /(Length l1, Length l2)
+		{
+			return (float)l1.value/l2.value;
+		}
 	}
 
 	public class Speed
@@ -87,6 +102,16 @@ namespace libDownload
 			}
 
 			return value.ToString () + " Bytes/s";
+		}
+
+		public static Speed operator +(Speed l1, Speed l2)
+		{
+			return new Speed (l1.value + l2.value);
+		}
+
+		public static Speed operator *(long l, Speed sp)
+		{
+			return new Speed (sp.value * l);
 		}
 	}
 	public class DownloadException : Exception
@@ -143,6 +168,12 @@ namespace libDownload
 		public List<DownloadPart> listParts {get; protected set;}
 		public abstract DOWNLOAD_STATUS status {get; protected set;}
 		public bool generateFileName {get; protected set;}
+		public string proxyAddress {get; protected set;}
+		public int proxyPort {get; protected set;}
+		public string proxyUsername {get; protected set;}
+		public string proxyPassword {get; protected set;}
+		public string authUsername {get; protected set;}
+		public string authPassword {get; protected set;}
 
 		public delegate void OnStatusChanged (Download dwnld);
 		public OnStatusChanged statusChangeHandler;
@@ -151,18 +182,17 @@ namespace libDownload
 		public int mergedParts;
 
 		public abstract void start ();
-		public string proxyAddress {get; protected set;}
-		public int proxyPort {get; protected set;}
-		public string proxyUsername {get; protected set;}
-		public string proxyPassword {get; protected set;}
-
-		public string authUsername {get; protected set;}
-		public string authPassword {get; protected set;}
-
 		protected abstract string getFilename ();
 		public abstract void resume (long _length = 0);
 		public abstract void incrementParts ();
 		public abstract bool isResumeSupported ();
+		protected abstract void createPartsFromFiles (long _length = 0);
+
+		public void restart ()
+		{
+			cancel ();
+			start ();
+		}
 
 		public void setAuthentication (string _username, string _password)
 		{
@@ -291,8 +321,6 @@ namespace libDownload
 				part.resumeDownload ();
 		}
 
-		protected abstract void createPartsFromFiles (long _length = 0);
-
 		public void initFromXML (string xml)
 		{
 			MatchCollection mc = Regex.Matches (xml, ".+", RegexOptions.None);
@@ -420,6 +448,9 @@ namespace libDownload
 
 		public void stopDownload ()
 		{
+			if (status != DOWNLOAD_PART_STATUS.DOWNLOADING)
+				return;
+
 			//downloadThread.Abort ();
 			_stop = true;
 			if (fs != null)
@@ -484,7 +515,14 @@ namespace libDownload
 			if (mutex == null)
 				return;
 
-			fs = new FileStream (localPath, FileMode.Append);
+			if (listdataArray.Count == 0)
+				return;
+
+			if (!File.Exists (localPath))
+				fs = new FileStream (localPath, FileMode.OpenOrCreate);
+			else
+				fs = new FileStream (localPath, FileMode.Append);
+
 			mutex.WaitOne ();
 			for (int i = 0; i < listdataArray.Count; i++)
 			{

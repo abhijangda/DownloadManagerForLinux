@@ -260,7 +260,6 @@ namespace libDownload
 						"Cannot find "+Path.GetPathRoot (localPath), 
 						DOWNLOAD_EXCEPTION_TYPE.FILESYSTEM_ERROR);
 					status = DOWNLOAD_STATUS.ERROR;
-
 					return;
 				}
 			}

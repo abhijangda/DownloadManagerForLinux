@@ -82,12 +82,12 @@ namespace DownloadManager
 				if (m.Value.Contains ("<download-http>"))
 					dwld = new HTTPDownload ("", "", 
 					                         MainWindow.main_instance.OnDownloadStatusChanged,
-					                         true, 5);
+					                         false, 5);
 
 				else if (m.Value.Contains ("<download-ftp>"))
 					dwld = new FTPDownload ("", "", 
 					                        MainWindow.main_instance.OnDownloadStatusChanged, 
-					                        true, 5);
+					                        false, 5);
 
 				if (m.Value.Contains ("<type>"))
 				{

@@ -114,14 +114,16 @@ namespace libDownload
 			{
 				_localPath = localPath + ".part" + i.ToString();
 				listParts.Add (new FTPDownloadPart (remotePath, _localPath, 
-				                                     prev_length, next_length - 1, i));
+				                                    prev_length, next_length - 1,
+				                                    i));
 				Console.WriteLine ("Part {0}", i);
 				prev_length += part_length;
 				next_length += part_length;
 			}
 			_localPath = localPath + ".part" + (parts).ToString();
 			listParts.Add (new FTPDownloadPart (remotePath, _localPath, 
-			                                     prev_length, length.value - 1, parts));
+			                                    prev_length, length.value - 1, 
+			                                    parts));
 			foreach (DownloadPart part in listParts)
 			{
 				part.webProxy = proxy;
@@ -136,7 +138,40 @@ namespace libDownload
 
 		protected override void createPartsFromFiles (long _length = 0)
 		{
-			 
+			if (listParts.Count != 0)
+				return;
+
+			for (int i = 1; i <= parts; i++)
+			{
+				if (!File.Exists (localPath + ".part" + i.ToString ()))
+				{
+					status = DOWNLOAD_STATUS.ERROR;
+					exception = new DownloadException ("Cannot find file " + 
+					                                   localPath + ".part" +
+					                                   i.ToString (),
+					                                   DOWNLOAD_EXCEPTION_TYPE.FILESYSTEM_ERROR);
+				}
+			}
+			if (_length != 0)
+			    length = new Length (_length);
+
+			long part_length = length.value/parts;
+			long prev_length = 0, next_length = part_length;
+			string _localPath;
+
+			for (short i = 1; i < parts; i++)
+			{
+				_localPath = localPath + ".part" + i.ToString();
+				listParts.Add (new FTPDownloadPart (remotePath, _localPath, 
+				                                    prev_length, next_length, i));
+				Console.WriteLine ("Part {0}", i);
+				prev_length += part_length;
+				next_length += part_length;
+			}
+
+			_localPath = localPath + ".part" + (parts).ToString();
+			listParts.Add (new FTPDownloadPart (remotePath, _localPath, 
+			                                    prev_length, length.value, parts));
 		}
 
 		public override void resume (long _length)
@@ -144,39 +179,7 @@ namespace libDownload
 			if (status != DOWNLOAD_STATUS.PAUSED)
 			    return;
 
-			if (listParts.Count == 0)
-			{
-				for (int i = 1; i <= parts; i++)
-				{
-					if (!File.Exists (localPath + ".part" + i.ToString ()))
-					{
-						status = DOWNLOAD_STATUS.ERROR;
-						exception = new DownloadException ("Cannot find file " + 
-						                                   localPath + ".part" +
-						                                   i.ToString (),
-						                                   DOWNLOAD_EXCEPTION_TYPE.FILESYSTEM_ERROR);
-					}
-				}
-
-				length = new Length (_length);
-				long part_length = length.value/parts;
-				long prev_length = 0, next_length = part_length;
-				string _localPath;
-
-				for (short i = 1; i < parts; i++)
-				{
-					_localPath = localPath + ".part" + i.ToString();
-					listParts.Add (new FTPDownloadPart (remotePath, _localPath, 
-					                                    prev_length, next_length, i));
-					Console.WriteLine ("Part {0}", i);
-					prev_length += part_length;
-					next_length += part_length;
-				}
-
-				_localPath = localPath + ".part" + (parts).ToString();
-				listParts.Add (new FTPDownloadPart (remotePath, _localPath, 
-				                                    prev_length, length.value, parts));
-			}
+			createPartsFromFiles (_length);
 
 			NetworkCredential credential = null;
 			if (authUsername != "")
@@ -228,6 +231,10 @@ namespace libDownload
 			speed_level = DOWNLOAD_SPEED_LEVEL.HIGH;
 			statusString = "";
 			reTryingAttempts = 0;
+
+			fs = new FileStream (localPath, FileMode.Append);
+			start += downloaded = fs.Length;
+			fs.Close ();
 		}
 
 		public override void startDownload ()
@@ -239,7 +246,6 @@ namespace libDownload
 		void _startDownload ()
 		{
 			Stream Answer = null;
-			FileStream fs = null;
 			try
 			{
 				statusString = "Sending RETR...";
@@ -257,8 +263,6 @@ namespace libDownload
 				Console.WriteLine ("Start Receiving {0} {1} {2}", 
 				                   partNumber, start, end);
 				Answer = webResp.GetResponseStream ();
-				fs = new FileStream (localPath, 
-				                     FileMode.OpenOrCreate);
 				statusString = "Downloading...";
 				_download (Answer);
 				if (_stop == true)
@@ -284,8 +288,6 @@ namespace libDownload
 			{
 				if (Answer != null)
 				    Answer.Close ();
-				if (fs != null)
-				    fs.Close ();
 				webResp.Close();
 			}
 			Console.WriteLine ("DONEDDDDDDDDD {0}", partNumber);
@@ -300,7 +302,6 @@ namespace libDownload
 		void _resumeDownload ()
 		{
 			Stream Answer = null;
-			FileStream fs = null;
 			try
 			{
 				statusString = "Sending RETR...";
@@ -308,8 +309,6 @@ namespace libDownload
 				webReq = (FtpWebRequest)WebRequest.Create (remotePath);
 				webReq.Method = WebRequestMethods.Ftp.DownloadFile;
 				webReq.Credentials = credentials;
-				fs = new FileStream (localPath, FileMode.Append);
-				start = downloaded = fs.Length;
 
 				webReq.ContentOffset = start;
 				Console.WriteLine ("Sending Get {0} {1} {2}",
@@ -321,7 +320,7 @@ namespace libDownload
 				statusString = "Downloading...";
 				_download (Answer);
 				webResp.Close();
-				fs.Close ();
+
 				if (_stop == true)
 				{
 					status = DOWNLOAD_PART_STATUS.IDLE;
@@ -342,8 +341,6 @@ namespace libDownload
 			}
 			finally
 			{
-				if (fs != null)
-    				fs.Close ();
 				if (Answer !=  null)
 				    Answer.Close ();
 				webResp.Close ();

@@ -9,6 +9,10 @@ public partial class MainWindow: Gtk.Window
 {	
 	List<DMDownload> listRunningDownloads;
 	List<DMDownload> listAllDownloads;
+
+	List<DMQueue> listRunningQueues;
+	List<DMQueue> listAllQueues;
+
 	public static DownloadManager.Settings settingsManager;
 	public static MainWindow main_instance;
 	public Length total_downloaded;
@@ -29,11 +33,36 @@ public partial class MainWindow: Gtk.Window
 		HighSpeedAction.Active = true;
 		notebook.CurrentPage = 0;
 		dmDownloadTreeView.Selection.Changed += dmDownloadTreeViewSelectionChanged;
+		dmqueuetreeview.Selection.Changed += dmQueueTreeViewSelectionChanged;
 		toolbar1.ToolbarStyle = ToolbarStyle.Icons;
 
 		_stopSavingThread = false;
 		savingThread = new Thread (_saveToFiles);
 		savingThread.Start ();
+
+		listRunningQueues = new List<DMQueue> ();
+		listAllQueues = new List<DMQueue> ();
+	}
+
+	public static Gdk.Pixbuf getPixbufForStatus (DOWNLOAD_STATUS status)
+	{
+		if (status == DOWNLOAD_STATUS.DOWNLOADING || 
+		    status == DOWNLOAD_STATUS.MERGING)
+		    return main_instance.RenderIcon (Stock.MediaPlay, IconSize.Menu, "");
+
+		if (status == DOWNLOAD_STATUS.DOWNLOADED)
+			return main_instance.RenderIcon (Stock.Apply, IconSize.Menu, "");
+
+		if (status == DOWNLOAD_STATUS.ERROR)
+			return main_instance.RenderIcon (Stock.DialogError, IconSize.Menu, "");
+
+		if (status == DOWNLOAD_STATUS.PAUSED)
+			return main_instance.RenderIcon (Stock.MediaPause, IconSize.Menu, "");
+
+		if (status == DOWNLOAD_STATUS.NOT_STARTED)
+			return main_instance.RenderIcon (Stock.Help, IconSize.Menu, "");
+
+		return null;
 	}
 
 	private void _saveToFiles ()
@@ -56,55 +85,129 @@ public partial class MainWindow: Gtk.Window
 		dmDownloadTreeView.loadDownloads ();
 	}
 
+	private void dmQueueTreeViewSelectionChanged (object o, EventArgs args)
+	{
+		DeleteQueueAction.Sensitive = false;
+		TreeIter iter;
+		if (dmqueuetreeview.Selection.CountSelectedRows () == 1)
+		{
+			dmqueuetreeview.Selection.GetSelected (out iter);
+			DMQueue dmld = (DMQueue) dmqueuetreeview.Model.GetValue (iter, 7);
+			CreateQueueAction.Sensitive = true;
+
+			if (dmld.status == DOWNLOAD_STATUS.DOWNLOADED)
+			{
+				toolbarStart.Sensitive = StartAction.Sensitive = false;
+				toolbarCancel.Sensitive = CancelAction.Sensitive = false;
+				toolbarPause.Sensitive = PauseAction.Sensitive = false;
+				toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+			}
+			else if (dmld.status == DOWNLOAD_STATUS.DOWNLOADING)
+			{
+				toolbarStart.Sensitive = StartAction.Sensitive = false;
+				toolbarCancel.Sensitive = CancelAction.Sensitive = true;
+				toolbarPause.Sensitive = PauseAction.Sensitive = true;
+				toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+			}
+			else if (dmld.status == DOWNLOAD_STATUS.ERROR ||
+			         dmld.status == DOWNLOAD_STATUS.NOT_STARTED)
+			{
+				toolbarStart.Sensitive = StartAction.Sensitive = true;
+				toolbarCancel.Sensitive = CancelAction.Sensitive = false;
+				toolbarPause.Sensitive = PauseAction.Sensitive = false;
+				toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+			}
+			else if (dmld.status == DOWNLOAD_STATUS.PAUSED)
+			{
+				toolbarStart.Sensitive = StartAction.Sensitive = true;
+				toolbarCancel.Sensitive = CancelAction.Sensitive = false;
+				toolbarPause.Sensitive = PauseAction.Sensitive = false;
+				toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+			}
+		}
+
+		else if (dmqueuetreeview.Selection.CountSelectedRows () > 1)
+		{
+			CreateQueueAction.Sensitive = true;
+		}
+	}
+
 	private void dmDownloadTreeViewSelectionChanged (object o, EventArgs args)
 	{
+		DeleteQueueAction.Sensitive = false;
 		TreeIter iter;
-		dmDownloadTreeView.Selection.GetSelected (out iter);
-		DMDownload dmld = (DMDownload) dmDownloadTreeView.Model.GetValue (iter, 7);
-		if (dmld == null)
-			return;
+		if (dmDownloadTreeView.Selection.CountSelectedRows () == 1)
+		{
+			dmDownloadTreeView.Selection.GetSelected (out iter);
+			DMDownload dmld = (DMDownload) dmDownloadTreeView.Model.GetValue (iter, 7);
+			CreateQueueAction.Sensitive = true;
 
-		if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADED)
-		{
-			toolbarStart.Sensitive = StartAction.Sensitive = false;
-			toolbarCancel.Sensitive = CancelAction.Sensitive = false;
-			toolbarPause.Sensitive = PauseAction.Sensitive = false;
-			toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+			if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADED)
+			{
+				toolbarStart.Sensitive = StartAction.Sensitive = false;
+				toolbarCancel.Sensitive = CancelAction.Sensitive = false;
+				toolbarPause.Sensitive = PauseAction.Sensitive = false;
+				toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+			}
+			else if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADING)
+			{
+				toolbarStart.Sensitive = StartAction.Sensitive = false;
+				toolbarCancel.Sensitive = CancelAction.Sensitive = true;
+				toolbarPause.Sensitive = PauseAction.Sensitive = true;
+				toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+			}
+			else if (dmld.download.status == DOWNLOAD_STATUS.ERROR ||
+			         dmld.download.status == DOWNLOAD_STATUS.NOT_STARTED)
+			{
+				toolbarStart.Sensitive = StartAction.Sensitive = true;
+				toolbarCancel.Sensitive = CancelAction.Sensitive = false;
+				toolbarPause.Sensitive = PauseAction.Sensitive = false;
+				toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+			}
+			else if (dmld.download.status == DOWNLOAD_STATUS.PAUSED)
+			{
+				toolbarStart.Sensitive = StartAction.Sensitive = true;
+				toolbarCancel.Sensitive = CancelAction.Sensitive = false;
+				toolbarPause.Sensitive = PauseAction.Sensitive = false;
+				toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+			}
 		}
-		else if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADING)
+
+		else if (dmDownloadTreeView.Selection.CountSelectedRows () > 1)
 		{
-			toolbarStart.Sensitive = StartAction.Sensitive = false;
-			toolbarCancel.Sensitive = CancelAction.Sensitive = true;
-			toolbarPause.Sensitive = PauseAction.Sensitive = true;
-			toolbarRestart.Sensitive = RestartAction.Sensitive = true;
-		}
-		else if (dmld.download.status == DOWNLOAD_STATUS.ERROR ||
-		         dmld.download.status == DOWNLOAD_STATUS.NOT_STARTED)
-		{
-			toolbarStart.Sensitive = StartAction.Sensitive = true;
-			toolbarCancel.Sensitive = CancelAction.Sensitive = false;
-			toolbarPause.Sensitive = PauseAction.Sensitive = false;
-			toolbarRestart.Sensitive = RestartAction.Sensitive = false;
-		}
-		else if (dmld.download.status == DOWNLOAD_STATUS.PAUSED)
-		{
-			toolbarStart.Sensitive = StartAction.Sensitive = true;
-			toolbarCancel.Sensitive = CancelAction.Sensitive = false;
-			toolbarPause.Sensitive = PauseAction.Sensitive = true;
-			toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+			CreateQueueAction.Sensitive = true;
 		}
 	}
 
 	private void updateDMDownloadTreeView ()
 	{
 		foreach (DMDownload dmld in listAllDownloads)
-			dmDownloadTreeView.addDownloadRow (dmld);
+			dmDownloadTreeView.addRow (dmld);
 	}
 
 	public void addToListRunningDownloads (DMDownload dmld)
 	{
 		listRunningDownloads.Add (dmld);
 		listAllDownloads.Add (dmld);
+	}
+
+	public void OnQueueStatusChanged (DMQueue queue)
+	{
+		dmqueuetreeview.setImageForStatus (queue);
+		if (queue.status == DOWNLOAD_STATUS.DOWNLOADED)
+		{
+			listRunningQueues.Remove (queue);
+		}
+
+		else if (queue.status == DOWNLOAD_STATUS.PAUSED)
+		{
+			listRunningQueues.Remove (queue);
+		}
+
+		else if (queue.status == DOWNLOAD_STATUS.ERROR)
+		{
+			listRunningQueues.Remove (queue);
+		}
 	}
 
 	public void OnDownloadStatusChanged (Download dwnld)
@@ -114,8 +217,15 @@ public partial class MainWindow: Gtk.Window
 		{
 			if (dmld.download == dwnld)
 			{
+				if (dmld.queue != null)
+				{
+					dmld.queue.OnDownloadStatusChanged (dmld);
+				}
+
 				if (dmld.window != null)
 					dmld.window.downloadStatusChanged ();
+
+				dmDownloadTreeView.setImageForStatus (dmld);
 
 				if (dwnld.status == DOWNLOAD_STATUS.DOWNLOADED)
 				{
@@ -143,6 +253,8 @@ public partial class MainWindow: Gtk.Window
 				else //dwnld.status == DOWNLOAD_STATUS.MERGING
 				{
 				}
+
+				break;
 			}
 		}
 
@@ -223,12 +335,20 @@ public partial class MainWindow: Gtk.Window
 		{
 			Length downloaded = dwnld.download.getDownloaded ();
 			Speed speed = dwnld.download.getSpeed ();
-			speed.value = 2 * speed.value;
+			speed = (long)2 * speed;
 			if (dwnld.window != null)
 			    dwnld.window.updateProgress (downloaded, speed);
 
 			dmDownloadTreeView.updateDownloadStatus (dwnld, downloaded, speed);
-			total_speed.value += speed.value;
+			dmqueuetreeview.updateDownloadStatus (dwnld, downloaded, speed);
+			total_speed += speed;
+		}
+
+		foreach (DMQueue queue in listRunningQueues)
+		{
+			dmqueuetreeview.updateDownloadStatus (queue, 
+			                                      queue.getTotalDownloaded (),
+			                                      queue.getTotalSpeed ());
 		}
 
 		lblSpeed.Text = "Speed " + total_speed.ToString ();
@@ -336,7 +456,7 @@ public partial class MainWindow: Gtk.Window
 		DMDownload dmdl = new DMDownload (dl, null);
 		dmdl.typeCategory = new DMTypeCategory (typeCategory);
 		listAllDownloads.Add (dmdl);
-		dmDownloadTreeView.addDownloadRow (dmdl);
+		dmDownloadTreeView.addRow (dmdl);
 
 		if (start == 0)
 		{
@@ -399,15 +519,17 @@ public partial class MainWindow: Gtk.Window
 	{
 		Gtk.TreeIter iter;
 		Gtk.TreeModel model;
-
-		dmDownloadTreeView.Selection.GetSelected (out model, out iter);
-		DMDownload dmld = (DMDownload) model.GetValue (iter, 7);
-		if (dmld != null)
+		if (notebook.CurrentPageWidget == dmDownloadTreeView)
 		{
-			dmld.download.start ();
-		    dmld.window = new ProgressWindow (dmld);
-		    dmld.window.ShowAll ();
-			MainWindow.main_instance.startDownload (dmld);
+			dmDownloadTreeView.Selection.GetSelected (out model, out iter);
+			DMDownload dmld = (DMDownload) model.GetValue (iter, 7);
+			if (dmld != null)
+			{
+				dmld.download.start ();
+			    dmld.window = new ProgressWindow (dmld);
+			    dmld.window.ShowAll ();
+				MainWindow.main_instance.startDownload (dmld);
+			}
 		}
 	}
 
@@ -416,10 +538,13 @@ public partial class MainWindow: Gtk.Window
 		Gtk.TreeIter iter;
 		Gtk.TreeModel model;
 
-		dmDownloadTreeView.Selection.GetSelected (out model, out iter);
-		DMDownload dmld = (DMDownload) model.GetValue (iter, 7);
-		if (dmld != null)
-		    dmld.download.stop ();
+		if (notebook.CurrentPageWidget == dmDownloadTreeView)
+		{
+			dmDownloadTreeView.Selection.GetSelected (out model, out iter);
+			DMDownload dmld = (DMDownload) model.GetValue (iter, 7);
+			if (dmld != null)
+			    dmld.download.stop ();
+		}
 	}
 
 	protected void OnToolbarCancelActivated (object sender, EventArgs e)
@@ -427,15 +552,35 @@ public partial class MainWindow: Gtk.Window
 		Gtk.TreeIter iter;
 		Gtk.TreeModel model;
 
-		dmDownloadTreeView.Selection.GetSelected (out model, out iter);
-		DMDownload dmld = (DMDownload) model.GetValue (iter, 7);
-		if (dmld != null)
-		    dmld.download.cancel ();
+		if (notebook.CurrentPageWidget == dmDownloadTreeView)
+		{
+			dmDownloadTreeView.Selection.GetSelected (out model, out iter);
+			DMDownload dmld = (DMDownload) model.GetValue (iter, 7);
+			if (dmld != null)
+			    dmld.download.cancel ();
+		}
 	}
 
 	protected void OnToolbarRestartActivated (object sender, EventArgs e)
 	{
+		Gtk.TreeIter iter;
+		Gtk.TreeModel model;
 
+		if (notebook.CurrentPageWidget == dmDownloadTreeView)
+		{
+			dmDownloadTreeView.Selection.GetSelected (out model, out iter);
+			DMDownload dmld = (DMDownload) model.GetValue (iter, 7);
+			if (dmld != null)
+			{
+				dmld.download.cancel ();
+				if (dmld.window != null)
+					dmld.window.Destroy ();
+
+				dmld.window = new ProgressWindow (dmld);
+				dmld.window.ShowAll ();
+				startDownload (dmld);
+			}
+		}
 	}
 
 	protected void OnToolbarFindActivated (object sender, EventArgs e)
@@ -447,8 +592,15 @@ public partial class MainWindow: Gtk.Window
 			array.Add (column.Title);
 		}
 
-		FindDialog find_dlg = new FindDialog (array, dmDownloadTreeView.searchInColumns);
-		find_dlg.ShowAll ();
+		FindDialog find_dlg = null;
+		if (notebook.CurrentPage == 0)
+			find_dlg = new FindDialog (array, dmDownloadTreeView.searchInColumns);
+
+		else if (notebook.CurrentPage == 1)
+			find_dlg = new FindDialog (array, dmqueuetreeview.searchInColumns);
+
+		if (find_dlg != null)
+		    find_dlg.ShowAll ();
 	}
 
 	protected void OnAddExistingDownloadActivated (object sender, EventArgs e)
@@ -499,5 +651,100 @@ public partial class MainWindow: Gtk.Window
 	protected void OnProgressWindowActivated (object sender, EventArgs e)
 	{
 
+	}
+
+	protected void CreateQueueActivated (object o, EventArgs args)
+	{
+		DMQueue queue;
+		CreateQueueDialog dlg = new CreateQueueDialog ();
+		dlg.ShowAll ();
+		if (dlg.Run () == (int)Gtk.ResponseType.Ok)
+		{
+			string name = dlg.name;
+			queue = new DMQueue (name);
+			queue.onQueueStatusChanged = OnQueueStatusChanged;
+			listAllQueues.Add (queue);
+			dmqueuetreeview.addRow (queue);
+
+			if (dlg.start == 0)
+				startQueue (queue);
+
+			else if (dlg.start == 2);
+			    /*TODO: Open Scheduler Dialog*/
+		}
+
+		dlg.Destroy ();
+	}
+
+	private void startQueue (DMQueue queue)
+	{
+		listRunningQueues.Add (queue);
+		queue.start ();
+	}
+
+	protected void toolbarNewQueueActivated (object sender, EventArgs e)
+	{
+		CreateQueueActivated (sender, e);
+	}
+
+	protected void toolbarStartQueueActivated (object sender, EventArgs e)
+	{
+		TreeIter iter;
+		TreeModel model;
+
+		if (notebook.CurrentPageWidget == dmqueuetreeview)
+		{
+			dmqueuetreeview.Selection.GetSelected (out model, out iter);
+			DMQueue dmld = (DMQueue) model.GetValue (iter, 7);
+			if (dmld != null)
+			{
+				dmld.start ();
+			}
+		}
+	}
+
+	protected void toolbarCancelQueueActivated (object sender, EventArgs e)
+	{
+		TreeIter iter;
+		TreeModel model;
+
+		if (notebook.CurrentPageWidget == dmqueuetreeview)
+		{
+			dmqueuetreeview.Selection.GetSelected (out model, out iter);
+			DMQueue dmld = (DMQueue) model.GetValue (iter, 7);
+			if (dmld != null)
+				dmld.cancel ();
+		}
+	}
+
+	protected void toolbarStopQueueActivated (object sender, EventArgs e)
+	{
+		TreeIter iter;
+		TreeModel model;
+
+		if (notebook.CurrentPageWidget == dmqueuetreeview)
+		{
+			dmqueuetreeview.Selection.GetSelected (out model, out iter);
+			DMQueue dmld = (DMQueue) model.GetValue (iter, 7);
+			if (dmld != null)
+				dmld.stop ();
+		}
+	}
+
+	protected void toolbarRestartQueuectivated (object sender, EventArgs e)
+	{
+		TreeIter iter;
+		TreeModel model;
+
+		if (notebook.CurrentPageWidget == dmqueuetreeview)
+		{
+			dmqueuetreeview.Selection.GetSelected (out model, out iter);
+			DMQueue dmld = (DMQueue) model.GetValue (iter, 7);
+			if (dmld == null)
+				return;
+
+			dmld.cancel ();
+			startQueue (dmld);
+		}
 	}
 }

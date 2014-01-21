@@ -69,6 +69,12 @@
     <Compile Include="DMDownload.cs" />
     <Compile Include="AddExistingDialog.cs" />
     <Compile Include="gtk-gui\DownloadManager.AddExistingDialog.cs" />
+    <Compile Include="DMScheduler.cs" />
+    <Compile Include="DMQueueTreeView.cs" />
+    <Compile Include="DMQueue.cs" />
+    <Compile Include="DMTreeView.cs" />
+    <Compile Include="CreateQueueDialog.cs" />
+    <Compile Include="gtk-gui\DownloadManager.CreateQueueDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

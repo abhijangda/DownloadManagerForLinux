@@ -139,10 +139,23 @@ namespace DownloadManager
 
 		public void startDownload ()
 		{
-			downloadThread = new Thread (_startDownloading);
-			downloadThread.Start ();
 			lblStatus.Text = "Connecting...";
 			btnStartPause.Label = "Pause";
+			dmprogressbar.setProgress ((float)0.0);
+			for (int i = 0; i < dwnload.download.parts; i++)
+			{
+				partsProgress.appendPart ();
+				partsProgress.setPartStatus (i, "");
+				partsProgress.setPartProgress (i, 0);
+			}
+
+			downloadThread = new Thread (_startDownloading);
+			downloadThread.Start ();
+		}
+
+		public void reset ()
+		{
+
 		}
 
 		public void setVisibleWidget ()

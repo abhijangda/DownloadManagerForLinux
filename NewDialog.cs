@@ -29,6 +29,7 @@ namespace DownloadManager
 			chkGenFilename.Active = true;
 			SetSizeRequest (500,450);
 			Resizable = false;
+			Default = buttonOk;
 		}
 
 		protected void chkAuthenticateToggled (object sender, EventArgs e)
