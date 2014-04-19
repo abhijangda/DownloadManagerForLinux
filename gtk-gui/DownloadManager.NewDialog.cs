@@ -70,7 +70,7 @@ namespace DownloadManager
 			this.entryAddress = new global::Gtk.Entry ();
 			this.entryAddress.CanFocus = true;
 			this.entryAddress.Name = "entryAddress";
-			this.entryAddress.Text = global::Mono.Unix.Catalog.GetString ("http://install.avira-update.com/package/wks_avira13/win32/en/pecl/avira_free_antivirus_en.exe");
+			this.entryAddress.Text = global::Mono.Unix.Catalog.GetString ("http://kojipkgs.fedoraproject.org//packages/epiphany/3.10.3/1.fc20/x86_64/epiphany-3.10.3-1.fc20.x86_64.rpm");
 			this.entryAddress.IsEditable = true;
 			this.entryAddress.InvisibleChar = '•';
 			this.hbox1.Add (this.entryAddress);

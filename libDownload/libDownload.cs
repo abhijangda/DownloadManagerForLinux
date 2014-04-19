@@ -132,7 +132,8 @@ namespace libDownload
 	public enum DOWNLOAD_PART_STATUS
     {
 		ERROR,
-		IDLE, 
+		IDLE,
+		CONNECTING,
 		DOWNLOADING,
 		DOWNLOADED
 	};
@@ -266,7 +267,7 @@ namespace libDownload
 		{
 			foreach (DownloadPart _part in listParts)
 			{
-				if (_part.status == DOWNLOAD_PART_STATUS.DOWNLOADING)
+				if (_part.status != DOWNLOAD_PART_STATUS.DOWNLOADED)
 					return;
 			}
 			status = DOWNLOAD_STATUS.MERGING;
@@ -294,8 +295,8 @@ namespace libDownload
 					count = _fs.Read (read, 0, 1024);
 				}
 				_fs.Close ();
-				if (File.Exists (part.localPath))
-					File.Delete (part.localPath);
+				//if (File.Exists (part.localPath))
+					//File.Delete (part.localPath);
 				mergedParts+=1;
 			}
 			fs.Close ();
@@ -448,13 +449,16 @@ namespace libDownload
 
 		public void stopDownload ()
 		{
-			if (status != DOWNLOAD_PART_STATUS.DOWNLOADING)
-				return;
-
-			//downloadThread.Abort ();
-			_stop = true;
-			if (fs != null)
-				fs.Close ();
+			if (status == DOWNLOAD_PART_STATUS.DOWNLOADING)
+			{
+				_stop = true;
+				if (fs != null)
+					fs.Close ();
+			}
+			else if (status == DOWNLOAD_PART_STATUS.CONNECTING)
+			{
+				downloadThread.Abort ();
+			}
 
 			status = DOWNLOAD_PART_STATUS.IDLE;
 			downloadThread.Join ();
@@ -480,18 +484,21 @@ namespace libDownload
 				if (downloaded + count > length)
 				{
 					count -= (int)(downloaded + count - length);
-					mutex.WaitOne ();
+					/*mutex.WaitOne ();
 					listdataCounts.Add (count);
 					listdataArray.Add (read);
-					mutex.ReleaseMutex ();
+					mutex.ReleaseMutex ();*/
+					downloaded += count;
+					fs.Write (read, 0, count);
 					break;
 				}
 
-				//fs.Write (read, 0, count);
-				mutex.WaitOne ();
+				fs.Write (read, 0, count);
+				/*mutex.WaitOne ();
 				listdataCounts.Add (count);
 				listdataArray.Add (read);
-				mutex.ReleaseMutex ();
+				mutex.ReleaseMutex ();*/
+
 
 				downloaded += count;
 				count = Answer.Read (read, 0, 1024);
@@ -502,6 +509,7 @@ namespace libDownload
 				else //speed_level == DOWNLOAD_SPEED_LEVEL.MEDIUM
 					System.Threading.Thread.Sleep (10);
 			}
+			fs.Close ();
 		}
 
 		public void cancelDownload ()

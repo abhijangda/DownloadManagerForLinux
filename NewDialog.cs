@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Net;
 using Gtk;
+using Gdk;
 
 namespace DownloadManager
 {
@@ -30,6 +32,18 @@ namespace DownloadManager
 			SetSizeRequest (500,450);
 			Resizable = false;
 			Default = buttonOk;
+			Clipboard clipboard = Clipboard.Get(Atom.Intern("CLIPBOARD", false));
+			clipboard.RequestText (new ClipboardTextReceivedFunc (ClipboardRequestText));
+			Console.WriteLine ("fdfgdfg");
+		}
+
+		void ClipboardRequestText (Clipboard cb, string text)
+		{
+			if (text == null)
+				return;
+
+			if (text.StartsWith ("https://") || text.StartsWith ("http://") || text.StartsWith ("ftp://"))
+				entryAddress.Text = text;
 		}
 
 		protected void chkAuthenticateToggled (object sender, EventArgs e)

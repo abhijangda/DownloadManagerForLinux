@@ -4,6 +4,11 @@ using Gtk;
 using System.Collections.Generic;
 using libDownload;
 using DownloadManager;
+/*TODO:Implement delete operations*/
+/*TODO:apply save files after some minutes feature. It is buggy and has been disabled. It uses function Download.writeToFile*/
+/*TODO:Bugs in displaying already downloaded files*/
+/*TODO:Implement site grabber like that of IDM*/
+/*TODO:Implement Scheduler*/
 
 public partial class MainWindow: Gtk.Window
 {	
@@ -34,6 +39,9 @@ public partial class MainWindow: Gtk.Window
 		notebook.CurrentPage = 0;
 		dmDownloadTreeView.Selection.Changed += dmDownloadTreeViewSelectionChanged;
 		dmqueuetreeview.Selection.Changed += dmQueueTreeViewSelectionChanged;
+		notebook.SwitchPage += notebookPageSwitched;
+		notebook.CurrentPage = 0;
+
 		toolbar1.ToolbarStyle = ToolbarStyle.Icons;
 
 		_stopSavingThread = false;
@@ -42,6 +50,39 @@ public partial class MainWindow: Gtk.Window
 
 		listRunningQueues = new List<DMQueue> ();
 		listAllQueues = new List<DMQueue> ();
+	}
+
+	private void notebookPageSwitched (object o, SwitchPageArgs args)
+	{
+		if (args.PageNum == 0)
+		{
+			toolbarStart.Sensitive = StartAction.Sensitive = true;
+			toolbarCancel.Sensitive = CancelAction.Sensitive = true;
+			toolbarPause.Sensitive = PauseAction.Sensitive = true;
+			toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+
+			toolbarStartQueue.Sensitive = StartQueueAction.Sensitive = false;
+			toolbarCancelQueue.Sensitive = CancelQueueAction.Sensitive = false;
+			toolbarStopQueue.Sensitive = StopQueueAction.Sensitive = false;
+			toolbarRestartQueue.Sensitive = RestartQueueAction.Sensitive = false;
+			toolbarNewQueue.Sensitive = CreateQueueAction.Sensitive = false;
+			DeleteQueueAction.Sensitive = false;
+		}
+
+		else if (args.PageNum == 1)
+		{
+			toolbarStart.Sensitive = StartAction.Sensitive = false;
+			toolbarCancel.Sensitive = CancelAction.Sensitive = false;
+			toolbarPause.Sensitive = PauseAction.Sensitive = false;
+			toolbarRestart.Sensitive = RestartAction.Sensitive = false;
+
+			toolbarStartQueue.Sensitive = StartQueueAction.Sensitive = true;
+			toolbarCancelQueue.Sensitive = CancelQueueAction.Sensitive = true;
+			toolbarStopQueue.Sensitive = StopQueueAction.Sensitive = true;
+			toolbarRestartQueue.Sensitive = RestartQueueAction.Sensitive = true;
+			toolbarNewQueue.Sensitive = CreateQueueAction.Sensitive = true;
+			DeleteQueueAction.Sensitive = true;
+		}
 	}
 
 	public static Gdk.Pixbuf getPixbufForStatus (DOWNLOAD_STATUS status)
@@ -67,7 +108,7 @@ public partial class MainWindow: Gtk.Window
 
 	private void _saveToFiles ()
 	{
-		while (!_stopSavingThread)
+		/*while (!_stopSavingThread)
 		{
 			foreach (DMDownload dwnld in listRunningDownloads)
 			{
@@ -75,20 +116,30 @@ public partial class MainWindow: Gtk.Window
 			}
 	
 			Thread.Sleep (int.Parse (settingsManager.getKeyValue ("save-time-out")));
-		}
+		}*/
 	}
 
 	public void loadSettings ()
 	{
-		settingsManager.loadDownloads (ref listAllDownloads);
+		settingsManager.loadDwnldsQueues (ref listAllDownloads, ref listAllQueues);
+
 		dmDownloadTreeView.listAllDownloads = listAllDownloads;
 		dmDownloadTreeView.loadDownloads ();
+
+		dmqueuetreeview.listAllQueues = listAllQueues;
+		dmqueuetreeview.loadQueues ();
 	}
 
 	private void dmQueueTreeViewSelectionChanged (object o, EventArgs args)
 	{
 		DeleteQueueAction.Sensitive = false;
 		TreeIter iter;
+
+		toolbarStart.Sensitive = StartAction.Sensitive = false;
+		toolbarCancel.Sensitive = CancelAction.Sensitive = false;
+		toolbarPause.Sensitive = PauseAction.Sensitive = false;
+		toolbarRestart.Sensitive = RestartAction.Sensitive = false;
+
 		if (dmqueuetreeview.Selection.CountSelectedRows () == 1)
 		{
 			dmqueuetreeview.Selection.GetSelected (out iter);
@@ -97,32 +148,32 @@ public partial class MainWindow: Gtk.Window
 
 			if (dmld.status == DOWNLOAD_STATUS.DOWNLOADED)
 			{
-				toolbarStart.Sensitive = StartAction.Sensitive = false;
-				toolbarCancel.Sensitive = CancelAction.Sensitive = false;
-				toolbarPause.Sensitive = PauseAction.Sensitive = false;
-				toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+				toolbarStartQueue.Sensitive = StartQueueAction.Sensitive = false;
+				toolbarCancelQueue.Sensitive = CancelQueueAction.Sensitive = false;
+				toolbarStopQueue.Sensitive = StopQueueAction.Sensitive = false;
+				toolbarRestartQueue.Sensitive = RestartQueueAction.Sensitive = true;
 			}
 			else if (dmld.status == DOWNLOAD_STATUS.DOWNLOADING)
 			{
-				toolbarStart.Sensitive = StartAction.Sensitive = false;
-				toolbarCancel.Sensitive = CancelAction.Sensitive = true;
-				toolbarPause.Sensitive = PauseAction.Sensitive = true;
-				toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+				toolbarStartQueue.Sensitive = StartQueueAction.Sensitive = false;
+				toolbarCancelQueue.Sensitive = CancelQueueAction.Sensitive = true;
+				toolbarStopQueue.Sensitive = StopQueueAction.Sensitive = true;
+				toolbarRestartQueue.Sensitive = RestartQueueAction.Sensitive = true;
 			}
 			else if (dmld.status == DOWNLOAD_STATUS.ERROR ||
 			         dmld.status == DOWNLOAD_STATUS.NOT_STARTED)
 			{
-				toolbarStart.Sensitive = StartAction.Sensitive = true;
-				toolbarCancel.Sensitive = CancelAction.Sensitive = false;
-				toolbarPause.Sensitive = PauseAction.Sensitive = false;
-				toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+				toolbarStartQueue.Sensitive = StartQueueAction.Sensitive = true;
+				toolbarCancelQueue.Sensitive = CancelQueueAction.Sensitive = false;
+				toolbarStopQueue.Sensitive = StopQueueAction.Sensitive = false;
+				toolbarRestartQueue.Sensitive = RestartQueueAction.Sensitive = true;
 			}
 			else if (dmld.status == DOWNLOAD_STATUS.PAUSED)
 			{
-				toolbarStart.Sensitive = StartAction.Sensitive = true;
-				toolbarCancel.Sensitive = CancelAction.Sensitive = false;
-				toolbarPause.Sensitive = PauseAction.Sensitive = false;
-				toolbarRestart.Sensitive = RestartAction.Sensitive = true;
+				toolbarStartQueue.Sensitive = StartQueueAction.Sensitive = true;
+				toolbarCancelQueue.Sensitive = CancelQueueAction.Sensitive = false;
+				toolbarStopQueue.Sensitive = StopQueueAction.Sensitive = false;
+				toolbarRestartQueue.Sensitive = RestartQueueAction.Sensitive = true;
 			}
 		}
 
@@ -136,6 +187,12 @@ public partial class MainWindow: Gtk.Window
 	{
 		DeleteQueueAction.Sensitive = false;
 		TreeIter iter;
+
+		toolbarStartQueue.Sensitive = StartQueueAction.Sensitive = false;
+		toolbarCancelQueue.Sensitive = CancelQueueAction.Sensitive = false;
+		toolbarStopQueue.Sensitive = StopQueueAction.Sensitive = false;
+		toolbarRestartQueue.Sensitive = RestartQueueAction.Sensitive = false;
+
 		if (dmDownloadTreeView.Selection.CountSelectedRows () == 1)
 		{
 			dmDownloadTreeView.Selection.GetSelected (out iter);
@@ -230,6 +287,10 @@ public partial class MainWindow: Gtk.Window
 				if (dwnld.status == DOWNLOAD_STATUS.DOWNLOADED)
 				{
 					toRemove = dmld;
+					Length downloaded = dmld.download.getDownloaded ();
+					Speed speed = dmld.download.getSpeed ();
+					dmDownloadTreeView.updateDownloadStatus (dmld, downloaded, speed);
+					dmqueuetreeview.updateDownloadStatus (dmld, downloaded, speed);
 				}
 
 				else if (dwnld.status == DOWNLOAD_STATUS.DOWNLOADING)
@@ -363,9 +424,9 @@ public partial class MainWindow: Gtk.Window
 			if (dmld.download.status == DOWNLOAD_STATUS.DOWNLOADING)
 			    dmld.download.stop ();
 
-		settingsManager.storeInfo (listAllDownloads);
-		_stopSavingThread = true;
-		savingThread.Join ();
+		settingsManager.storeInfo (listAllDownloads, listAllQueues);
+		//_stopSavingThread = true;
+		//savingThread.Join ();
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)

@@ -30,9 +30,6 @@ namespace libDownload
 			credentials = null;
 			webResp = null;
 
-			fs = new FileStream (localPath, FileMode.OpenOrCreate);
-			start += downloaded = fs.Length;
-			fs.Close ();
 			Console.WriteLine ("Part {0} Downloaded {1}", 
 			                   _number, downloaded);
 
@@ -55,7 +52,7 @@ namespace libDownload
 					File.Delete (localPath);
 
 				statusString = "Sending GET...";
-				status = DOWNLOAD_PART_STATUS.DOWNLOADING;
+				status = DOWNLOAD_PART_STATUS.CONNECTING;
 				webReq = (HttpWebRequest)WebRequest.Create (remotePath);
 				webReq.Proxy = webProxy;
 				webReq.Method = "GET";
@@ -71,8 +68,11 @@ namespace libDownload
 				                   partNumber, start, end);
 				Stream Answer = webResp.GetResponseStream ();
 				statusString = "Downloading...";
+				fs = new FileStream (localPath, FileMode.OpenOrCreate);
+				status = DOWNLOAD_PART_STATUS.DOWNLOADING;
 				_download (Answer);
 				webResp.Close();
+				fs.Close ();
 				if (_stop == true)
 				{
 					status = DOWNLOAD_PART_STATUS.IDLE;
@@ -113,15 +113,22 @@ namespace libDownload
 			fs = null;
 			try
 			{
+				if (File.Exists (localPath))
+					fs = new FileStream (localPath, FileMode.Append);
+				else
+					fs = new FileStream (localPath, FileMode.Create);
+
+				downloaded = fs.Length;
+
 				statusString = "Sending GET...";
 				status = DOWNLOAD_PART_STATUS.DOWNLOADING;
 				webReq = (HttpWebRequest)WebRequest.Create (remotePath);
 				webReq.Method = "GET";
 
-				webReq.AddRange (start, end);
+				webReq.AddRange (start + downloaded, end);
 				Console.WriteLine ("resuming Get {0} {1} {2} {3}",
 				                   partNumber, start, end, start/1024,
-				                   end/1024, end - start);
+				                   end/1024, end - start - downloaded);
 
 				webResp = (HttpWebResponse)webReq.GetResponse ();
 				Console.WriteLine ("Start resuming {0} {1} {2}", 
@@ -131,10 +138,9 @@ namespace libDownload
 				statusString = "Downloading...";
 				Console.WriteLine ("Part {0} Dowkkknloading {1}", 
 				                   partNumber, downloaded);
-
 				_download (Answer);
 				webResp.Close();
-
+				fs.Close ();
 				if (_stop == true)
 				{
 					status = DOWNLOAD_PART_STATUS.IDLE;
@@ -146,12 +152,16 @@ namespace libDownload
 					status = DOWNLOAD_PART_STATUS.DOWNLOADED;
 					statusString = "Done";
 				}
+
 			}
 
 			catch (WebException e)
 			{
 				if (webResp != null)
 					webResp.Close ();
+
+				if (fs != null)
+					fs.Close ();
 
 				status = DOWNLOAD_PART_STATUS.ERROR;
 				errorFunction (this, false);
@@ -195,7 +205,13 @@ namespace libDownload
 			webReq = null;
 			speed_level = DOWNLOAD_SPEED_LEVEL.HIGH;
 			generateFileName = _genFile;
+			/*proxyAddress = "10.1.1.19";
+			proxyPort = 80;
+			authUsername = "063.7359";
+			authPassword = "chandj";
+			*/
 			proxyAddress = "";
+			proxyPort = 0;
 			authUsername = "";
 			authPassword = "";
 		}
@@ -332,15 +348,15 @@ namespace libDownload
 			{
 				_localPath = localPath + ".part" + i.ToString();
 				listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
-				                                     prev_length, next_length - 1, i));
+				                                     prev_length, next_length, i));
 				Console.WriteLine ("Part {0}", i);
 				prev_length += part_length;
 				next_length += part_length;
 			}
-
+			Console.WriteLine (prev_length + " prev");
 			_localPath = localPath + ".part" + (parts).ToString();
 			listParts.Add (new HTTPDownloadPart (remotePath, _localPath, 
-			                                     prev_length, length.value - 1,
+			                                     prev_length, length.value,
 			                                     parts));
 
 			foreach (HTTPDownloadPart part in listParts)
@@ -408,7 +424,7 @@ namespace libDownload
 			{
 				Console.WriteLine ("list empty" + parts.ToString ());
 				for (int i = 1; i <= parts; i++)
-				{																		
+				{
 					if (!File.Exists (localPath + ".part" + i.ToString ()))
 					{
 						exception = new DownloadException ("Cannot find file " + 
@@ -443,7 +459,7 @@ namespace libDownload
 				                                     parts));
 			}
 
-			Console.WriteLine (listParts.Count + "sdfsdf");
+			Console.WriteLine (listParts.Count + "sll");
 		}
 	}
 }

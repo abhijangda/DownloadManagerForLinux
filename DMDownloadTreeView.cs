@@ -39,11 +39,15 @@ namespace DownloadManager
 		{
 			DMDownload dwnld = (DMDownload)o;
 			Gtk.TreeIter iter;
+			float length = (float)dwnld.download.length.value;
+			if (length == 0)
+				length = 1;
+
 			iter = ((Gtk.ListStore)treeModel).AppendValues (MainWindow.getPixbufForStatus (dwnld.download.status), 
 			                      				            dwnld.download.localPath.Substring(
 							                                  dwnld.download.localPath.LastIndexOf ('/')+1),
 							                                dwnld.download.length.ToString (),
-							                                (100*dwnld.download.getDownloaded ())/dwnld.download.length,
+							                                (100*dwnld.download.getDownloaded ().value)/length,
 							                                "", "", 
 							                                dwnld.download.parts.ToString (),
 							                                dwnld);

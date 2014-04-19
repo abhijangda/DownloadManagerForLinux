@@ -1,21 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="DMTreeView.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ProgressWindow.cs">
     <Files>
-      <File FileName="MainWindow.cs" Line="689" Column="2" />
-      <File FileName="DMQueue.cs" Line="165" Column="3" />
-      <File FileName="DMQueueTreeView.cs" Line="122" Column="25" />
-      <File FileName="DMTreeView.cs" Line="112" Column="5" />
-      <File FileName="DMDownloadTreeView.cs" Line="160" Column="5" />
-      <File FileName="libDownload/libDownload.cs" Line="1" Column="1" />
-      <File FileName="FindDialog.cs" Line="1" Column="1" />
+      <File FileName="MainWindow.cs" Line="515" Column="4" />
+      <File FileName="libDownload/HTTPDownload.cs" Line="339" Column="30" />
+      <File FileName="libDownload/libDownload.cs" Line="190" Column="67" />
+      <File FileName="NewDialog.cs" Line="1" Column="1" />
+      <File FileName="Settings.cs" Line="102" Column="5" />
+      <File FileName="ProgressWindow.cs" Line="217" Column="32" />
+      <File FileName="DMDownloadTreeView.cs" Line="48" Column="87" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="DownloadManager" expanded="True">
-            <Node name="UserInterface" expanded="True" />
-            <Node name="DMTreeView.cs" selected="True" />
+            <Node name="ProgressWindow.cs" selected="True" />
           </Node>
           <Node name="libDownload" expanded="True" />
         </State>
@@ -25,5 +24,7 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="libDownload/HTTPDownload.cs" line="457" offsetX="532" offsetY="10032" expression="Console" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
 </Properties>

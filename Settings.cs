@@ -17,7 +17,13 @@ namespace DownloadManager
 		public string getKeyValue (string key)
 		{
 			if (key == "default-dir")
-				return "~/Downloads";
+			{
+				string dir = "~/autoconf";
+
+				if (dir.IndexOf ("~") == 0)
+					dir = dir.Replace ("~", Environment.GetFolderPath (Environment.SpecialFolder.UserProfile));
+				return dir;
+			}
 
 			if (key == "save-time-out")
 				return "2000";
@@ -41,9 +47,11 @@ namespace DownloadManager
 			return a;
 		}
 
-		public void storeInfo (List<DMDownload> listDownloads)
+		public void storeInfo (List<DMDownload> listDownloads, 
+		                       List<DMQueue> listQueues)
 		{
 			string s = "";
+
 			foreach (DMDownload dmld in listDownloads)
 			{
 				if (dmld.download is HTTPDownload)
@@ -61,6 +69,11 @@ namespace DownloadManager
 				s += "</download>\n";
 			}
 
+			foreach (DMQueue queue in listQueues)
+			{
+				s += queue.ToString ();
+			}
+
 			string _path = Path.Combine (path, "downloadsInfo.conf");
 			if (File.Exists (_path))
 				File.Delete (_path);
@@ -68,14 +81,17 @@ namespace DownloadManager
 			File.WriteAllText (_path, s);
 		}
 
-		public void loadDownloads (ref List<DMDownload> listDownloads)
+		public void loadDwnldsQueues (ref List<DMDownload> listDownloads,
+		                              ref List<DMQueue> listQueues)
 		{
 			if (!File.Exists (Path.Combine (path, "downloadsInfo.conf")))
 				return;
 
+			Dictionary<string, DMDownload> dict = new Dictionary<string, DMDownload> ();
+
 			string text = File.ReadAllText (Path.Combine (path, "downloadsInfo.conf"));
 			MatchCollection mc = Regex.Matches (text, "<download.+?</download>", RegexOptions.Singleline);
-			DMDownload dmld = new DMDownload (null, null);
+			DMDownload dmld = null;
 			Download dwld = null;
 			foreach (Match m in mc)
 			{
@@ -89,19 +105,29 @@ namespace DownloadManager
 					                        MainWindow.main_instance.OnDownloadStatusChanged, 
 					                        false, 5);
 
+				if (dwld != null)
+				{
+					dwld.initFromXML (m.Value);
+					dmld = new DMDownload (dwld, null);
+					listDownloads.Add (dmld);
+					dict.Add (dmld.download.localPath, dmld);
+				}
+
 				if (m.Value.Contains ("<type>"))
 				{
 					string s = m.Value;
 					int start = s.IndexOf ("<type>") + "<type>".Length;
 					dmld.typeCategory = new DMTypeCategory (s.Substring (start, s.IndexOf ("</type>") - start).Trim ());
 				}
+			}
 
-				if (dwld != null)
-				{
-					dwld.initFromXML (m.Value);
-					dmld.download = dwld;
-					listDownloads.Add (dmld);
-				}
+			mc = Regex.Matches (text, "<queue.+?</queue>", RegexOptions.Singleline);
+			DMQueue queue = new DMQueue ("");
+			foreach (Match m in mc)
+			{
+				queue.loadQueueFromXML (m.Value, dict);
+				if (queue.name != "")
+					listQueues.Add (queue);
 			}
 		}
 	}

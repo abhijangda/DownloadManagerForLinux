@@ -150,39 +150,11 @@ namespace DownloadManager
 					((Gtk.TreeStore)treeModel).SetValue (iter, 6, queue.getTotalParts ().ToString ());
 				}
 			}
+		}
 
-			else if (o is DMDownload)
-			{
-				DMDownload dwnld = (DMDownload)o;
-				TreeIter iter;
-				treeModel.GetIter (
-					out iter,
-					dwnld.queue.listDMRowReference [dwnld.queue.listDownloads.IndexOf (dwnld)].Path);
+		public void loadQueues ()
+		{
 
-				if (dwnld.download.status == libDownload.DOWNLOAD_STATUS.DOWNLOADING)
-				{
-					((Gtk.TreeStore)treeModel).SetValue (iter, 1, dwnld.download.localPath.Substring (dwnld.download.localPath.LastIndexOf ('/') +1));
-					((Gtk.TreeStore)treeModel).SetValue (iter, 2, dwnld.download.length.ToString ());
-					((Gtk.TreeStore)treeModel).SetValue (iter, 3, (100*downloaded.value)/(float)dwnld.download.length.value);
-					((Gtk.TreeStore)treeModel).SetValue (iter, 4, MainWindow.getTime (dwnld.download.length.value - downloaded.value, speed.value));
-					((Gtk.TreeStore)treeModel).SetValue (iter, 5, speed.ToString ());
-					((Gtk.TreeStore)treeModel).SetValue (iter, 6, dwnld.download.parts.ToString ());
-				}
-				else if (dwnld.download.status == libDownload.DOWNLOAD_STATUS.MERGING)
-				{
-					((Gtk.TreeStore)treeModel).SetValue (iter, 3, (float)100.0);
-					((Gtk.TreeStore)treeModel).SetValue (iter, 4, "");
-					((Gtk.TreeStore)treeModel).SetValue (iter, 5, "");
-					((Gtk.TreeStore)treeModel).SetValue (iter, 6, dwnld.download.parts.ToString ());
-				}
-				else if (dwnld.download.status == libDownload.DOWNLOAD_STATUS.DOWNLOADED)
-				{
-					((Gtk.TreeStore)treeModel).SetValue (iter, 3, (float)100.0);
-					((Gtk.TreeStore)treeModel).SetValue (iter, 4, "");
-					((Gtk.TreeStore)treeModel).SetValue (iter, 5, "");
-					((Gtk.TreeStore)treeModel).SetValue (iter, 6, dwnld.download.parts.ToString ());
-				}
-			}
 		}
 	}
 }

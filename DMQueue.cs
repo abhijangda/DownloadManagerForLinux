@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using libDownload;
 
 namespace DownloadManager
@@ -161,6 +162,44 @@ namespace DownloadManager
 				parts += d.download.parts;
 
 			return parts;
+		}
+
+		public override string ToString ()
+		{
+			string s = "<queue>\n";
+			s += "\t<name>\n\t\t" + name + "\n\t</name>";
+			foreach (DMDownload download in listDownloads)
+			{
+				s += "\t<dwnld>\n\t\t" + download.download.localPath + "\n\t</dwnld>\n";
+			}
+
+			s += "\t<status>\n\t\t" + status.ToString () + "\n\t</status>\n";
+
+			s += "</queue>\n";
+			return s;
+		}
+
+		public void loadQueueFromXML (string xml, Dictionary<string, DMDownload> dict)
+		{
+			MatchCollection mc = Regex.Matches (xml, ".+", RegexOptions.None);
+			for (int i = 0; i < mc.Count; i++)
+			{
+				Match m = mc [i];
+				if (m.Value.Contains ("<name>"))
+				{
+					i += 1;
+					name = mc [i].Value.Trim ();
+					i += 1;
+				}
+
+				else if (m.Value.Contains ("<dwnld>"))
+				{
+					i += 1;
+					string localPath = mc [i].Value.Trim ();
+					listDownloads.Add (dict [localPath]);
+					i += 1;
+				}
+			}
 		}
 	}
 }

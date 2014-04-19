@@ -8,10 +8,8 @@ namespace libDownloadTest
 	{
 		public static void Main (string[] args)
 		{
-			FTPDownload d = new FTPDownload ("ftp://ftp.kernel.org/pub/tools/crosstool/index.html", "/home/abhi/dffs", null, true, 5);
-			Console.WriteLine ("dddd");
-			d.start ();
-		
+			HTTPDownload d = new HTTPDownload ("http://kojipkgs.fedoraproject.org//packages/autoconf/2.69/14.fc20/noarch/autoconf-2.69-14.fc20.noarch.rpm", "/home/abhi/autoconf", null, true, 5);
+			d.start ();		
 		}
 	}
 }

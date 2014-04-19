@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using libDownload;
 using Gtk;
 using System.Threading;
+/*TODO: Change the Title of Progress Window to "filename Progress"*/
+/*TODO: Person should be able to select URL and filepath from the labels*/
+/*TODO: Add a Button for Properties of Download*/
 
 namespace DownloadManager
 {
@@ -25,7 +29,6 @@ namespace DownloadManager
 					wnd.setVisibleWidget ();
 				}
 			}
-
 		}
 		static bool _isProgressBarVisible;
 		public static bool isProgressBarVisible 
@@ -113,13 +116,16 @@ namespace DownloadManager
 			dwnload = _dwnload;
 			lblAddress.Text = dwnload.download.remotePath;
 			lblDestination.Text = dwnload.download.localPath;
-			for (int i = 0; i < dwnload.download.parts; i++)
+			if (dwnload.download.status == DOWNLOAD_STATUS.PAUSED)
 			{
-			    partsProgress.appendPart ();
-				partsProgress.setPartStatus (
-					i, dwnload.download.getPartStatusString (i));
-				partsProgress.setPartProgress (
-					i, dwnload.download.getPartProgress (i));
+				for (int i = 0; i < dwnload.download.parts; i++)
+				{
+			    	partsProgress.appendPart ();
+					partsProgress.setPartStatus (
+						i, dwnload.download.getPartStatusString (i));
+					partsProgress.setPartProgress (
+						i, dwnload.download.getPartProgress (i));
+				}
 			}
 			if (dwnload.download.length.value > 0 && 
 			    dwnload.download.status != DOWNLOAD_STATUS.NOT_STARTED)
@@ -135,6 +141,13 @@ namespace DownloadManager
 			setVisibleWidget ();
 			listObjects.Add (this);
 			btnStartPause.Label = "Start";
+			if (!File.Exists (dwnload.download.localPath) || 
+			    (File.GetAttributes (dwnload.download.localPath) & FileAttributes.Normal)
+			    == FileAttributes.Normal)
+				Title = dwnload.download.localPath.Substring(
+					dwnload.download.localPath.LastIndexOf ('/')+1);
+			else
+				Title = "file";
 		}
 
 		public void startDownload ()
@@ -194,10 +207,13 @@ namespace DownloadManager
 			else if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADING)
 			{
 				btnStartPause.Label = "Pause";
+				Title = dwnload.download.localPath.Substring(
+					dwnload.download.localPath.LastIndexOf ('/')+1);
 			}
 			else if (dwnload.download.status == DOWNLOAD_STATUS.ERROR)
 			{
 				lblStatus.Text = dwnload.download.exception.Message;
+				Console.WriteLine (dwnload.download.exception.Message);
 				btnStartPause.Label = "Retry";
 			}
 			else if (dwnload.download.status == DOWNLOAD_STATUS.NOT_STARTED)
@@ -275,18 +291,14 @@ namespace DownloadManager
 		{
 			if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADING)
 			{
-				Console.WriteLine ("DOWNLOADING");
 				dwnload.download.stop ();
-
 			}
 			else if (dwnload.download.status == DOWNLOAD_STATUS.ERROR)
 			{
 				startDownload ();
-				Console.WriteLine ("ERROR");
 			}
 			else
 			{
-				Console.WriteLine ("Other");
 				if (dwnload.download.length != null)
 					MainWindow.main_instance.resumeDownload (dwnload);
 			}
