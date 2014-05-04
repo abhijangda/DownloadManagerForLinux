@@ -113,6 +113,7 @@ namespace DownloadManager
 			this.lblAddress = new global::Gtk.Label ();
 			this.lblAddress.Name = "lblAddress";
 			this.lblAddress.Xalign = 0F;
+			this.lblAddress.Selectable = true;
 			this.lblAddress.Ellipsize = ((global::Pango.EllipsizeMode)(3));
 			this.table2.Add (this.lblAddress);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table2 [this.lblAddress]));
@@ -238,6 +239,7 @@ namespace DownloadManager
 			this.hbox1.Spacing = 4;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.btnStartPause = new global::Gtk.Button ();
+			this.btnStartPause.WidthRequest = 94;
 			this.btnStartPause.CanFocus = true;
 			this.btnStartPause.Name = "btnStartPause";
 			this.btnStartPause.UseUnderline = true;
@@ -250,6 +252,7 @@ namespace DownloadManager
 			w19.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.btnCancel = new global::Gtk.Button ();
+			this.btnCancel.WidthRequest = 94;
 			this.btnCancel.CanFocus = true;
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.UseUnderline = true;
@@ -262,6 +265,7 @@ namespace DownloadManager
 			w20.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.btnClose = new global::Gtk.Button ();
+			this.btnClose.WidthRequest = 94;
 			this.btnClose.CanFocus = true;
 			this.btnClose.Name = "btnClose";
 			this.btnClose.UseUnderline = true;

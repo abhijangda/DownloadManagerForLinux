@@ -17,7 +17,7 @@ namespace DownloadManager
 		public abstract void setImageForStatus (object o);
 
 		protected int SpeedSortFunc (TreeModel treeModel, TreeIter iter1,
-		                           TreeIter iter2)
+		                             TreeIter iter2)
 		{
 			string str1 = (string)treeModel.GetValue (iter1, 5);
 			string str2 = (string)treeModel.GetValue (iter2, 5);

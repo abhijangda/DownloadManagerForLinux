@@ -6,12 +6,14 @@ using libDownload;
 using DownloadManager;
 /*TODO:Implement delete operations*/
 /*TODO:apply save files after some minutes feature. It is buggy and has been disabled. It uses function Download.writeToFile*/
-/*TODO:Bugs in displaying already downloaded files*/
 /*TODO:Implement site grabber like that of IDM*/
 /*TODO:Implement Scheduler*/
+/*TODO:When download is completed, implement "Open Folder" and "Open"*/
+/*TODO:Right Click popup menu should contain "Open Folder" and "Open"*/
+/*TODO:Check restart download*/
 
 public partial class MainWindow: Gtk.Window
-{	
+{
 	List<DMDownload> listRunningDownloads;
 	List<DMDownload> listAllDownloads;
 
@@ -23,14 +25,14 @@ public partial class MainWindow: Gtk.Window
 	public Length total_downloaded;
 	private Thread savingThread;
 	private bool _stopSavingThread;
+	private SettingsDialog settingsDialog;
 
-	public MainWindow (): base (Gtk.WindowType.Toplevel)
+	public MainWindow (DownloadManager.Settings _sm): base (Gtk.WindowType.Toplevel)
 	{
+		settingsManager = _sm;
 		total_downloaded = new Length (0);
 		listRunningDownloads = new List<DMDownload> ();
 		GLib.Timeout.Add (500, this.updateFunc);
-		settingsManager = new DownloadManager.Settings (
-			Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
 		listAllDownloads = new List<DMDownload> ();
 
 		Build ();
@@ -41,7 +43,7 @@ public partial class MainWindow: Gtk.Window
 		dmqueuetreeview.Selection.Changed += dmQueueTreeViewSelectionChanged;
 		notebook.SwitchPage += notebookPageSwitched;
 		notebook.CurrentPage = 0;
-
+		dmCategoryTreeView.Selection.Changed += dmCategoryTreeViewSelectionChanged;
 		toolbar1.ToolbarStyle = ToolbarStyle.Icons;
 
 		_stopSavingThread = false;
@@ -50,6 +52,40 @@ public partial class MainWindow: Gtk.Window
 
 		listRunningQueues = new List<DMQueue> ();
 		listAllQueues = new List<DMQueue> ();
+	}
+
+	private void dmCategoryTreeViewSelectionChanged (object o, EventArgs args)
+	{
+		if (o == null)
+			return;
+
+		TreeIter iter, parent;
+		dmCategoryTreeView.Selection.GetSelected (out iter);
+		dmCategoryTreeView.Model.IterParent (out parent, iter);
+
+		if ((string)(dmCategoryTreeView.Model.GetValue (parent, 1)) == "Status")
+		{
+			string type = (string)(dmCategoryTreeView.Model.GetValue (iter, 1));
+			type = type.ToUpper ();
+			((ListStore)dmDownloadTreeView.Model).Clear ();
+			foreach (DMDownload dmld in listAllDownloads)
+			{
+				DOWNLOAD_STATUS status = dmld.download.status;
+				if (type == "All" || status.ToString () == type)
+					dmDownloadTreeView.addRow (dmld);
+			}
+		}
+		else
+		{
+			string type = (string)(dmCategoryTreeView.Model.GetValue (iter, 1));
+			type = type.ToUpper ();
+			((ListStore)dmDownloadTreeView.Model).Clear ();
+			foreach (DMDownload dmld in listAllDownloads)
+			{
+				if (dmld.typeCategory.name == "All" || dmld.typeCategory.name == type)
+					dmDownloadTreeView.addRow (dmld);
+			}
+		}
 	}
 
 	private void notebookPageSwitched (object o, SwitchPageArgs args)
@@ -505,6 +541,13 @@ public partial class MainWindow: Gtk.Window
 			                      localPath,
 			                      OnDownloadStatusChanged,
 			                      genFilename);
+			if (settingsManager.getKeyValue ("proxy", "ftp_proxy") == "True")
+			{
+				dl.setProxy (settingsManager.getKeyValue ("proxy", "ftp_proxy_address"),
+				             int.Parse (settingsManager.getKeyValue ("proxy", "ftp_proxy_port")),
+				             settingsManager.getKeyValue ("proxy", "ftp_proxy_username"),
+				             settingsManager.getKeyValue ("proxy", "ftp_proxy_password"));
+			}
 		}
 		else
 		{
@@ -512,6 +555,10 @@ public partial class MainWindow: Gtk.Window
 			                       localPath,
 			                       OnDownloadStatusChanged,
 			                       genFilename);
+			dl.setProxy (settingsManager.getKeyValue ("proxy", "http_proxy_address"),
+			             int.Parse (settingsManager.getKeyValue ("proxy", "http_proxy_port")),
+			             settingsManager.getKeyValue ("proxy", "http_proxy_username"),
+			             settingsManager.getKeyValue ("proxy", "http_proxy_password"));
 		}
 
 		DMDownload dmdl = new DMDownload (dl, null);
@@ -807,5 +854,13 @@ public partial class MainWindow: Gtk.Window
 			dmld.cancel ();
 			startQueue (dmld);
 		}
+	}
+	
+	protected void OnSettingsActionActivated (object sender, EventArgs e)
+	{
+		settingsDialog = new SettingsDialog (settingsManager);
+		settingsDialog.setSettings ();
+		settingsDialog.Run ();
+		settingsDialog.Destroy ();
 	}
 }

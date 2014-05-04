@@ -23,7 +23,7 @@ namespace DownloadManager
 			SetSizeRequest (500,450);
 			Resizable = false;
 
-			foreach (string a in MainWindow.settingsManager.getKeyValueArray ("type-category"))
+			foreach (string a in MainWindow.settingsManager.getKeyValueArray ("group", "groups"))
 			{
 				cbCategory.AppendText (a);
 			}

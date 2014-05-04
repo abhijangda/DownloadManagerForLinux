@@ -45,7 +45,7 @@ namespace DownloadManager
 				listStatusCategories.Add (new DMStatusCategory (info.Name));
 			}
 
-			foreach (string a in MainWindow.settingsManager.getKeyValueArray ("type-category"))
+			foreach (string a in MainWindow.settingsManager.getKeyValueArray ("group", "groups"))
 			{
 				listTypeCategories.Add (new DMTypeCategory (a));
 			}
@@ -70,6 +70,8 @@ namespace DownloadManager
 			Column.AddAttribute (stringColumnRender, "text", 1);
 
 			Gtk.TreeIter iter = treeStore.AppendValues (new Gdk.Pixbuf ("./../../field.png"), "Status");
+			treeStore.AppendValues (iter, new Gdk.Pixbuf ("./../../field.png"), "All");
+	
 			foreach (DMStatusCategory satCat in listStatusCategories)
 			{
 				treeStore.AppendValues (iter, new Gdk.Pixbuf ("./../../field.png"), 

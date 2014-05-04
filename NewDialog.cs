@@ -17,8 +17,8 @@ namespace DownloadManager
 		public NewDialog ()
 		{
 			this.Build ();
-			entrySaveTo.Text = MainWindow.settingsManager.getKeyValue ("default-dir");
-			foreach (string a in MainWindow.settingsManager.getKeyValueArray ("type-category"))
+			entrySaveTo.Text = MainWindow.settingsManager.getKeyValue ("general", "default-dir");
+			foreach (string a in MainWindow.settingsManager.getKeyValueArray ("group", "groups"))
 			{
 				cbCategory.AppendText (a);
 			}
@@ -34,7 +34,6 @@ namespace DownloadManager
 			Default = buttonOk;
 			Clipboard clipboard = Clipboard.Get(Atom.Intern("CLIPBOARD", false));
 			clipboard.RequestText (new ClipboardTextReceivedFunc (ClipboardRequestText));
-			Console.WriteLine ("fdfgdfg");
 		}
 
 		void ClipboardRequestText (Clipboard cb, string text)

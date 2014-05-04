@@ -25,7 +25,10 @@ namespace DownloadManager
 			//Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments
 			ServicePointManager.DefaultConnectionLimit = 50;
 			Application.Init ();
-			MainWindow win = new MainWindow ();
+			Settings settingsManager = new DownloadManager.Settings (
+				Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+			settingsManager.loadSettings();
+			MainWindow win = new MainWindow (settingsManager);
 			MainWindow.main_instance = win;
 			win.loadSettings ();
 			win.Maximize ();

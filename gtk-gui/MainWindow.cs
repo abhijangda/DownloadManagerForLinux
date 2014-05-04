@@ -48,7 +48,7 @@ public partial class MainWindow
 	private global::Gtk.ToggleAction FTPGetAction;
 	private global::Gtk.ToggleAction FindAction;
 	private global::Gtk.Action OptionsAction;
-	private global::Gtk.Action PreferencesAction;
+	private global::Gtk.Action SettingsAction;
 	private global::Gtk.Action TrafficUsageModeAction;
 	private global::Gtk.RadioAction LowSpeedAction;
 	private global::Gtk.RadioAction MediumSpeedAction;
@@ -236,9 +236,9 @@ public partial class MainWindow
 		this.OptionsAction = new global::Gtk.Action ("OptionsAction", global::Mono.Unix.Catalog.GetString ("Options"), null, null);
 		this.OptionsAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Options");
 		w1.Add (this.OptionsAction, null);
-		this.PreferencesAction = new global::Gtk.Action ("PreferencesAction", global::Mono.Unix.Catalog.GetString ("Preferences"), null, null);
-		this.PreferencesAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Preferences");
-		w1.Add (this.PreferencesAction, null);
+		this.SettingsAction = new global::Gtk.Action ("SettingsAction", global::Mono.Unix.Catalog.GetString ("Settings"), null, null);
+		this.SettingsAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Settings");
+		w1.Add (this.SettingsAction, null);
 		this.TrafficUsageModeAction = new global::Gtk.Action ("TrafficUsageModeAction", global::Mono.Unix.Catalog.GetString ("Traffic Usage Mode"), null, null);
 		this.TrafficUsageModeAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Traffic Usage Mode");
 		w1.Add (this.TrafficUsageModeAction, null);
@@ -289,7 +289,7 @@ public partial class MainWindow
 		this.vbox1.Name = "vbox1";
 		this.vbox1.Spacing = 1;
 		// Container child vbox1.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString ("<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='NewDownloadAction' action='NewDownloadAction'/><menuitem name='AddExistingDownloadAction' action='AddExistingDownloadAction'/><separator/><menuitem name='CreateQueueAction' action='CreateQueueAction'/><menuitem name='DeleteQueueAction' action='DeleteQueueAction'/></menu><menu name='DownloadAction' action='DownloadAction'><menuitem name='StartAction' action='StartAction'/><menuitem name='PauseAction' action='PauseAction'/><menuitem name='RestartAction' action='RestartAction'/><menuitem name='CancelAction' action='CancelAction'/><separator/><menuitem name='StartQueueAction' action='StartQueueAction'/><menuitem name='StopQueueAction' action='StopQueueAction'/><menuitem name='CancelQueueAction' action='CancelQueueAction'/><menuitem name='RestartQueueAction' action='RestartQueueAction'/></menu><menu name='ViewAction' action='ViewAction'><menu name='ToolbarAction' action='ToolbarAction'><menuitem name='NewDownloadAction1' action='NewDownloadAction1'/><menuitem name='AddExistingDownloadAction1' action='AddExistingDownloadAction1'/><menuitem name='StartAction1' action='StartAction1'/><menuitem name='PauseAction1' action='PauseAction1'/><menuitem name='CancelAction1' action='CancelAction1'/><menuitem name='RestartAction1' action='RestartAction1'/><menuitem name='SpeedLimitAction' action='SpeedLimitAction'/><menuitem name='FindAction' action='FindAction'/></menu><menu name='ProgressWindowAction' action='ProgressWindowAction'><menuitem name='PartsStatusAction' action='PartsStatusAction'/><menuitem name='ProgressBarAction' action='ProgressBarAction'/><menuitem name='StatusAction' action='StatusAction'/><menuitem name='TimeLeftAction' action='TimeLeftAction'/><menuitem name='SpeedAction' action='SpeedAction'/></menu><menuitem name='StatusBarAction' action='StatusBarAction'/><menuitem name='DownloadsAction' action='DownloadsAction'/><menuitem name='TorrentsAction' action='TorrentsAction'/><menuitem name='FTPGetAction' action='FTPGetAction'/></menu><menu name='OptionsAction' action='OptionsAction'><menuitem name='PreferencesAction' action='PreferencesAction'/><menu name='TrafficUsageModeAction' action='TrafficUsageModeAction'><menuitem name='LowSpeedAction' action='LowSpeedAction'/><menuitem name='MediumSpeedAction' action='MediumSpeedAction'/><menuitem name='HighSpeedAction' action='HighSpeedAction'/></menu></menu></menubar></ui>");
+		this.UIManager.AddUiFromString ("<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='NewDownloadAction' action='NewDownloadAction'/><menuitem name='AddExistingDownloadAction' action='AddExistingDownloadAction'/><separator/><menuitem name='CreateQueueAction' action='CreateQueueAction'/><menuitem name='DeleteQueueAction' action='DeleteQueueAction'/></menu><menu name='DownloadAction' action='DownloadAction'><menuitem name='StartAction' action='StartAction'/><menuitem name='PauseAction' action='PauseAction'/><menuitem name='RestartAction' action='RestartAction'/><menuitem name='CancelAction' action='CancelAction'/><separator/><menuitem name='StartQueueAction' action='StartQueueAction'/><menuitem name='StopQueueAction' action='StopQueueAction'/><menuitem name='CancelQueueAction' action='CancelQueueAction'/><menuitem name='RestartQueueAction' action='RestartQueueAction'/></menu><menu name='ViewAction' action='ViewAction'><menu name='ToolbarAction' action='ToolbarAction'><menuitem name='NewDownloadAction1' action='NewDownloadAction1'/><menuitem name='AddExistingDownloadAction1' action='AddExistingDownloadAction1'/><menuitem name='StartAction1' action='StartAction1'/><menuitem name='PauseAction1' action='PauseAction1'/><menuitem name='CancelAction1' action='CancelAction1'/><menuitem name='RestartAction1' action='RestartAction1'/><menuitem name='SpeedLimitAction' action='SpeedLimitAction'/><menuitem name='FindAction' action='FindAction'/></menu><menu name='ProgressWindowAction' action='ProgressWindowAction'><menuitem name='PartsStatusAction' action='PartsStatusAction'/><menuitem name='ProgressBarAction' action='ProgressBarAction'/><menuitem name='StatusAction' action='StatusAction'/><menuitem name='TimeLeftAction' action='TimeLeftAction'/><menuitem name='SpeedAction' action='SpeedAction'/></menu><menuitem name='StatusBarAction' action='StatusBarAction'/><menuitem name='DownloadsAction' action='DownloadsAction'/><menuitem name='TorrentsAction' action='TorrentsAction'/><menuitem name='FTPGetAction' action='FTPGetAction'/></menu><menu name='OptionsAction' action='OptionsAction'><menuitem name='SettingsAction' action='SettingsAction'/><menu name='TrafficUsageModeAction' action='TrafficUsageModeAction'><menuitem name='LowSpeedAction' action='LowSpeedAction'/><menuitem name='MediumSpeedAction' action='MediumSpeedAction'/><menuitem name='HighSpeedAction' action='HighSpeedAction'/></menu></menu></menubar></ui>");
 		this.menubar1 = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/menubar1")));
 		this.menubar1.Name = "menubar1";
 		this.vbox1.Add (this.menubar1);
@@ -312,7 +312,7 @@ public partial class MainWindow
 		this.notebook = new global::Gtk.Notebook ();
 		this.notebook.CanFocus = true;
 		this.notebook.Name = "notebook";
-		this.notebook.CurrentPage = 1;
+		this.notebook.CurrentPage = 0;
 		// Container child notebook.Gtk.Notebook+NotebookChild
 		this.hpaned1 = new global::Gtk.HPaned ();
 		this.hpaned1.CanFocus = true;
@@ -457,6 +457,7 @@ public partial class MainWindow
 		this.TimeLeftAction.Toggled += new global::System.EventHandler (this.OnProgressWindowActivated);
 		this.SpeedAction.Toggled += new global::System.EventHandler (this.OnProgressWindowActivated);
 		this.FindAction.Toggled += new global::System.EventHandler (this.OnShowToolbarActivated);
+		this.SettingsAction.Activated += new global::System.EventHandler (this.OnSettingsActionActivated);
 		this.MediumSpeedAction.Activated += new global::System.EventHandler (this.OnSpeedMediumActivated);
 		this.HighSpeedAction.Activated += new global::System.EventHandler (this.OnSpeedHighActivated);
 		this.toolbarFind.Activated += new global::System.EventHandler (this.OnToolbarFindActivated);
