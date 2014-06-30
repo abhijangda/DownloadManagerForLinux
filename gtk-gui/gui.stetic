@@ -68,20 +68,17 @@
       </action>
       <action id="toolbarSpeedLow">
         <property name="Type">Action</property>
-        <property name="Label" translatable="yes">Speed Low</property>
-        <property name="ShortLabel" translatable="yes">Speed Low</property>
+        <property name="Label" translatable="yes" />
         <signal name="Activated" handler="OnSpeedLowActivated" />
       </action>
       <action id="toolbarSpeedMedium">
         <property name="Type">Action</property>
-        <property name="Label" translatable="yes">Speed Medium</property>
-        <property name="ShortLabel" translatable="yes">Speed Medium</property>
+        <property name="Label" translatable="yes" />
         <signal name="Activated" handler="OnSpeedMediumActivated" />
       </action>
       <action id="toolbarSpeedFull">
         <property name="Type">Action</property>
-        <property name="Label" translatable="yes">Speed Full</property>
-        <property name="ShortLabel" translatable="yes">Speed Full</property>
+        <property name="Label" translatable="yes" />
         <signal name="Activated" handler="OnSpeedHighActivated" />
       </action>
       <action id="DownloadAction">
@@ -383,7 +380,7 @@
       <action id="toolbarRestartQueue">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
-        <property name="ShortLabel" translatable="yes">ddddd</property>
+        <property name="StockId">gtk-refresh</property>
         <signal name="Activated" handler="toolbarRestartQueuectivated" />
       </action>
       <action id="CancelQueueAction">
@@ -488,12 +485,12 @@
               <node type="Toolitem" action="toolbarRestartQueue" />
               <node type="Toolitem" />
               <node type="Separator" />
-              <node type="Toolitem" action="toolbarFind" />
-              <node type="Toolitem" action="preferencesAction" />
-              <node type="Separator" />
               <node type="Toolitem" action="toolbarSpeedLow" />
               <node type="Toolitem" action="toolbarSpeedMedium" />
               <node type="Toolitem" action="toolbarSpeedFull" />
+              <node type="Separator" />
+              <node type="Toolitem" action="toolbarFind" />
+              <node type="Toolitem" action="preferencesAction" />
             </node>
           </widget>
           <packing>
@@ -507,7 +504,7 @@
           <widget class="Gtk.Notebook" id="notebook">
             <property name="MemberName">notebook</property>
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">0</property>
+            <property name="CurrentPage">3</property>
             <child>
               <widget class="Gtk.HPaned" id="hpaned1">
                 <property name="MemberName" />
@@ -593,7 +590,12 @@
               </packing>
             </child>
             <child>
-              <placeholder />
+              <widget class="DownloadManager.FTPGetWidget" id="ftpgetwidget1">
+                <property name="MemberName" />
+              </widget>
+              <packing>
+                <property name="Position">3</property>
+              </packing>
             </child>
             <child>
               <widget class="Gtk.Label" id="label4">
@@ -1022,7 +1024,6 @@
                         <property name="MemberName">rbNow</property>
                         <property name="CanFocus">True</property>
                         <property name="Label" translatable="yes">Now</property>
-                        <property name="Active">True</property>
                         <property name="DrawIndicator">True</property>
                         <property name="HasLabel">True</property>
                         <property name="UseUnderline">True</property>
@@ -1277,7 +1278,7 @@
                 <property name="MemberName">lblAddress</property>
                 <property name="Xalign">0</property>
                 <property name="Selectable">True</property>
-                <property name="Ellipsize">End</property>
+                <property name="SingleLineMode">True</property>
               </widget>
               <packing>
                 <property name="LeftAttach">1</property>
@@ -1297,7 +1298,8 @@
               <widget class="Gtk.Label" id="lblDestination">
                 <property name="MemberName">lblDestination</property>
                 <property name="Xalign">0</property>
-                <property name="Ellipsize">End</property>
+                <property name="Selectable">True</property>
+                <property name="SingleLineMode">True</property>
               </widget>
               <packing>
                 <property name="TopAttach">1</property>
@@ -1475,6 +1477,23 @@
             <property name="MemberName" />
             <property name="Spacing">4</property>
             <child>
+              <widget class="Gtk.Button" id="cmdProperties">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">Properties</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="OnCmdPropertiesClicked" />
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
               <widget class="Gtk.Button" id="btnStartPause">
                 <property name="MemberName">btnStartPause</property>
                 <property name="WidthRequest">94</property>
@@ -1486,7 +1505,7 @@
               </widget>
               <packing>
                 <property name="PackType">End</property>
-                <property name="Position">0</property>
+                <property name="Position">1</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -1504,7 +1523,7 @@
               </widget>
               <packing>
                 <property name="PackType">End</property>
-                <property name="Position">1</property>
+                <property name="Position">2</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
@@ -1522,7 +1541,7 @@
               </widget>
               <packing>
                 <property name="PackType">End</property>
-                <property name="Position">2</property>
+                <property name="Position">3</property>
                 <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>

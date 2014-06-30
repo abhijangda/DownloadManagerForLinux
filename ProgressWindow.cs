@@ -4,8 +4,7 @@ using System.IO;
 using libDownload;
 using Gtk;
 using System.Threading;
-/*TODO: Change the Title of Progress Window to "filename Progress"*/
-/*TODO: Person should be able to select URL and filepath from the labels*/
+
 /*TODO: Add a Button for Properties of Download*/
 
 namespace DownloadManager
@@ -141,6 +140,11 @@ namespace DownloadManager
 			setVisibleWidget ();
 			listObjects.Add (this);
 			btnStartPause.Label = "Start";
+			if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADED)
+			{
+				btnCancel.Label = "Open";
+				btnStartPause.Label = "Open Folder";
+			}
 			if (!File.Exists (dwnload.download.localPath) || 
 			    (File.GetAttributes (dwnload.download.localPath) & FileAttributes.Normal)
 			    == FileAttributes.Normal)
@@ -148,6 +152,8 @@ namespace DownloadManager
 					dwnload.download.localPath.LastIndexOf ('/')+1);
 			else
 				Title = "file";
+
+
 		}
 
 		public void startDownload ()
@@ -197,12 +203,12 @@ namespace DownloadManager
 			if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADED)
 			{
 				lblStatus.Text = "Download Completed";
-				btnCancel.Sensitive = false;
-				btnStartPause.Sensitive = false;
 				lblTimeLeft.Text = "";
 				btnClose.Sensitive = true;
 				Console.WriteLine ("Complete");
 				dmprogressbar.setProgress ((float)1.0);
+				btnCancel.Label = "Open";
+				btnCancel.Label = "Open Folder";
 			}
 			else if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADING)
 			{
@@ -297,6 +303,10 @@ namespace DownloadManager
 			{
 				startDownload ();
 			}
+			else if (dwnload.download.status == DOWNLOAD_STATUS.DOWNLOADED)
+			{
+
+			}
 			else
 			{
 				if (dwnload.download.length != null)
@@ -306,13 +316,23 @@ namespace DownloadManager
 
 		protected void btnCancelClicked (object sender, EventArgs e)
 		{
-			dwnload.download.stop ();
+			if (btnCancel.Label == "Cancel")
+				dwnload.download.stop ();
+			else
+			{
+
+			}
 		}
 
 		protected void btnCloseClicked (object sender, EventArgs e)
 		{
 			dwnload.window = null;
 			Destroy ();
+		}
+
+		protected void OnCmdPropertiesClicked (object sender, EventArgs e)
+		{
+
 		}
 	}
 }

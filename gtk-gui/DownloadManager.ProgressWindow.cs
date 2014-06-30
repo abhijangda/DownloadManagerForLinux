@@ -114,7 +114,7 @@ namespace DownloadManager
 			this.lblAddress.Name = "lblAddress";
 			this.lblAddress.Xalign = 0F;
 			this.lblAddress.Selectable = true;
-			this.lblAddress.Ellipsize = ((global::Pango.EllipsizeMode)(3));
+			this.lblAddress.SingleLineMode = true;
 			this.table2.Add (this.lblAddress);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table2 [this.lblAddress]));
 			w7.LeftAttach = ((uint)(1));
@@ -125,7 +125,8 @@ namespace DownloadManager
 			this.lblDestination = new global::Gtk.Label ();
 			this.lblDestination.Name = "lblDestination";
 			this.lblDestination.Xalign = 0F;
-			this.lblDestination.Ellipsize = ((global::Pango.EllipsizeMode)(3));
+			this.lblDestination.Selectable = true;
+			this.lblDestination.SingleLineMode = true;
 			this.table2.Add (this.lblDestination);
 			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table2 [this.lblDestination]));
 			w8.TopAttach = ((uint)(1));

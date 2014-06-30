@@ -1,22 +1,21 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="libDownload/libDownload.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MainWindow.cs">
     <Files>
-      <File FileName="SettingsDialog.cs" Line="193" Column="57" />
-      <File FileName="Settings.cs" Line="14" Column="33" />
-      <File FileName="NewDialog.cs" Line="84" Column="4" />
-      <File FileName="MainWindow.cs" Line="24" Column="57" />
-      <File FileName="libDownload/libDownload.cs" Line="539" Column="27" />
+      <File FileName="NewDialog.cs" Line="1" Column="1" />
+      <File FileName="MainWindow.cs" Line="752" Column="4" />
+      <File FileName="libDownload/libDownload.cs" Line="1" Column="1" />
+      <File FileName="DMDownload.cs" Line="1" Column="1" />
+      <File FileName="DMDownloadTreeView.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="DownloadManager" expanded="True">
             <Node name="UserInterface" expanded="True" />
+            <Node name="MainWindow.cs" selected="True" />
           </Node>
-          <Node name="libDownload" expanded="True">
-            <Node name="libDownload.cs" selected="True" />
-          </Node>
+          <Node name="libDownload" expanded="True" />
         </State>
       </Pad>
     </Pads>

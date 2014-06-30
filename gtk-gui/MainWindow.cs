@@ -77,6 +77,7 @@ public partial class MainWindow
 	private global::DownloadManager.DMQueueTreeView dmqueuetreeview;
 	private global::Gtk.Label label2;
 	private global::Gtk.Label label3;
+	private global::DownloadManager.FTPGetWidget ftpgetwidget1;
 	private global::Gtk.Label label4;
 	private global::Gtk.Statusbar statusbar1;
 	private global::Gtk.Label lblDownloaded;
@@ -112,14 +113,11 @@ public partial class MainWindow
 		w1.Add (this.toolbarRestart, null);
 		this.preferencesAction = new global::Gtk.Action ("preferencesAction", null, null, "gtk-preferences");
 		w1.Add (this.preferencesAction, null);
-		this.toolbarSpeedLow = new global::Gtk.Action ("toolbarSpeedLow", global::Mono.Unix.Catalog.GetString ("Speed Low"), null, null);
-		this.toolbarSpeedLow.ShortLabel = global::Mono.Unix.Catalog.GetString ("Speed Low");
+		this.toolbarSpeedLow = new global::Gtk.Action ("toolbarSpeedLow", null, null, null);
 		w1.Add (this.toolbarSpeedLow, null);
-		this.toolbarSpeedMedium = new global::Gtk.Action ("toolbarSpeedMedium", global::Mono.Unix.Catalog.GetString ("Speed Medium"), null, null);
-		this.toolbarSpeedMedium.ShortLabel = global::Mono.Unix.Catalog.GetString ("Speed Medium");
+		this.toolbarSpeedMedium = new global::Gtk.Action ("toolbarSpeedMedium", null, null, null);
 		w1.Add (this.toolbarSpeedMedium, null);
-		this.toolbarSpeedFull = new global::Gtk.Action ("toolbarSpeedFull", global::Mono.Unix.Catalog.GetString ("Speed Full"), null, null);
-		this.toolbarSpeedFull.ShortLabel = global::Mono.Unix.Catalog.GetString ("Speed Full");
+		this.toolbarSpeedFull = new global::Gtk.Action ("toolbarSpeedFull", null, null, null);
 		w1.Add (this.toolbarSpeedFull, null);
 		this.DownloadAction = new global::Gtk.Action ("DownloadAction", global::Mono.Unix.Catalog.GetString ("Download"), null, null);
 		this.DownloadAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Download");
@@ -251,7 +249,7 @@ public partial class MainWindow
 		this.MediumSpeedAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Medium Speed");
 		w1.Add (this.MediumSpeedAction, null);
 		this.HighSpeedAction = new global::Gtk.RadioAction ("HighSpeedAction", global::Mono.Unix.Catalog.GetString ("High Speed"), null, null, 0);
-		this.HighSpeedAction.Group = this.MediumSpeedAction.Group;
+		this.HighSpeedAction.Group = this.LowSpeedAction.Group;
 		this.HighSpeedAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("High Speed");
 		w1.Add (this.HighSpeedAction, null);
 		this.toolbarStopAll = new global::Gtk.Action ("toolbarStopAll", global::Mono.Unix.Catalog.GetString ("Stop All"), null, null);
@@ -270,8 +268,7 @@ public partial class MainWindow
 		w1.Add (this.toolbarCancelQueue, null);
 		this.toolbarNewQueue = new global::Gtk.Action ("toolbarNewQueue", null, null, "gtk-save");
 		w1.Add (this.toolbarNewQueue, null);
-		this.toolbarRestartQueue = new global::Gtk.Action ("toolbarRestartQueue", null, null, null);
-		this.toolbarRestartQueue.ShortLabel = global::Mono.Unix.Catalog.GetString ("ddddd");
+		this.toolbarRestartQueue = new global::Gtk.Action ("toolbarRestartQueue", null, null, "gtk-refresh");
 		w1.Add (this.toolbarRestartQueue, null);
 		this.CancelQueueAction = new global::Gtk.Action ("CancelQueueAction", global::Mono.Unix.Catalog.GetString ("Cancel Queue"), null, null);
 		this.CancelQueueAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Cancel Queue");
@@ -298,7 +295,7 @@ public partial class MainWindow
 		w2.Expand = false;
 		w2.Fill = false;
 		// Container child vbox1.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString ("<ui><toolbar name='toolbar1'><toolitem name='toolbarNewDownload' action='toolbarNewDownload'/><toolitem name='toolbarAddDownload' action='toolbarAddDownload'/><separator/><toolitem name='toolbarStart' action='toolbarStart'/><toolitem name='toolbarPause' action='toolbarPause'/><toolitem name='toolbarCancel' action='toolbarCancel'/><toolitem name='toolbarRestart' action='toolbarRestart'/><separator/><toolitem name='toolbarNewQueue' action='toolbarNewQueue'/><toolitem name='toolbarStartQueue' action='toolbarStartQueue'/><toolitem name='toolbarStopQueue' action='toolbarStopQueue'/><toolitem name='toolbarCancelQueue' action='toolbarCancelQueue'/><toolitem name='toolbarRestartQueue' action='toolbarRestartQueue'/><toolitem/><separator/><toolitem name='toolbarFind' action='toolbarFind'/><toolitem name='preferencesAction' action='preferencesAction'/><separator/><toolitem name='toolbarSpeedLow' action='toolbarSpeedLow'/><toolitem name='toolbarSpeedMedium' action='toolbarSpeedMedium'/><toolitem name='toolbarSpeedFull' action='toolbarSpeedFull'/></toolbar></ui>");
+		this.UIManager.AddUiFromString ("<ui><toolbar name='toolbar1'><toolitem name='toolbarNewDownload' action='toolbarNewDownload'/><toolitem name='toolbarAddDownload' action='toolbarAddDownload'/><separator/><toolitem name='toolbarStart' action='toolbarStart'/><toolitem name='toolbarPause' action='toolbarPause'/><toolitem name='toolbarCancel' action='toolbarCancel'/><toolitem name='toolbarRestart' action='toolbarRestart'/><separator/><toolitem name='toolbarNewQueue' action='toolbarNewQueue'/><toolitem name='toolbarStartQueue' action='toolbarStartQueue'/><toolitem name='toolbarStopQueue' action='toolbarStopQueue'/><toolitem name='toolbarCancelQueue' action='toolbarCancelQueue'/><toolitem name='toolbarRestartQueue' action='toolbarRestartQueue'/><toolitem/><separator/><toolitem name='toolbarSpeedLow' action='toolbarSpeedLow'/><toolitem name='toolbarSpeedMedium' action='toolbarSpeedMedium'/><toolitem name='toolbarSpeedFull' action='toolbarSpeedFull'/><separator/><toolitem name='toolbarFind' action='toolbarFind'/><toolitem name='preferencesAction' action='preferencesAction'/></toolbar></ui>");
 		this.toolbar1 = ((global::Gtk.Toolbar)(this.UIManager.GetWidget ("/toolbar1")));
 		this.toolbar1.Name = "toolbar1";
 		this.toolbar1.ShowArrow = false;
@@ -312,7 +309,7 @@ public partial class MainWindow
 		this.notebook = new global::Gtk.Notebook ();
 		this.notebook.CanFocus = true;
 		this.notebook.Name = "notebook";
-		this.notebook.CurrentPage = 0;
+		this.notebook.CurrentPage = 3;
 		// Container child notebook.Gtk.Notebook+NotebookChild
 		this.hpaned1 = new global::Gtk.HPaned ();
 		this.hpaned1.CanFocus = true;
@@ -375,14 +372,17 @@ public partial class MainWindow
 		this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Torrents");
 		this.notebook.SetTabLabel (w11, this.label3);
 		this.label3.ShowAll ();
+		// Container child notebook.Gtk.Notebook+NotebookChild
+		this.ftpgetwidget1 = new global::DownloadManager.FTPGetWidget ();
+		this.ftpgetwidget1.Name = "ftpgetwidget1";
+		this.notebook.Add (this.ftpgetwidget1);
+		global::Gtk.Notebook.NotebookChild w12 = ((global::Gtk.Notebook.NotebookChild)(this.notebook [this.ftpgetwidget1]));
+		w12.Position = 3;
 		// Notebook tab
-		global::Gtk.Label w12 = new global::Gtk.Label ();
-		w12.Visible = true;
-		this.notebook.Add (w12);
 		this.label4 = new global::Gtk.Label ();
 		this.label4.Name = "label4";
 		this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("FTP Get");
-		this.notebook.SetTabLabel (w12, this.label4);
+		this.notebook.SetTabLabel (this.ftpgetwidget1, this.label4);
 		this.label4.ShowAll ();
 		this.vbox1.Add (this.notebook);
 		global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.notebook]));
