@@ -78,7 +78,9 @@
     <Compile Include="gtk-gui\DownloadManager.CreateQueueDialog.cs" />
     <Compile Include="SettingsDialog.cs" />
     <Compile Include="gtk-gui\DownloadManager.SettingsDialog.cs" />
-    <Compile Include="FTPGetWidget.cs" />
+    <Compile Include="FTPGetWidget.cs">
+      <DeployService-Deploy>True</DeployService-Deploy>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

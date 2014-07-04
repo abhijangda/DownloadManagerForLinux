@@ -504,7 +504,7 @@
           <widget class="Gtk.Notebook" id="notebook">
             <property name="MemberName">notebook</property>
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">3</property>
+            <property name="CurrentPage">0</property>
             <child>
               <widget class="Gtk.HPaned" id="hpaned1">
                 <property name="MemberName" />

@@ -1,19 +1,21 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="MainWindow.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="FTPGetWidget.cs">
     <Files>
       <File FileName="NewDialog.cs" Line="1" Column="1" />
-      <File FileName="MainWindow.cs" Line="752" Column="4" />
+      <File FileName="MainWindow.cs" Line="438" Column="4" />
       <File FileName="libDownload/libDownload.cs" Line="1" Column="1" />
       <File FileName="DMDownload.cs" Line="1" Column="1" />
-      <File FileName="DMDownloadTreeView.cs" Line="1" Column="1" />
+      <File FileName="FTPGetWidget.cs" Line="161" Column="10" />
+      <File FileName="DMDownloadTreeView.cs" Line="44" Column="16" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="DownloadManager" expanded="True">
             <Node name="UserInterface" expanded="True" />
-            <Node name="MainWindow.cs" selected="True" />
+            <Node name="Properties" expanded="True" />
+            <Node name="FTPGetWidget.cs" selected="True" />
           </Node>
           <Node name="libDownload" expanded="True" />
         </State>
