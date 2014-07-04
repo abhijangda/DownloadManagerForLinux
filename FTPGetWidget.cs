@@ -34,9 +34,11 @@ namespace DownloadManager
 
 		public BreadCrumbWidget () : base (false, 2)
 		{
+			Gtk.Image btnGoImage;
+			btnGoImage = new Gtk.Image ("gtk-ok", IconSize.Button);
 			listToggleButton = new List<ToggleButton> ();
 			btnGo = new Button();
-			btnGo.Label = "Go";
+			btnGo.Add (btnGoImage);
 			btnGo.Clicked += btnGoClicked;
 			addressBar = new HBox (false, 2);
 			entryAddress = new Entry ();
@@ -86,6 +88,15 @@ namespace DownloadManager
 			removeToEnd (0);
 			ToggleButton btn, rootBtn;
 			int index = address.IndexOf ("/", "ftp://".Length + 1);
+			if (index == -1)
+			{
+				rootBtn = appendButton (address.Trim());
+				rootBtn.Active = true;
+				rootBtn.Clicked += btnGoClicked;
+
+				return;
+			}
+
 			string root = address.Substring (0, index);
 			string[] split = address.Substring (index).Split ("/".ToCharArray (),
 			                                					 StringSplitOptions.RemoveEmptyEntries);
@@ -214,6 +225,14 @@ namespace DownloadManager
 
 			popupMenu = new Menu ();
 
+			menuItem = new MenuItem ("Open");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += openMenuItemActivated;
+
+			menuItem = new MenuItem ("Select All");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += selectAllMenuItemActivated;
+
 			menuItem = new MenuItem ("Download");
 			popupMenu.Append (menuItem);
 			menuItem.Activated += downloadMenuItemActivated;
@@ -222,9 +241,19 @@ namespace DownloadManager
 			popupMenu.Append (menuItem);
 			menuItem.Activated += propertiesMenuItemActivated;
 
+			iconView.ButtonPressEvent += OnIconViewButtonPressEvent;
+
 		    PackStart (breadCrumb, false, false, 2);
 			PackStart (scrolledWindow, true, true, 2);
 			PackStart (statusBar, false, false, 2);
+		}
+
+		private void selectAllMenuItemActivated (object sender, EventArgs args)
+		{
+		}
+
+		private void openMenuItemActivated (object sender, EventArgs args)
+		{
 		}
 
 		private void downloadMenuItemActivated (object sender, EventArgs args)
@@ -233,6 +262,20 @@ namespace DownloadManager
 
 		private void propertiesMenuItemActivated (object sender, EventArgs args)
 		{
+		}
+
+		protected void OnIconViewButtonPressEvent (object sender, 
+		                                           ButtonPressEventArgs args)
+		{
+			if (args.Event.Button != 3)
+				return;
+
+			//TreePath[] selectedPaths = iconView.GetSelectedRows ();
+
+			popupMenu.Popup ();
+			popupMenu.ShowAll ();
+
+			return;
 		}
 
 		private void iconViewItemActivated (object sender, ItemActivatedArgs args)
