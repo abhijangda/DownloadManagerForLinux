@@ -8,10 +8,6 @@ using System.IO;
 using System.Threading;
 using System.Text.RegularExpressions;
 
-/* TODO: Add POPUP Menu with 
- * "Properties", "Download".
- * 
- */
 namespace DownloadManager
 {
 	public class BreadCrumbWidget : VBox
@@ -88,6 +84,7 @@ namespace DownloadManager
 			removeToEnd (0);
 			ToggleButton btn, rootBtn;
 			int index = address.IndexOf ("/", "ftp://".Length + 1);
+
 			if (index == -1)
 			{
 				rootBtn = appendButton (address.Trim());
@@ -229,17 +226,71 @@ namespace DownloadManager
 			popupMenu.Append (menuItem);
 			menuItem.Activated += openMenuItemActivated;
 
-			menuItem = new MenuItem ("Select All");
+			menuItem = new MenuItem ("Reload");
 			popupMenu.Append (menuItem);
-			menuItem.Activated += selectAllMenuItemActivated;
+			menuItem.Activated += reloadMenuItemActivated;
 
+			popupMenu.Append (new SeparatorMenuItem ());
+	
 			menuItem = new MenuItem ("Download");
 			popupMenu.Append (menuItem);
 			menuItem.Activated += downloadMenuItemActivated;
 
+			menuItem = new MenuItem ("DownloadAll");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += downloadAllMenuItemActivated;
+
+			popupMenu.Append (new SeparatorMenuItem ());
+
+			menuItem = new MenuItem ("Select All");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += selectAllMenuItemActivated;
+
+			menuItem = new MenuItem ("Copy Filename to Clipboad");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += filenameToClipboardActivated;
+
+			menuItem = new MenuItem ("Copy URL to Clipboard");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += urlToClipboardActivated;
+
+			menuItem = new MenuItem ("Search");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += searchMenuItemActivated;
+
+			popupMenu.Append (new SeparatorMenuItem ());
+
 			menuItem = new MenuItem ("Properties");
 			popupMenu.Append (menuItem);
 			menuItem.Activated += propertiesMenuItemActivated;
+
+			popupMenu.Append (new SeparatorMenuItem ());
+
+			menuItem = new MenuItem ("Arrange Items by Name");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += arrangeByNamesMenuItemActivated;
+
+			menuItem = new MenuItem ("Arrange Items by Size");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += arrangeBySizeMenuItemActivated;
+
+			menuItem = new MenuItem ("Arrange Items by Type");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += arrangeByTypeMenuItemActivated;
+
+			menuItem = new MenuItem ("Arrange Items by Date");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += arrangeByDateMenuItemActivated;
+
+			popupMenu.Append (new SeparatorMenuItem ());
+	
+			menuItem = new MenuItem ("Icons");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += iconsMenuItemActivated;
+
+			menuItem = new MenuItem ("List");
+			popupMenu.Append (menuItem);
+			menuItem.Activated += listMenuItemActivated;
 
 			iconView.ButtonPressEvent += OnIconViewButtonPressEvent;
 
@@ -247,13 +298,76 @@ namespace DownloadManager
 			PackStart (scrolledWindow, true, true, 2);
 			PackStart (statusBar, false, false, 2);
 		}
-
-		private void selectAllMenuItemActivated (object sender, EventArgs args)
+		private void downloadAllMenuItemActivated (object sender, EventArgs args)
+		{
+		}
+		private void searchMenuItemActivated (object sender, EventArgs args)
 		{
 		}
 
-		private void openMenuItemActivated (object sender, EventArgs args)
+		private void reloadMenuItemActivated (object sender, EventArgs args)
 		{
+		}
+		private void listMenuItemActivated (object sender, EventArgs args)
+		{
+		}
+		private void iconsMenuItemActivated (object sender, EventArgs args)
+		{
+		}
+		private void arrangeByDateMenuItemActivated (object sender, EventArgs args)
+		{
+		}
+		private void arrangeByTypeMenuItemActivated (object sender, EventArgs args)
+		{
+		}
+		private void arrangeByNamesMenuItemActivated (object sender, EventArgs args)
+		{
+		}
+		private void arrangeBySizeMenuItemActivated (object sender, EventArgs args)
+		{
+		}
+
+		public void filenameToClipboardActivated (object sender, EventArgs args)
+		{
+			TreePath[] items = iconView.SelectedItems;
+
+			if (items.Length != 1)
+				return;
+
+			TreeIter iter;
+			fileListStore.GetIter (out iter, items[0]);
+			FTPFile file = (FTPFile)fileListStore.GetValue (iter, 2);
+			//Clipboard clip = Clipboard.Get ("CLIPBOARD");
+			//clip.Text = file.fileName;
+		}
+
+		public void urlToClipboardActivated (object sender, EventArgs args)
+		{
+			TreePath[] items = iconView.SelectedItems;
+
+			if (items.Length != 1)
+				return;
+
+			TreeIter iter;
+			fileListStore.GetIter (out iter, items[0]);
+			FTPFile file = (FTPFile)fileListStore.GetValue (iter, 2);
+			//Clipboard clip = Clipboard.Get ("CLIPBOARD");
+			//clip.Text = file.filePath;
+		}
+
+		public void selectAllMenuItemActivated (object sender, EventArgs args)
+		{
+			iconView.SelectAll ();
+		}
+
+		public void openMenuItemActivated (object sender, EventArgs args)
+		{
+			TreePath[] items = iconView.SelectedItems;
+
+			if (items.Length != 1)
+				return;
+
+			iconView.ActivateItem (items[0]);
 		}
 
 		private void downloadMenuItemActivated (object sender, EventArgs args)
@@ -270,7 +384,13 @@ namespace DownloadManager
 			if (args.Event.Button != 3)
 				return;
 
-			//TreePath[] selectedPaths = iconView.GetSelectedRows ();
+			TreePath[] selectedPaths = iconView.SelectedItems;
+			if (selectedPaths.Length == 0)
+			{
+			}
+			else
+			{
+			}
 
 			popupMenu.Popup ();
 			popupMenu.ShowAll ();

@@ -393,6 +393,86 @@
         <property name="Label" translatable="yes">Restart Queue</property>
         <property name="ShortLabel" translatable="yes">Restart Queue</property>
       </action>
+      <action id="FTPViewerAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">FTPViewer</property>
+        <property name="ShortLabel" translatable="yes">FTPViewer</property>
+      </action>
+      <action id="OpenAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Open</property>
+        <property name="ShortLabel" translatable="yes">Open</property>
+      </action>
+      <action id="ReloadAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Reload</property>
+        <property name="ShortLabel" translatable="yes">Reload</property>
+      </action>
+      <action id="DownloadAction1">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Download</property>
+        <property name="ShortLabel" translatable="yes">Download</property>
+      </action>
+      <action id="DownloadAllAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Download All</property>
+        <property name="ShortLabel" translatable="yes">Download All</property>
+      </action>
+      <action id="SelectAllAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Select All</property>
+        <property name="ShortLabel" translatable="yes">Select All</property>
+      </action>
+      <action id="CopyFilnameToClipboardAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Copy Filname to Clipboard</property>
+        <property name="ShortLabel" translatable="yes">Copy Filname to Clipboard</property>
+      </action>
+      <action id="CopyFilepathToClipboardAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Copy Filepath to Clipboard</property>
+        <property name="ShortLabel" translatable="yes">Copy Filepath to Clipboard</property>
+      </action>
+      <action id="SearchAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Search</property>
+        <property name="ShortLabel" translatable="yes">Search</property>
+      </action>
+      <action id="PropertiesAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Properties</property>
+        <property name="ShortLabel" translatable="yes">Properties</property>
+      </action>
+      <action id="ArrangeItemsByNameAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Arrange Items by Name</property>
+        <property name="ShortLabel" translatable="yes">Arrange Items by Name</property>
+      </action>
+      <action id="ArrangeItemsBySizeAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Arrange Items by Size</property>
+        <property name="ShortLabel" translatable="yes">Arrange Items by Size</property>
+      </action>
+      <action id="ArrangeItemsByTypeAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Arrange Items by Type</property>
+        <property name="ShortLabel" translatable="yes">Arrange Items by Type</property>
+      </action>
+      <action id="ArrangeItemsByDateAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Arrange Items by Date</property>
+        <property name="ShortLabel" translatable="yes">Arrange Items by Date</property>
+      </action>
+      <action id="IconsAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Icons</property>
+        <property name="ShortLabel" translatable="yes">Icons</property>
+      </action>
+      <action id="ListAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">List</property>
+        <property name="ShortLabel" translatable="yes">List</property>
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MainWindow</property>
@@ -455,6 +535,27 @@
                   <node type="Menuitem" action="HighSpeedAction" />
                 </node>
               </node>
+              <node type="Menu" action="FTPViewerAction">
+                <node type="Menuitem" action="OpenAction" />
+                <node type="Menuitem" action="ReloadAction" />
+                <node type="Separator" />
+                <node type="Menuitem" action="DownloadAction1" />
+                <node type="Menuitem" action="DownloadAllAction" />
+                <node type="Separator" />
+                <node type="Menuitem" action="SelectAllAction" />
+                <node type="Menuitem" action="CopyFilnameToClipboardAction" />
+                <node type="Menuitem" action="CopyFilepathToClipboardAction" />
+                <node type="Menuitem" action="SearchAction" />
+                <node type="Separator" />
+                <node type="Menuitem" action="PropertiesAction" />
+                <node type="Menuitem" action="ArrangeItemsByNameAction" />
+                <node type="Menuitem" action="ArrangeItemsBySizeAction" />
+                <node type="Menuitem" action="ArrangeItemsByTypeAction" />
+                <node type="Menuitem" action="ArrangeItemsByDateAction" />
+                <node type="Separator" />
+                <node type="Menuitem" action="IconsAction" />
+                <node type="Menuitem" action="ListAction" />
+              </node>
             </node>
           </widget>
           <packing>
@@ -504,7 +605,7 @@
           <widget class="Gtk.Notebook" id="notebook">
             <property name="MemberName">notebook</property>
             <property name="CanFocus">True</property>
-            <property name="CurrentPage">0</property>
+            <property name="CurrentPage">4</property>
             <child>
               <widget class="Gtk.HPaned" id="hpaned1">
                 <property name="MemberName" />
@@ -600,7 +701,19 @@
             <child>
               <widget class="Gtk.Label" id="label4">
                 <property name="MemberName" />
-                <property name="LabelProp" translatable="yes">FTP Get</property>
+                <property name="LabelProp" translatable="yes">FTPViewer</property>
+              </widget>
+              <packing>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label5">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">SiteGet</property>
               </widget>
               <packing>
                 <property name="type">tab</property>

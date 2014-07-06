@@ -81,6 +81,7 @@
     <Compile Include="FTPGetWidget.cs">
       <DeployService-Deploy>True</DeployService-Deploy>
     </Compile>
+    <Compile Include="Properties\HTTPGetWidget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

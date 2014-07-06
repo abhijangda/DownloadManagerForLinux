@@ -217,7 +217,6 @@ namespace DownloadManager
 				}
 			}
 
-
 			contextMenu.Popup ();
 			contextMenu.ShowAll ();
 
