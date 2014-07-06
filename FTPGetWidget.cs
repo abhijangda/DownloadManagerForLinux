@@ -298,16 +298,43 @@ namespace DownloadManager
 			PackStart (scrolledWindow, true, true, 2);
 			PackStart (statusBar, false, false, 2);
 		}
+
 		private void downloadAllMenuItemActivated (object sender, EventArgs args)
 		{
+			TreePath[] items = iconView.SelectedItems;
+
+			if (items.Length != 1)
+				return;
+
+			NewDialog new_dlg = new NewDialog ();
+			foreach (TreePath item in items)
+			{
+				TreeIter iter;
+				fileListStore.GetIter (out iter, items[0]);
+				FTPFile file = (FTPFile)fileListStore.GetValue (iter, 2);
+				new_dlg.ShowAll ();
+				if (new_dlg.Run () == (int)Gtk.ResponseType.Ok)
+				{
+					MainWindow.main_instance.createNewDownload (file.filePath,
+				                                            	new_dlg.localPath,
+				                                            	new_dlg.genFilename,
+				                                            	new_dlg.typeCategory,
+				                                            	new_dlg.start);
+				}
+				new_dlg.Hide ();
+			}
+			new_dlg.Destroy (); 
 		}
+
 		private void searchMenuItemActivated (object sender, EventArgs args)
 		{
 		}
 
 		private void reloadMenuItemActivated (object sender, EventArgs args)
 		{
+			openAddressHandler (breadCrumb.address);
 		}
+
 		private void listMenuItemActivated (object sender, EventArgs args)
 		{
 		}
@@ -372,10 +399,42 @@ namespace DownloadManager
 
 		private void downloadMenuItemActivated (object sender, EventArgs args)
 		{
+			TreePath[] items = iconView.SelectedItems;
+
+			if (items.Length != 1)
+				return;
+
+			TreeIter iter;
+			fileListStore.GetIter (out iter, items[0]);
+			FTPFile file = (FTPFile)fileListStore.GetValue (iter, 2);
+			NewDialog new_dlg = new NewDialog ();
+			new_dlg.ShowAll ();
+			if (new_dlg.Run () == (int)Gtk.ResponseType.Ok)
+			{
+				MainWindow.main_instance.createNewDownload (file.filePath,
+				                                            new_dlg.localPath,
+				                   							new_dlg.genFilename,
+				                                            new_dlg.typeCategory,
+				                   							new_dlg.start);
+			}
+
+			new_dlg.Destroy (); 
 		}
 
 		private void propertiesMenuItemActivated (object sender, EventArgs args)
 		{
+			TreePath[] items = iconView.SelectedItems;
+
+			if (items.Length != 1)
+				return;
+
+			TreeIter iter;
+			fileListStore.GetIter (out iter, items[0]);
+			FTPFile file = (FTPFile)fileListStore.GetValue (iter, 2);
+			FTPViewPropDialog dlg = new FTPViewPropDialog (file);
+			dlg.ShowAll ();
+			dlg.Run ();
+			dlg.Destroy ();
 		}
 
 		protected void OnIconViewButtonPressEvent (object sender, 

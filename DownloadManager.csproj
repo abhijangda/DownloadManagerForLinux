@@ -81,7 +81,8 @@
     <Compile Include="FTPGetWidget.cs">
       <DeployService-Deploy>True</DeployService-Deploy>
     </Compile>
-    <Compile Include="Properties\HTTPGetWidget.cs" />
+    <Compile Include="FTPViewPropDialog.cs" />
+    <Compile Include="gtk-gui\DownloadManager.FTPViewPropDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

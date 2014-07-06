@@ -24,6 +24,7 @@ namespace DownloadManager
 		private global::DownloadManager.PartsProgressWidget partsProgress;
 		private global::Gtk.HSeparator hseparator1;
 		private global::Gtk.HBox hbox1;
+		private global::Gtk.Button cmdProperties;
 		private global::Gtk.Button btnStartPause;
 		private global::Gtk.Button btnCancel;
 		private global::Gtk.Button btnClose;
@@ -239,6 +240,18 @@ namespace DownloadManager
 			this.hbox1.Name = "hbox1";
 			this.hbox1.Spacing = 4;
 			// Container child hbox1.Gtk.Box+BoxChild
+			this.cmdProperties = new global::Gtk.Button ();
+			this.cmdProperties.CanFocus = true;
+			this.cmdProperties.Name = "cmdProperties";
+			this.cmdProperties.UseUnderline = true;
+			this.cmdProperties.Label = global::Mono.Unix.Catalog.GetString ("Properties");
+			this.hbox1.Add (this.cmdProperties);
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.cmdProperties]));
+			w19.PackType = ((global::Gtk.PackType)(1));
+			w19.Position = 0;
+			w19.Expand = false;
+			w19.Fill = false;
+			// Container child hbox1.Gtk.Box+BoxChild
 			this.btnStartPause = new global::Gtk.Button ();
 			this.btnStartPause.WidthRequest = 94;
 			this.btnStartPause.CanFocus = true;
@@ -246,11 +259,11 @@ namespace DownloadManager
 			this.btnStartPause.UseUnderline = true;
 			this.btnStartPause.Label = global::Mono.Unix.Catalog.GetString ("Start");
 			this.hbox1.Add (this.btnStartPause);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnStartPause]));
-			w19.PackType = ((global::Gtk.PackType)(1));
-			w19.Position = 0;
-			w19.Expand = false;
-			w19.Fill = false;
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnStartPause]));
+			w20.PackType = ((global::Gtk.PackType)(1));
+			w20.Position = 1;
+			w20.Expand = false;
+			w20.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.btnCancel = new global::Gtk.Button ();
 			this.btnCancel.WidthRequest = 94;
@@ -259,11 +272,11 @@ namespace DownloadManager
 			this.btnCancel.UseUnderline = true;
 			this.btnCancel.Label = global::Mono.Unix.Catalog.GetString ("Cancel");
 			this.hbox1.Add (this.btnCancel);
-			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnCancel]));
-			w20.PackType = ((global::Gtk.PackType)(1));
-			w20.Position = 1;
-			w20.Expand = false;
-			w20.Fill = false;
+			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnCancel]));
+			w21.PackType = ((global::Gtk.PackType)(1));
+			w21.Position = 2;
+			w21.Expand = false;
+			w21.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.btnClose = new global::Gtk.Button ();
 			this.btnClose.WidthRequest = 94;
@@ -272,17 +285,17 @@ namespace DownloadManager
 			this.btnClose.UseUnderline = true;
 			this.btnClose.Label = global::Mono.Unix.Catalog.GetString ("Close");
 			this.hbox1.Add (this.btnClose);
-			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnClose]));
-			w21.PackType = ((global::Gtk.PackType)(1));
-			w21.Position = 2;
-			w21.Expand = false;
-			w21.Fill = false;
-			this.dialog1_VBox.Add (this.hbox1);
-			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.dialog1_VBox [this.hbox1]));
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.btnClose]));
 			w22.PackType = ((global::Gtk.PackType)(1));
-			w22.Position = 6;
+			w22.Position = 3;
 			w22.Expand = false;
 			w22.Fill = false;
+			this.dialog1_VBox.Add (this.hbox1);
+			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.dialog1_VBox [this.hbox1]));
+			w23.PackType = ((global::Gtk.PackType)(1));
+			w23.Position = 6;
+			w23.Expand = false;
+			w23.Fill = false;
 			this.Add (this.dialog1_VBox);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
@@ -293,6 +306,7 @@ namespace DownloadManager
 			this.btnClose.Clicked += new global::System.EventHandler (this.btnCloseClicked);
 			this.btnCancel.Clicked += new global::System.EventHandler (this.btnCancelClicked);
 			this.btnStartPause.Clicked += new global::System.EventHandler (this.btnStartPauseClicked);
+			this.cmdProperties.Clicked += new global::System.EventHandler (this.OnCmdPropertiesClicked);
 		}
 	}
 }

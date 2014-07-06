@@ -503,7 +503,7 @@ public partial class MainWindow: Gtk.Window
 		new_dlg.Destroy ();
 	}
 
-	private bool createNewDownload (string remotePath, string localPath,
+	public bool createNewDownload (string remotePath, string localPath,
 	                                bool genFilename, string typeCategory,
 	                                int start)
 	{
