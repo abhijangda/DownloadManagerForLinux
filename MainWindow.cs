@@ -26,6 +26,7 @@ public partial class MainWindow: Gtk.Window
 	private Thread savingThread;
 	private bool _stopSavingThread;
 	private SettingsDialog settingsDialog;
+	public DMScheduler scheduler;
 
 	public MainWindow (DownloadManager.Settings _sm): base (Gtk.WindowType.Toplevel)
 	{
@@ -52,6 +53,8 @@ public partial class MainWindow: Gtk.Window
 
 		listRunningQueues = new List<DMQueue> ();
 		listAllQueues = new List<DMQueue> ();
+		scheduler = new DMScheduler ();
+		scheduler.startScheduler ();
 	}
 
 	private void dmCategoryTreeViewSelectionChanged (object o, EventArgs args)
@@ -461,6 +464,7 @@ public partial class MainWindow: Gtk.Window
 			    dmld.download.stop ();
 
 		settingsManager.storeInfo (listAllDownloads, listAllQueues);
+		scheduler.stopScheduler ();
 		//_stopSavingThread = true;
 		//savingThread.Join ();
 	}
@@ -577,6 +581,10 @@ public partial class MainWindow: Gtk.Window
 		else if (start == 2)
 		{
 			/*TODO: Schedule download*/
+			DMScheduleDownloadDialog dlg = new DMScheduleDownloadDialog();
+			dlg.Show ();
+			dlg.Run ();
+			dlg.Destroy ();
 		}
 		return true;
 	}

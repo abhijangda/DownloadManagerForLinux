@@ -43,7 +43,6 @@ namespace DownloadManager
 			this.dialog1_VBox.BorderWidth = ((uint)(7));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
 			this.table2 = new global::Gtk.Table (((uint)(6)), ((uint)(2)), false);
-			this.table2.Name = "table2";
 			this.table2.RowSpacing = ((uint)(6));
 			this.table2.ColumnSpacing = ((uint)(6));
 			// Container child table2.Gtk.Table+TableChild

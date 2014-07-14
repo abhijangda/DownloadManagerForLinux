@@ -83,6 +83,10 @@
     </Compile>
     <Compile Include="FTPViewPropDialog.cs" />
     <Compile Include="gtk-gui\DownloadManager.FTPViewPropDialog.cs" />
+    <Compile Include="DMScheduleDownloadDialog.cs" />
+    <Compile Include="gtk-gui\DownloadManager.DMScheduleDownloadDialog.cs" />
+    <Compile Include="DMSchedulerDialog.cs" />
+    <Compile Include="gtk-gui\DownloadManager.DMSchedulerDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

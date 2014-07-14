@@ -364,8 +364,8 @@ namespace DownloadManager
 			TreeIter iter;
 			fileListStore.GetIter (out iter, items[0]);
 			FTPFile file = (FTPFile)fileListStore.GetValue (iter, 2);
-			//Clipboard clip = Clipboard.Get ("CLIPBOARD");
-			//clip.Text = file.fileName;
+			Clipboard clip = Clipboard.Get (Gdk.Selection.Clipboard);
+			clip.Text = file.fileName;
 		}
 
 		public void urlToClipboardActivated (object sender, EventArgs args)
@@ -378,8 +378,8 @@ namespace DownloadManager
 			TreeIter iter;
 			fileListStore.GetIter (out iter, items[0]);
 			FTPFile file = (FTPFile)fileListStore.GetValue (iter, 2);
-			//Clipboard clip = Clipboard.Get ("CLIPBOARD");
-			//clip.Text = file.filePath;
+			Clipboard clip = Clipboard.Get (Gdk.Selection.Clipboard);
+			clip.Text = file.filePath;
 		}
 
 		public void selectAllMenuItemActivated (object sender, EventArgs args)

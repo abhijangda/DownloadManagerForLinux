@@ -1,34 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="FTPViewPropertiesDialog.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DMScheduler.cs">
     <Files>
-      <File FileName="NewDialog.cs" Line="1" Column="1" />
-      <File FileName="MainWindow.cs" Line="1" Column="1" />
-      <File FileName="libDownload/libDownload.cs" Line="1" Column="1" />
-      <File FileName="DMDownload.cs" Line="1" Column="1" />
-      <File FileName="FTPGetWidget.cs" Line="1" Column="1" />
-      <File FileName="DMDownloadTreeView.cs" Line="1" Column="1" />
-      <File FileName="DMTreeView.cs" Line="1" Column="1" />
-      <File FileName="FTPViewPropertiesDialog.cs" Line="9" Column="18" />
-      <File FileName="SettingsDialog.cs" Line="1" Column="1" />
+      <File FileName="AddExistingDialog.cs" Line="1" Column="1" />
+      <File FileName="DMScheduleDownloadDialog.cs" Line="11" Column="51" />
+      <File FileName="DMScheduler.cs" Line="45" Column="8" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="DownloadManager" expanded="True">
-            <Node name="UserInterface" expanded="True" />
-            <Node name="Properties" expanded="True" />
-            <Node name="FTPViewPropertiesDialog.cs" selected="True" />
-          </Node>
-          <Node name="libDownload" expanded="True" />
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
-    <Watch file="libDownload/HTTPDownload.cs" line="457" offsetX="532" offsetY="10032" expression="Console" liveUpdate="False" />
-  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

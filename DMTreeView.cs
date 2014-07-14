@@ -12,6 +12,7 @@ namespace DownloadManager
 		protected Gtk.Menu contextMenu;
 		protected Gtk.MenuItem contextStart, contextPause, contextRestart;
 		protected Gtk.MenuItem contextCancel, contextStartAll, contextPauseAll;
+		protected Gtk.MenuItem contextSchedule;
 		protected bool ctrlPressed;
 
 		public abstract void setImageForStatus (object o);
@@ -182,6 +183,11 @@ namespace DownloadManager
 
 			contextCancel = new Gtk.MenuItem ("Cancel");
 			contextMenu.Append (contextCancel);
+
+			contextMenu.Append (new SeparatorMenuItem ());
+
+			contextSchedule = new Gtk.MenuItem ("Schedule");
+			contextMenu.Append (contextSchedule);
 
 			contextMenu.Append (new SeparatorMenuItem ());
 
